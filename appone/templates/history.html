@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>历史数据查询</title>
+
+	<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+	 crossorigin="anonymous">
+	<script src="http://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+	 crossorigin="anonymous">
+	</script>
+	<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+	 crossorigin="anonymous"></script>
+	<script src="https://cdn.bootcss.com/echarts/3.8.5/echarts.js"></script>
+	<script src="../static/js/jqpaginator.min.js"></script>
+</head>
+
+<body style="background-image:url('../static/img/bg_galaxy.jpg');">
+	<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="">
+					<span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>
+				</a>
+				<p class="navbar-text">历史数据查询</p>
+			</div>
+			<a href="/main">
+				<button class="btn btn-default navbar-btn">
+					首页
+				</button>
+			</a>
+			<a href="/single">
+				<button class="btn btn-default navbar-btn">
+					个体异常
+				</button>
+			</a>
+			<a href="/relation">
+				<button class="btn btn-default navbar-btn">
+					关联分析
+				</button>
+			</a>
+			<a href="/addconfigure">
+				<button class="btn btn-default navbar-btn">
+					模型配置
+				</button>
+			</a>
+		</div>
+	</nav>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-2" style="height: 800px;">
+				<form class="form-horizontal">
+					<div class="form-group">
+						<label for="model_type" class="col-sm-4 control-label">
+							<p style="color:azure">模型类型</p>
+						</label>
+						<div class="col-sm-8">
+							<select class="form-control" id="model_type" onchange="type_select();">
+								<option value="MODEL_PARAMETER">异常检测</option>
+								<option value="FPGROWTH_PARAMETER">关联分析</option>
+							</select>
+						</div>
+					</div>
+				</form>
+				<form class="form-horizontal">
+					<div class="form-group">
+						<label for="baseline" class="col-sm-4 control-label">
+							<p style="color:azure">基线模式</p>
+						</label>
+						<div class="col-sm-8">
+							<select class="form-control" id="baseline" onchange="load_model();">
+								<option value="single">个体异常</option>
+								<option value="all">整体异常</option>
+							</select>
+						</div>
+					</div>
+				</form>
+				<form class="form-horizontal">
+					<div class="form-group">
+						<label for="model_selector" class="col-sm-4 control-label">
+							<p style="color:azure">模型</p>
+						</label>
+						<div class="col-sm-8">
+							<select class="form-control" id="model_selector"></select>
+						</div>
+					</div>
+				</form>
+				<form class="form-horizontal">
+					<div class="form-group">
+						<label for="start_date" class="col-sm-4 control-label">
+							<p style="color:azure">起始日期</p>
+						</label>
+						<div class="col-sm-8">
+							<input type="date" class="form-control" id="start_date"></input>
+						</div>
+					</div>
+				</form>
+				<form class="form-horizontal">
+					<div class="form-group">
+						<label for="end_date" class="col-sm-4 control-label">
+							<p style="color:azure">截止日期</p>
+						</label>
+						<div class="col-sm-8">
+							<input type="date" class="form-control" id="end_date"></input>
+						</div>
+					</div>
+				</form>
+				<div class="col-sm-offset-2 col-sm-4">
+					<button class="btn btn-success" onclick="connect();">
+						Detect
+					</button>
+				</div>
+				<div class="col-sm-6">
+					<button class="btn btn-primary" onclick="search();">
+						Search
+					</button>
+				</div>
+			</div>
+
+			<div class="col-md-10">
+				<table class="table table-condensed" id="result_table" style="height: 750px; color:azure">
+					<thead id="result_table_head"></thead>
+					<tbody id="result_table_body"></tbody>
+				</table>
+				<nav aria-label="Page navigation" style="margin-left: auto; margin-right: auto; width:650px">
+					<ul class="pagination" id='Paginator'></ul>
+				</nav>
+			</div>
+		</div>
+	</div>
+	<script>
+		$(function () {
+			function addzero(num) {
+				if (num > 0 && num < 10) {
+					return '0' + num;
+				}
+				return num;
+			}
+			var now_time = new Date;
+			var now_time_str = [now_time.getFullYear(), addzero(now_time.getMonth() + 1), addzero(now_time.getDate())].join('-');
+			now_time.setMonth(now_time.getMonth() - 1);
+			var one_month_before = [now_time.getFullYear(), addzero(now_time.getMonth() + 1), addzero(now_time.getDate())].join('-');
+			$('#start_date').attr('value', one_month_before);
+			$('#end_date').attr('value', now_time_str);
+		});
+
+		function type_select() {
+			if ($('#model_type').val() == 'MODEL_PARAMETER') {
+				$('#baseline').empty();
+				$('#baseline').append('<option value="single">个体异常</option>');
+				$('#baseline').append('<option value="all">整体异常</option>');
+			}
+			if ($('#model_type').val() == 'FPGROWTH_PARAMETER') {
+				$('#baseline').empty();
+				$('#baseline').append('<option value="0">人与操作</option>');
+				$('#baseline').append('<option value="1">操作与操作</option>');
+				$('#baseline').append('<option value="2">人与人</option>');
+			}
+		};
+
+		function load_model() {
+			var model_type = $('#model_type').val();
+			var baseline = $('#baseline').val();
+			$.getJSON("/load_model/", { 'model_type': model_type, 'baseline': baseline, 'page': 1, 'size': 15 }, function (ret) {
+				if (ret == null) {
+					return;
+				}
+				$('#model_selector').empty();
+				$('#result_table_head').empty();
+				$('#result_table_body').empty();
+				// $('#result_table_head').append('<tr>\
+				// 							<th>模型名</th>\
+				// 							<th>数据类型</th>\
+				// 							<th>历史数据源</th>\
+				// 							<th>数据源路径</th>\
+				// 							<th>学习字段</th>\
+				// 							<th>基线</th>\
+				// 							<th>基线值</th>\
+				// 							<th>基线单位</th>\
+				// 							<th>时间字段</th>\
+				// 							<th>编码方案</th>\
+				// 							<th>插入时间</th>\
+				// 							</tr>');
+				var thead_str = '<tr>';
+				for (var i = 0; i < ret[0].length; i++) {
+					thead_str += ('<th>' + ret[0][i] + '</th>');
+				};
+				thead_str += '</tr>';
+				$('#result_table_head').append(thead_str);
+				var tbody_str = '<tr>';
+				for (var i = 0; i < ret[1].length; i++) {
+					$('#model_selector').append('<option value="' + ret[1][i][0] + '">' + ret[1][i][0] + '</option>');
+					tbody_str = '<tr>';
+					for (var j = 0; j < ret[1][i].length; j++) {
+						tbody_str += ('<td>' + ret[1][i][j] + '</td>');
+					};
+					tbody_str += '</tr>';
+					$('#result_table_body').append(tbody_str);
+				};
+				$('#Paginator').jqPaginator({
+					totalCounts: parseInt(ret[2][0]),
+					pageSize: 15,
+					visiblePages: 10,
+					currentPage: 1,
+					onPageChange: function (num, type) {
+						if (type == "change") {
+							$.getJSON("/load_model/", { 'model_type': model_type, 'baseline': baseline, 'page': num, 'size': 15 }, function (ret) {
+								if (ret == null) {
+									return;
+								}
+								$('#result_table_body').empty();
+								var tbody_str = '<tr>';
+								for (var i = 0; i < ret[1].length; i++) {
+									$('#model_selector').append('<option value="' + ret[1][i][0] + '">' + ret[1][i][0] + '</option>');
+									tbody_str = '<tr>';
+									for (var j = 0; j < ret[1][i].length; j++) {
+										tbody_str += ('<td>' + ret[1][i][j] + '</td>');
+									};
+									tbody_str += '</tr>';
+									$('#result_table_body').append(tbody_str);
+								};
+							});
+						}
+					}
+				});
+			});
+		};
+
+		function search() {
+			var model = $('#model_selector').val();
+			var start_date = $('#start_date').val();
+			var end_date = $('#end_date').val();
+			$.getJSON("/search/", { 'model': model, 'start_date': start_date, 'end_date': end_date, 'page': 1, 'size': 15 }, function (ret) {
+				if (ret == null) {
+					alert("No Data!");
+				}
+				$('#result_table_head').empty();
+				$('#result_table_body').empty();
+				var thead_str = "<tr>";
+				for (var i = 0; i < ret[0].length; i++) {
+					thead_str += ('<th>' + ret[0][i] + '</th>');
+				};
+				thead_str += "</tr>";
+				$('#result_table_head').append(thead_str);
+
+				for (var i = 0; i < ret[1].length; i++) {
+					var tbody_str = "<tr>";
+					for (var j = 0; j < ret[1][i].length; j++) {
+						tbody_str += ('<td>' + ret[1][i][j] + '</td>');
+					};
+					tbody_str += "</tr>";
+					$('#result_table_body').append(tbody_str);
+				};
+				$('#Paginator').jqPaginator({
+					totalCounts: parseInt(ret[2][0]),
+					pageSize: 15,
+					visiblePages: 10,
+					currentPage: 1,
+					onPageChange: function (num, type) {
+						if (type == "change") {
+							model = $('#model_selector').val();
+							$.getJSON("/search/", { 'model': model, 'start_date': start_date, 'end_date': end_date, 'page': num, 'size': 15 }, function (ret) {
+								if (ret == null) {
+									return;
+								}
+								$('#result_table_body').empty();
+								var tbody_str = '<tr>';
+								for (var i = 0; i < ret[1].length; i++) {
+									var tbody_str = "<tr>";
+									for (var j = 0; j < ret[1][i].length; j++) {
+										tbody_str += ('<td>' + ret[1][i][j] + '</td>');
+									};
+									tbody_str += "</tr>";
+									$('#result_table_body').append(tbody_str);
+								};
+							});
+						}
+					}
+				});
+			});
+		};
+		var socket;
+		function connect() {
+			var host = "ws://222.20.76.225:3368/";
+			//CEO IP
+			socket = new WebSocket(host);
+			try {
+				socket.onopen = function (msg) {
+					var model = $('#model_selector').val();
+					var start_date = $('#start_date').val();
+					var end_date = $('#end_date').val();
+					var msg = model + start_date + end_date;
+					socket.send(msg);
+					alert('已启动模型检测，请稍后查询！');
+				};
+				socket.onmessage = function (msg) {
+					if (typeof msg.data == "string") {
+						displayContent(msg.data);
+					}
+					else {
+
+					}
+				};
+				socket.onclose = function (msg) {
+
+				};
+			}
+			catch (ex) {
+				alert(ex);
+			}
+		}
+
+		window.onbeforeunload = function () {
+			try {
+				socket.close();
+				socket = null;
+			}
+			catch (ex) {
+
+			}
+		};
+	</script>
+</body>
+
+</html>

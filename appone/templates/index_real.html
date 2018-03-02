@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<link href="../static/css/index.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+	 crossorigin="anonymous">
+	<script src="http://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+	 crossorigin="anonymous">
+	</script>
+	<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+	 crossorigin="anonymous"></script>
+	<script src="https://cdn.bootcss.com/echarts/3.8.5/echarts.js"></script>
+	<script src="../static/js/three.min.js"></script>
+	<script src="../static/js/CanvasRenderer.js"></script>
+	<script src="../static/js/Detector.js"></script>
+	<script src="../static/js/stats.min.js"></script>
+	<script src="../static/js/OrbitControls.min.js"></script>
+</head>
+<script>
+	var socket;
+	var host;
+	var a = new Array(), b, i = 0;
+	var low_threshold = 1, high_threshold = 9;//记录上下阈值，后期由传过来的数据决定
+	var abnormal_count = 0, ratio = 0;//记录异常记录数目
+	function connect() {
+		var host = "ws://222.20.76.225:3368/";
+		socket = new WebSocket(host);
+		try {
+			socket.onopen = function (msg) {	
+				socket.send("start");
+			};
+			socket.onmessage = function (msg) {
+				if (typeof msg.data == "string") {
+					displayContent(msg.data);
+					i++;
+				}
+			};
+			socket.onclose = function (msg) {
+
+			};
+		}
+		catch (ex) {
+			log(ex);
+		}
+	}
+
+	window.onbeforeunload = function () {
+		try {
+			socket.close();
+			socket = null;
+		}
+		catch (ex) {
+
+		}
+	};
+
+	function $(id) { return document.getElementById(id); }
+
+	function displayContent(msg) {
+		a.push(msg);
+		b = a.pop();//lstm预测值
+		if (b < low_threshold || b > high_threshold) abnormal_count++;
+		ratio = abnormal_count / i;
+		//var strs= new Array(); //定义一数组
+		//strs=b.split("."); //字符分割 
+		console.log(ratio);
+		console.log(b);
+		localStorage.setItem('lstm', b);
+		localStorage.setItem('number', i);//数据编号
+		localStorage.setItem('abnormal_ratio', ratio);
+	}
+	function onkey(event) {
+		if (event.keyCode == 13) {
+			send();
+		}
+	}
+</script>
+
+<body onload="connect()">
+	<div class="canvasbox" id="canvasbox">
+	</div>
+	<div class="zuobiaoxi" style="position: absolute; top: 0px;"> 
+		<p>
+			<a href="{% url 'single' %}" style="z-index:0;font-size:1vw;">个体异常</a>
+		</p>
+		<p>
+			<a href="{% url 'relation' %}" style="z-index:0;font-size:1vw;">关联分析</a>
+		</p>
+		<p>
+			<a href="/addconfigure" style="z-index:0;font-size:1vw;">模型配置</a>
+		</p>
+		<p>
+			<a href="/history" style="z-index:0;font-size:1vw;">历史数据</a>
+		</p>
+	</div>
+	<div id="cover_relation" ondblclick="left_dblclick();" style="position: absolute; height: 50%; width: 20%; left: 0; top: 40%; z-index: 2;"></div>
+	<iframe id="frame_relation" src="{% url 'relation' %}" frameborder='no' style="position: absolute; height: 50%; width: 20%; left: 0; top: 40%; z-index:1;"></iframe>
+	<iframe id="frame_taiyangxi" src="{% url 'taiyangxi_small' %}" frameborder='no' style="position: absolute; height: 50%; width: 20%; left: 0; top: 40%; z-index:0;"></iframe>
+
+	<div class="zuobiaoxi2">
+		<div id="realtime" style="height: 300px; width: 300px;z-index:2;"></div>
+	</div>
+	<div id="cover_single" ondblclick="right_dblclick();" style="position: absolute; height: 50%; width: 20%; right: 0; top: 40%; z-index: 2;"></div>
+	<iframe id="frame_single" src="{% url 'single' %}" frameborder='no' style="position: absolute; height: 50%; width: 20%; right: 0; top: 40%; z-index: 1;"></iframe>
+	<iframe id="frame_taiyangxi2" src="{% url 'taiyangxi_small' %}" frameborder='no' style="position: absolute; height: 50%; width: 20%; right: 0; top: 40%; z-index: 0;"></iframe>
+
+	<script>
+		var flag_right = true;
+		var flag_left = true;
+		function right_dblclick() {
+			var con2 = document.getElementById('cover_single');
+			var con3 = document.getElementById('frame_single');
+			if (flag_right) {
+				flag_right = false;
+				con2.style.width = con3.style.width = '60%';
+				con2.style.height = con3.style.height = '100%';
+				con2.style.right = con3.style.right = '20%';
+				con2.style.top = con3.style.top = '0%';
+				con3.src = "{% url 'single' %}";
+			} else {
+				flag_right = true;
+				con2.style.width = con3.style.width = '20%';
+				con2.style.height = con3.style.height = '50%';
+				con2.style.right = con3.style.right = '0%';
+				con2.style.top = con3.style.top = '40%';
+				con3.src = "{% url 'single' %}";
+			}
+		}
+		function left_dblclick() {
+			var con2 = document.getElementById('cover_relation');
+			var con3 = document.getElementById('frame_relation');
+			if (flag_left) {
+				flag_left = false;
+				con2.style.width = con3.style.width = '60%';
+				con2.style.height = con3.style.height = '100%';
+				con2.style.left = con3.style.left = '20%';
+				con2.style.top = con3.style.top = '0%';
+				con3.src = "{% url 'relation' %}";
+			} else {
+				flag_left = true;
+				con2.style.width = con3.style.width = '20%';
+				con2.style.height = con3.style.height = '50%';
+				con2.style.left = con3.style.left = '0%';
+				con2.style.top = con3.style.top = '40%';
+				con3.src = "{% url 'relation' %}";
+			}
+		}
+	</script>
+
+	<script src="../static/js/taiyangxi.js"></script>
+	<script src="../static/js/realtime1.js"></script>
+</body>
+
+</html>

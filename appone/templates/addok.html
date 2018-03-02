@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>添加成功</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        a {
+            text-decoration: none;
+        }
+    </style>
+    <script>
+        var socket;
+        function connect() {
+            var host = "ws://222.20.76.225:3368/";
+            socket = new WebSocket(host);
+            try {
+
+                socket.onopen = function (msg) {
+                    alert("连接成功！");
+                    var ms = localStorage.getItem('uid');
+                    socket.send(ms);
+                    alert(ms);
+                };
+                socket.onmessage = function (msg) {
+                    if (typeof msg.data == "string") {
+                    }
+                    else {
+                        alert("非文本消息");
+                    }
+                };
+                socket.onclose = function (msg) {  };
+            }
+            catch (ex) {
+                log(ex);
+            }
+
+        }
+
+        window.onbeforeunload = function () {
+            try {
+                socket.close();
+                socket = null;
+            }
+            catch (ex) {
+            }
+        };
+
+        function $(id) { return document.getElementById(id); }
+
+        function onkey(event) { if (event.keyCode == 13) { send(); } }
+    </script>
+</head>
+
+<body onload="connect()" style="background-color:#ECFFFF">
+    <div>
+        <p>模型配置成功</p>
+        <p>
+            <a href="/addconfigure/">继续添加</a>
+        </p>
+        <p>
+            <a href="/main">开始检测</a>
+        </p>
+    </div>
+</body>
+
+</html>
