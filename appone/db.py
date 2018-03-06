@@ -7,15 +7,15 @@ def connect():
     global connection
     global cursor
     if connection:
-        return "duplicate connect"
+        return 1
     try:
         connection = cx_Oracle.connect("system/123456@222.20.73.170/orcl")
     except cx_Oracle.Error as e:
         connection = None
-        return "connect error"
+        return -1
     else:
         cursor = connection.cursor()
-        return "connect success"
+        return 0
 
 def disconnect():
     global connection
@@ -24,9 +24,9 @@ def disconnect():
         cursor.close()
         connection.close()
         connection = None
-        return "disconnect success"
+        return 0
     else:
-        return "disconnect duplicate"
+        return 1
     
 def executeSQL(sql):
     cursor.execute(sql)

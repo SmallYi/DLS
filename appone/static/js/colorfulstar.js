@@ -4,6 +4,113 @@ var planeSize = 1245000;
 var totalObjects = 50000;
 var frame = 0;
 var i, j, datax = [10000, 10100, 10200, 10300, 10400, 10500, 10600, 10700, 10800, 10900], datay = [], particles = [], point;
+
+$(document).ready(function(){
+    $.getJSON('/recordnumber/', function (ret) {
+        var len_WCASZ0627345 = 0;
+        for (var i = 0; i < 10; i++) {
+            len_WCASZ0627345 += parseInt(ret[i]);
+        };
+    
+        for (var j = 0; j < 10; j++) {
+            
+            var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
+            var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
+            var star = new THREE.Mesh(dian_geometry, dian_material);
+            scene.add(star);
+            star.position.x = -(10000 + 2000 * j);
+            star.position.y = (ret[j] / len_WCASZ0627345) * 20000 + 10000;//console.log(ret[j] / len_WCASZ0627345);
+            //maybe sth worry here
+            star.position.z = 500000;
+        }
+    
+        var len_Z1D3XBOA = 0;
+        for (var i = 10; i < 20; i++) {
+            len_Z1D3XBOA += parseInt(ret[i]);//console.log(len_Z1D3XBOA);
+        };
+    
+        for (var j = 10; j < 20; j++) {
+            
+            var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
+            var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
+            var star = new THREE.Mesh(dian_geometry, dian_material);
+            scene.add(star);
+            star.position.x = 10000 + 2000 * (j-10);
+            star.position.y = (ret[j] / len_Z1D3XBOA) * 20000 + 10000;//console.log(ret[j]/len_Z1D3XBOA);
+            //maybe sth worry here
+            star.position.z = 450000;
+        }
+    
+        var len_5VM45975 = 0;
+        for (var i = 20; i < 30; i++) {
+            len_5VM45975 += parseInt(ret[i][0]);
+        };
+    
+        for (var j = 20; j < 30; j++) {
+            
+            var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
+            var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
+            var star = new THREE.Mesh(dian_geometry, dian_material);
+            scene.add(star);
+            star.position.x =-( 10000 + 2000 * (j-20));
+            star.position.y = (ret[j][0] / len_5VM45975) * 20000 + 10000;//console.log(ret[j][0]/len_WDWCASZ0627345);
+            //maybe sth worry here
+            star.position.z = 400000;
+        }
+    
+        var len_Z1D3XB0A = 0;
+        for (var i = 30; i < 40; i++) {
+            len_Z1D3XB0A += parseInt(ret[i][0]);
+        };
+    
+        for (var j = 30; j < 40; j++) {
+            
+            var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
+            var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
+            var star = new THREE.Mesh(dian_geometry, dian_material);
+            scene.add(star);
+            star.position.x = 10000 + 2000 * (j-30);
+            star.position.y = (ret[j][0] / len_Z1D3XB0A) * 20000 + 10000;//console.log(ret[j][0]/len_Z1D3XB0A);
+            //maybe sth worry here
+            star.position.z = 350000;
+        }
+    
+        var len_Z4YAZWRB = 0;
+        for (var i = 40; i < 50; i++) {
+            len_Z4YAZWRB += parseInt(ret[i][0]);
+        };
+    
+        for (var j = 40; j < 50; j++) {
+            
+            var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
+            var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
+            var star = new THREE.Mesh(dian_geometry, dian_material);
+            scene.add(star);
+            star.position.x = -(10000 + 2000 * (j-40));
+            star.position.y = (ret[j][0] / len_Z4YAZWRB) * 20000 + 10000;//console.log(ret[j][0]/len_Z4YAZWRB);
+            //maybe sth worry here
+            star.position.z = 300000;
+        }
+
+        var len_Z4YAZVXM = 0;
+        for (var i = 50; i < 60; i++) {
+            len_Z4YAZVXM += parseInt(ret[i][0]);
+        };
+    
+        for (var j = 50; j < 60; j++) {
+            
+            var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
+            var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
+            var star = new THREE.Mesh(dian_geometry, dian_material);
+            scene.add(star);
+            star.position.x = 10000 + 2000 * (j-50);
+            star.position.y = (ret[j][0] / len_Z4YAZVXM) * 20000 + 10000;
+            //maybe sth worry here
+            star.position.z = 250000;
+        }
+    })
+    });
+    
 var container = document.createElement('div');
 document.body.appendChild(container);
 
@@ -99,46 +206,6 @@ for (i = 0; i < 100; i++) {
     star.position.z = Math.random() * planeSize - (planeSize * .5);
 }
 
-
-//画散点图
-var charts = new THREE.Geometry();
-for (i = 1; i < 100; i++) {
-    var vertex = new THREE.Vector3();//返回沿当前三维线段方向的任意向量
-    vertex.x = i * 100 + 10000;
-    j = i * 100 + 10000;
-    vertex.y = Math.abs(10000 * Math.sin(1000 * j + 100)) + 10000;
-    vertex.z = 450000;
-    charts.vertices.push(vertex);
-}
-for (i = 0; i < 100; i++) {
-    //datax[i]=10000+i*100;
-    var vertex = new THREE.Vector3();
-    //vertex.x = datax[i];
-    vertex.x = i * 100 + 10000;
-    vertex.y = i * 100 + 10000;
-    vertex.z = 350000;
-    charts.vertices.push(vertex);
-}
-for (i = 1; i < 100; i++) {
-    var vertex = new THREE.Vector3();
-    vertex.x = -i * 100 - 10000;
-    j = i * 100 + 10000;
-    vertex.y = Math.abs(10000 * Math.sin(1000 * j + 100)) + 10000;
-    vertex.z = 500000;
-    charts.vertices.push(vertex);
-}
-for (i = 0; i < 100; i++) {
-    //datax[i]=10000+i*100;
-    var vertex = new THREE.Vector3();//返回沿当前三维线段方向的任意向量
-    //vertex.x = datax[i];
-    vertex.x = -i * 100 - 10000;
-    vertex.y = i * 100 + 10000;
-    vertex.z = 400000;
-    charts.vertices.push(vertex);
-}
-var chart_material = new THREE.ParticleBasicMaterial({ size: 1 });
-var chart_particles = new THREE.ParticleSystem(charts, material);
-scene.add(chart_particles);
 //画网格 
 function drawGridRight(x1, x2, y1, y2, ystart, xstart, z, interval, linenum) {
     var material_r2 = new THREE.LineBasicMaterial({ color: 0xffffff });
@@ -194,6 +261,49 @@ drawGridRight(10000, 30000, 10000, 30000, 10000, 10000, -50000, 2000, 10);
 drawGridLeft(-10000, -30000, 10000, 30000, 10000, -10000, 0, 2000, 10);
 drawGridLeft(-10000, -30000, 10000, 30000, 10000, -10000, 100000, 2000, 10);
 
+//添加标题
+function titleRight(username,z) {
+    var material = new THREE.MeshPhongMaterial({
+        color: 0x66ccff,
+        specular: 0x66ccff,
+        shininess: 0
+    });
+    var loader = new THREE.FontLoader();
+    loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) {
+        var mesh = new THREE.Mesh(new THREE.TextGeometry(username, {
+            font: font,
+            size: 1000,
+            height: 1000
+        }), material);
+        mesh.position.set(16000,32000, z);
+        scene.add(mesh);
+    });
+}
+function titleLeft(username,z) {
+    var material = new THREE.MeshPhongMaterial({
+        color: 0x66ccff,
+        specular: 0x66ccff,
+        shininess: 0
+    });
+    var loader = new THREE.FontLoader();
+    loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) {
+        var mesh = new THREE.Mesh(new THREE.TextGeometry(username, {
+            font: font,
+            size: 1000,
+            height: 1000
+        }), material);
+        mesh.position.set(-24000,32000, z);
+        scene.add(mesh);
+    });
+}
+titleLeft('WD-WCASZ0627345',500000);
+titleRight('S2A58BGQ',450000);
+titleLeft('5VM45975',400000);
+titleRight('Z1D3XB0A',350000);
+titleLeft('Z4YAZWRB',300000);
+titleRight('Z4YAZVXM',250000);
+
+
 //添加坐标变量
 function axisflag(x1, y1, x2, y2, z) {
     var material = new THREE.MeshPhongMaterial({
@@ -203,14 +313,14 @@ function axisflag(x1, y1, x2, y2, z) {
     });
     var loader = new THREE.FontLoader();
     loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) {
-        var mesh = new THREE.Mesh(new THREE.TextGeometry('time', {
+        var mesh = new THREE.Mesh(new THREE.TextGeometry('date', {
             font: font,
             size: 800,
             height: 800
         }), material);
         mesh.position.set(x1, y1, z);
         scene.add(mesh);
-        var mesh = new THREE.Mesh(new THREE.TextGeometry('record', {
+        var mesh = new THREE.Mesh(new THREE.TextGeometry('ratio', {
             font: font,
             size: 800,
             height: 800
@@ -223,8 +333,14 @@ axisflag(32000, 8000, 6000, 32000, 450000);
 axisflag(32000, 8000, 6000, 32000, 350000);
 axisflag(-32000, 8000, -6000, 32000, 500000);
 axisflag(-32000, 8000, -6000, 32000, 400000);
-
-
+axisflag(32000, 8000, 6000, 32000, 250000);
+axisflag(32000, 8000, 6000, 32000, 150000);
+axisflag(-32000, 8000, -6000, 32000, 300000);
+axisflag(-32000, 8000, -6000, 32000, 200000);
+axisflag(32000, 8000, 6000, 32000, 50000);
+axisflag(32000, 8000, 6000, 32000, -50000);
+axisflag(-32000, 8000, -6000, 32000, 100000);
+axisflag(-32000, 8000, -6000, 32000, 0);
 
 //添加坐标刻度
 //ystart,xstart画平行y,z轴的刻度时的起始y,x坐标
@@ -241,7 +357,7 @@ function axisvalueRight(xstart, ystart, interval, a, b, c) {
     loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) {
         for (i = 0; i < 10; i++) {
             var x = xstart + interval * i;
-            var value = i / 10;
+            var value = i ;
             var meshtextx = new THREE.Mesh(new THREE.TextGeometry(value, {
                 font: font,
                 size: 800,
@@ -276,7 +392,7 @@ function axisvalueLeft(xstart, ystart, interval, a, b, c) {
     loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) {
         for (i = 0; i < 10; i++) {
             var x = -xstart - interval * i;
-            var value = i / 10;
+            var value = i ;
             var meshtextx = new THREE.Mesh(new THREE.TextGeometry(value, {
                 font: font,
                 size: 800,
@@ -304,7 +420,14 @@ axisvalueRight(10000, 10000, 2000, 8000, 8000, 450000);
 axisvalueRight(10000, 10000, 2000, 8000, 8000, 350000);
 axisvalueLeft(10000, 10000, 2000, -8000, 8000, 400000);
 axisvalueLeft(10000, 10000, 2000, -8000, 8000, 500000);
-
+axisvalueRight(10000, 10000, 2000, 8000, 8000, 250000);
+axisvalueRight(10000, 10000, 2000, 8000, 8000, 150000);
+axisvalueLeft(10000, 10000, 2000, -8000, 8000, 200000);
+axisvalueLeft(10000, 10000, 2000, -8000, 8000, 300000);
+axisvalueRight(10000, 10000, 2000, 8000, 8000, 50000);
+axisvalueRight(10000, 10000, 2000, 8000, 8000, -50000);
+axisvalueLeft(10000, 10000, 2000, -8000, 8000, 100000);
+axisvalueLeft(10000, 10000, 2000, -8000, 8000, 0);
 
 //画坐标方向
 function arrow(x1, y1, x2, y2, x3, y3, z, length) {

@@ -109,9 +109,9 @@
 					</div>
 				</form>
 				<div class="col-sm-offset-2 col-sm-4">
-					<button class="btn btn-success" onclick="connect();">
+					<!-- <button class="btn btn-success" onclick="connect();">
 						Detect
-					</button>
+					</button> -->
 				</div>
 				<div class="col-sm-6">
 					<button class="btn btn-primary" onclick="search();">
@@ -282,46 +282,46 @@
 				});
 			});
 		};
-		var socket;
-		function connect() {
-			var host = "ws://222.20.76.225:3368/";
-			//CEO IP
-			socket = new WebSocket(host);
-			try {
-				socket.onopen = function (msg) {
-					var model = $('#model_selector').val();
-					var start_date = $('#start_date').val();
-					var end_date = $('#end_date').val();
-					var msg = model + start_date + end_date;
-					socket.send(msg);
-					alert('已启动模型检测，请稍后查询！');
-				};
-				socket.onmessage = function (msg) {
-					if (typeof msg.data == "string") {
-						displayContent(msg.data);
-					}
-					else {
+		// var socket;
+		// function connect() {
+		// 	var host = "ws://222.20.76.225:3368/";
+		// 	//CEO IP
+		// 	socket = new WebSocket(host);
+		// 	try {
+		// 		socket.onopen = function (msg) {
+		// 			var model = $('#model_selector').val();
+		// 			var start_date = $('#start_date').val();
+		// 			var end_date = $('#end_date').val();
+		// 			var msg = model + '\r\n' + start_date + '\r\n' + end_date + '\r\n\r\n';
+		// 			socket.send(msg);
+		// 			alert('已启动模型检测，请稍后查询！');
+		// 		};
+		// 		socket.onmessage = function (msg) {
+		// 			if (typeof msg.data == "string") {
+		// 				displayContent(msg.data);
+		// 			}
+		// 			else {
 
-					}
-				};
-				socket.onclose = function (msg) {
+		// 			}
+		// 		};
+		// 		socket.onclose = function (msg) {
 
-				};
-			}
-			catch (ex) {
-				alert(ex);
-			}
-		}
+		// 		};
+		// 	}
+		// 	catch (ex) {
+		// 		alert(ex);
+		// 	}
+		// }
 
-		window.onbeforeunload = function () {
-			try {
-				socket.close();
-				socket = null;
-			}
-			catch (ex) {
+		// window.onbeforeunload = function () {
+		// 	try {
+		// 		socket.close();
+		// 		socket = null;
+		// 	}
+		// 	catch (ex) {
 
-			}
-		};
+		// 	}
+		// };
 	</script>
 </body>
 

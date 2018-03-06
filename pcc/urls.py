@@ -25,6 +25,7 @@ urlpatterns = [
 	url(r'^index$', appone_views.index),
     url(r'^admin/', admin.site.urls),
 	url(r'^prediction/$', appone_views.prediction, name='prediction'),
+	url(r'^recordnumber/$', appone_views.recordnumber, name='recordnumber'),
 	url(r'^addconfiguretodatabase/', appone_views.addconfiguretodatabase),
 	url(r'^addok/', appone_views.addok),
 	url(r'^addconfigure/', appone_views.addconfigure),

@@ -1,18 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
+
 <head>
-    <meta charset="UTF-8">
-    <title>添加成功</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-        }
-        a{
-            text-decoration:none;
-        }
-    </style>
-		<script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>模型添加</title>
+
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+    <script src="http://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+        crossorigin="anonymous">
+        </script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+    <script>
         var socket;
         function connect() {
             var host = "ws://222.20.76.225:3368/";
@@ -26,20 +28,41 @@
                 };
                 socket.onmessage = function (msg) {
                     if (typeof msg.data == "string") {
+                        ReceiveProgressData(msg.data);
+                        i++;
                     }
                     else {
                         alert("非文本消息");
                     }
                 };
-                socket.onclose = function (msg) { 
-                     };
+                socket.onclose = function (msg) {
+                };
             }
             catch (ex) {
                 log(ex);
             }
-            
+
         }
 
+        //获取进度条数据
+        function ReceiveProgressData(msg) {
+            a.push(msg);
+            b = a.pop();//取最新的一条消息
+            var obj = JSON.parse(b);
+            if (obj.type == 'progress') {
+                if (obj.data == '-1') {
+                    $("#prog-b").animate({
+                        width: '0%'
+                    });
+                    $("#dcp").text(obj.description);
+                } else {
+                    $("#prog-b").animate({
+                        width: obj.data + '%'
+                    });
+                    $("#dcp").text(obj.description);
+                }
+            }
+        }
         window.onbeforeunload = function () {
             try {
                 socket.close();
@@ -54,11 +77,54 @@
         function onkey(event) { if (event.keyCode == 13) { send(); } }
     </script>
 </head>
-<body onload="connect()" style="background-color:#ECFFFF">
-    <div>
-        <p>模型配置成功</p>
-        <p><a href="/addconfigure/">继续添加</a></p>
-		<p><a href="/main/">开始检测</a></p> 
+
+<body onload="connect()" style="background-image:url('../static/img/bg_galaxy.jpg');">
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="">
+                    <span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>
+                </a>
+                <p class="navbar-text">模型配置</p>
+            </div>
+            <a href="/main">
+                <button class="btn btn-default navbar-btn">
+                    首页
+                </button>
+            </a>
+            <a href="/single">
+                <button class="btn btn-default navbar-btn">
+                    个体异常
+                </button>
+            </a>
+            <a href="/relation">
+                <button class="btn btn-default navbar-btn">
+                    关联分析
+                </button>
+            </a>
+            <a href="/history">
+                <button class="btn btn-default navbar-btn">
+                    历史数据
+                </button>
+            </a>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3" style="height: 500px">
+                <div id="prog" class="col-md-12 progress" style="position: absolute; bottom: 0;">
+                    <div id="prog-b" class="progress-bar" role="progressbar" style="width: 0%;">
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-md-offset-3">
+                <div class="col-md-12">
+                    <p id="dcp" style="text-align:center; font-size:2em; color:azure">模型添加中</p>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
+
 </html>

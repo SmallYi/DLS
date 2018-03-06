@@ -734,7 +734,8 @@
 				var currObj = intersects[0].object;
 				//console.log(currObj);
 				if (currObj.name == "taiyang") {
-					
+					ctx_sun.fillText('暂无数据！', 0, 100);
+					sprite_sun.material.map.needsUpdate = true;
 					showInfo(sprite_sun);
 				}
 				if (currObj.name == "huo") {

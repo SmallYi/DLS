@@ -8,8 +8,8 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from appone.models import configure_lstm
-from appone.models import configure_relation
+# from appone.models import configure_lstm
+# from appone.models import configure_relation
 import appone.db
 	
 def prediction(request):
@@ -57,6 +57,79 @@ def prediction(request):
                                             ''' % (one_month_before.strftime('%Y-%m-%d'), now.strftime('%Y-%m-%d'), 0.1*x, 0.1*(x+1))))                                                                                       
     return JsonResponse(ret_list, safe=False)
 
+def recordnumber(request):
+    now = datetime.now()
+    one_month_before = now - timedelta(days = 500)
+    ret_list=[]
+    appone.db.connect()
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170122 WHERE AGENT_ID = 'WD-WCASZ0627345' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170123 WHERE AGENT_ID = 'WD-WCASZ0627345' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170124 WHERE AGENT_ID = 'WD-WCASZ0627345' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170206 WHERE AGENT_ID = 'WD-WCASZ0627345' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170207 WHERE AGENT_ID = 'WD-WCASZ0627345' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170208 WHERE AGENT_ID = 'WD-WCASZ0627345' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170209 WHERE AGENT_ID = 'WD-WCASZ0627345' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170210 WHERE AGENT_ID = 'WD-WCASZ0627345' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170211 WHERE AGENT_ID = 'WD-WCASZ0627345' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170212 WHERE AGENT_ID = 'WD-WCASZ0627345' "))
+
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170122 WHERE AGENT_ID = 'S2A58BGQ' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170123 WHERE AGENT_ID = 'S2A58BGQ' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170124 WHERE AGENT_ID = 'S2A58BGQ' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170206 WHERE AGENT_ID = 'S2A58BGQ' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170207 WHERE AGENT_ID = 'S2A58BGQ' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170208 WHERE AGENT_ID = 'S2A58BGQ' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170209 WHERE AGENT_ID = 'S2A58BGQ' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170210 WHERE AGENT_ID = 'S2A58BGQ' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170211 WHERE AGENT_ID = 'S2A58BGQ' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170212 WHERE AGENT_ID = 'S2A58BGQ' "))  
+
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170122 WHERE AGENT_ID = '5VM45975' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170123 WHERE AGENT_ID = '5VM45975' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170124 WHERE AGENT_ID = '5VM45975' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170206 WHERE AGENT_ID = '5VM45975' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170207 WHERE AGENT_ID = '5VM45975' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170208 WHERE AGENT_ID = '5VM45975' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170209 WHERE AGENT_ID = '5VM45975' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170210 WHERE AGENT_ID = '5VM45975' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170211 WHERE AGENT_ID = '5VM45975' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170212 WHERE AGENT_ID = '5VM45975' "))  
+
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170122 WHERE AGENT_ID = 'Z1D3XB0A' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170123 WHERE AGENT_ID = 'Z1D3XB0A' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170124 WHERE AGENT_ID = 'Z1D3XB0A' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170206 WHERE AGENT_ID = 'Z1D3XB0A' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170207 WHERE AGENT_ID = 'Z1D3XB0A' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170208 WHERE AGENT_ID = 'Z1D3XB0A' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170209 WHERE AGENT_ID = 'Z1D3XB0A' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170210 WHERE AGENT_ID = 'Z1D3XB0A' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170211 WHERE AGENT_ID = 'Z1D3XB0A' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170212 WHERE AGENT_ID = 'Z1D3XB0A' "))   
+
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170122 WHERE AGENT_ID = 'Z4YAZWRB' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170123 WHERE AGENT_ID = 'Z4YAZWRB' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170124 WHERE AGENT_ID = 'Z4YAZWRB' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170206 WHERE AGENT_ID = 'Z4YAZWRB' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170207 WHERE AGENT_ID = 'Z4YAZWRB' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170208 WHERE AGENT_ID = 'Z4YAZWRB' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170209 WHERE AGENT_ID = 'Z4YAZWRB' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170210 WHERE AGENT_ID = 'Z4YAZWRB' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170211 WHERE AGENT_ID = 'Z4YAZWRB' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170212 WHERE AGENT_ID = 'Z4YAZWRB' "))   
+
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170122 WHERE AGENT_ID = 'Z4YAZVXM' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170123 WHERE AGENT_ID = 'Z4YAZVXM' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170124 WHERE AGENT_ID = 'Z4YAZVXM' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170206 WHERE AGENT_ID = 'Z4YAZVXM' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170207 WHERE AGENT_ID = 'Z4YAZVXM' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170208 WHERE AGENT_ID = 'Z4YAZVXM' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170209 WHERE AGENT_ID = 'Z4YAZVXM' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170210 WHERE AGENT_ID = 'Z4YAZVXM' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170211 WHERE AGENT_ID = 'Z4YAZVXM' "))
+    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170212 WHERE AGENT_ID = 'Z4YAZVXM' "))   
+                                                                                    
+    return JsonResponse(ret_list, safe=False)
+
 def addconfiguretodatabase(request):
     if request.method == "POST":
         base_line = request.POST["base"]
@@ -64,28 +137,64 @@ def addconfiguretodatabase(request):
         base_lineunit = request.POST["baseunit"]
         model_name = request.POST["model"]
         check_box_list = request.POST.getlist('check_box_list') 
-
-    lstm = configure_lstm()
-    lstm.modelname = model_name
-    lstm.baseline = base_line
-    lstm.baselinevalue = base_linevalue
-    lstm.baselineunit = base_lineunit
-    lstm.train = check_box_list
-    lstm.flag = "0"
-    lstm.save()
     
-    table_name = model_name + '_' + base_linevalue + '_' + base_lineunit
-    table_name.replace('-', '_')
+    if len(check_box_list) == 2:
+        fields_study = check_box_list[0] + ',' + check_box_list[1]
+    else:
+        fields_study = ''
+    
+    if base_lineunit == 'single':
+        baseline_values = base_linevalue
+    else:
+        baseline_values = 'all'
+    
+    table_name = 'agentid' + '_' + base_lineunit + '_' + base_linevalue + '_' + model_name
+    table_name.replace('-', '')
+
     appone.db.connect()
     appone.db.executeSQL('''
                             CREATE TABLE %s_RESULT 
                             (	
                                 DATA VARCHAR2(1024 BYTE) PRIMARY KEY, 
-	                            PREDICTION NUMBER(20,0), 
+	                            PREDICTION NUMBER(10,5), 
 	                            ABNORMAL NUMBER(1,0), 
 	                            INSERT_TIME DATE, 
                             )
                         ''' % table_name)
+    
+    appone.db.connect()
+    appone.db.executeSQL('''
+                            INSERT INTO MODEL_PARAMETER 
+                            (	
+                                MODEL_NAME, 
+	                            FIELDS_STUDY, 
+	                            FIELD_BASELINE, 
+	                            BASELINE_VALUES, 
+                                BASELINE_UNIT,
+                                RESULT_TABLENAME,
+                                INSERT_TIME,
+                                DETECT_FLAG
+                            ) VALUSES
+                            (
+                                '%s',
+                                '%s',
+                                '%s',
+                                '%s',
+                                '%s',
+                                '%s',
+                                sysdate,
+                                0
+                            )
+                        ''' % (table_name, fields_study, base_line, baseline_values, base_lineunit, table_name + '_RESULT'))
+
+    # lstm = configure_lstm()
+    # lstm.modelname = model_name
+    # lstm.baseline = base_line
+    # lstm.baselinevalue = base_linevalue
+    # lstm.baselineunit = base_lineunit
+    # lstm.train = check_box_list
+    # lstm.flag = "0"
+    # lstm.save()
 
     return HttpResponseRedirect('/addok/')
 
@@ -97,20 +206,28 @@ def addconfiguretodatabaseRelation(request):
         min_confidence = request.POST["min_confidence"]
         model_name =request.POST["model2"]
 
-    re = configure_relation()
-    re.modelname = model_name
-    re.operationtype = operation_type
-    re.username = user_name
-    re.minsupport = min_support
-    re.minconfidence = min_confidence
-    re.flag = '0'
-    re.save()
+    # re = configure_relation()
+    # re.modelname = model_name
+    # re.operationtype = operation_type
+    # re.username = user_name
+    # re.minsupport = min_support
+    # re.minconfidence = min_confidence
+    # re.flag = '0'
+    # re.save()
 
-    if(operation_type == 'PeopleOperation'):
-        table_name = operation_type + '_' + user_name + '_' + model_name
+    if operation_type == 'PeopleOperation':
+        model_type = 'PO'
+        agent_id = user_name
+        table_name = 'PO' + '_' + user_name + '_' + min_support + '_' + min_confidence + '_' + model_name
+    elif operation_type == 'OperationOperation':
+        model_type = 'OO'
+        agent_id =''
+        table_name = 'OO' + '_' + min_support + '_' + min_confidence + '_' + model_name
     else:
-        table_name = operation_type + '_' + model_name
-    table_name.replace('-', '_')
+        model_type = 'PP'
+        agent_id =''
+        table_name = 'PP' + '_' + min_support + '_' + min_confidence + '_' + model_name
+
     appone.db.connect()
     appone.db.executeSQL('''
                             CREATE TABLE %s_RESULT 
@@ -122,9 +239,33 @@ def addconfiguretodatabaseRelation(request):
                             )
                         ''' % table_name)
 
+    appone.db.connect()
+    appone.db.executeSQL('''
+                            INSERT INTO MODEL_PARAMETER 
+                            (	
+                                FPMODELNAME, 
+	                            MINSUPPORT, 
+	                            MINCONFIDENCE, 
+	                            INPUTFILE, 
+                                OUTPUTTABLE,
+                                INSERT_TIME,
+                                MODEL_TYPE,
+                                AGENT_ID
+                            ) VALUSES
+                            (
+                                '%s',
+                                %f,
+                                %f,
+                                'fpgrowth/%s.csv',
+                                '%s',
+                                sysdate,
+                                '%s',
+                                '%s'
+                            )
+                        ''' % (table_name, float(min_support), float(min_confidence), table_name, table_name + '_RESULT', model_type, agent_id))
+
     return HttpResponseRedirect('/addok2/')
 
-# 返回页面addok
 def addok(request):
     return render(request, 'addok.html')
 
