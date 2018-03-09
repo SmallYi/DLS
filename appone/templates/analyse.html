@@ -5,7 +5,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>历史数据查询</title>
+	<title>历史数据分析</title>
 
 	<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
 	 crossorigin="anonymous">
@@ -26,7 +26,7 @@
 				<a class="navbar-brand" href="">
 					<span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>
 				</a>
-				<p class="navbar-text">历史数据查询</p>
+				<p class="navbar-text">历史数据分析</p>
 			</div>
 			<a href="/main">
 				<button class="btn btn-default navbar-btn">
@@ -50,11 +50,12 @@
 			</a>
 		</div>
 	</nav>
-	<div id="info_chart" style="position: absolute; left: 0px; top: 450px; z-index: 1; height: 400px; width: 400px"></div>
+	<div id="info_chart1" style="position: absolute; left: 20px; top: 120px; z-index: 1; height: 400px; width: 400px"></div>
+	<div id="info_chart2" style="position: absolute; left: 20px; top: 500px; z-index: 1; height: 400px; width: 400px"></div>
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-md-2" style="height: 400px;">
-				<form class="form-horizontal">
+				<!-- <form class="form-horizontal">
 					<div class="form-group">
 						<label for="model_type" class="col-sm-4 control-label">
 							<p style="color:azure">模型类型</p>
@@ -79,8 +80,8 @@
 							</select>
 						</div>
 					</div>
-				</form>
-				<form class="form-horizontal">
+				</form> -->
+				<!-- <form class="form-horizontal">
 					<div class="form-group">
 						<label for="model_selector" class="col-sm-4 control-label">
 							<p style="color:azure">模型</p>
@@ -89,8 +90,8 @@
 							<select class="form-control" id="model_selector"></select>
 						</div>
 					</div>
-				</form>
-				<form class="form-horizontal">
+				</form> -->
+				<!-- <form class="form-horizontal">
 					<div class="form-group">
 						<label for="start_date" class="col-sm-4 control-label">
 							<p style="color:azure">起始日期</p>
@@ -109,15 +110,20 @@
 							<input type="date" class="form-control" id="end_date"></input>
 						</div>
 					</div>
-				</form>
-				<div class="col-sm-offset-2 col-sm-4">
-					<!-- <button class="btn btn-success" onclick="connect();">
+				</form> -->
+				<!-- <div class="col-sm-offset-2 col-sm-4">
+					<button class="btn btn-success" onclick="connect();">
 						Detect
-					</button> -->
+					</button>
 				</div>
 				<div class="col-sm-6">
 					<button class="btn btn-primary" onclick="search();">
 						Search
+					</button>
+				</div> -->
+				<div class="col-sm-12">
+					<button class="btn btn-info" onclick="chart_toggle();">
+						显示/隐藏图表
 					</button>
 				</div>
 			</div>
@@ -135,34 +141,153 @@
 	</div>
 	<script>
 
-		$(function () {
-			function addzero(num) {
-				if (num > 0 && num < 10) {
-					return '0' + num;
-				}
-				return num;
-			}
-			var now_time = new Date;
-			var now_time_str = [now_time.getFullYear(), addzero(now_time.getMonth() + 1), addzero(now_time.getDate())].join('-');
-			now_time.setMonth(now_time.getMonth() - 1);
-			var one_month_before = [now_time.getFullYear(), addzero(now_time.getMonth() + 1), addzero(now_time.getDate())].join('-');
-			$('#start_date').attr('value', one_month_before);
-			$('#end_date').attr('value', now_time_str);
-		});
+		// $(function () {
+		// 	function addzero(num) {
+		// 		if (num > 0 && num < 10) {
+		// 			return '0' + num;
+		// 		}
+		// 		return num;
+		// 	}
+		// 	var now_time = new Date;
+		// 	var now_time_str = [now_time.getFullYear(), addzero(now_time.getMonth() + 1), addzero(now_time.getDate())].join('-');
+		// 	now_time.setMonth(now_time.getMonth() - 1);
+		// 	var one_month_before = [now_time.getFullYear(), addzero(now_time.getMonth() + 1), addzero(now_time.getDate())].join('-');
+		// 	$('#start_date').attr('value', one_month_before);
+		// 	$('#end_date').attr('value', now_time_str);
+		// });
 
-		function type_select() {
-			if ($('#model_type').val() == 'MODEL_PARAMETER') {
-				$('#baseline').empty();
-				$('#baseline').append('<option value="single">个体异常</option>');
-				$('#baseline').append('<option value="all">整体异常</option>');
-			}
-			if ($('#model_type').val() == 'FPGROWTH_PARAMETER') {
-				$('#baseline').empty();
-				$('#baseline').append('<option value="PO">人与操作</option>');
-				$('#baseline').append('<option value="OO">操作与操作</option>');
-				$('#baseline').append('<option value="PP">人与人</option>');
-			}
+		var myChart1 = echarts.init(document.getElementById('info_chart1'));
+		option1 = {
+			title: {
+				text: "test",
+				left: '40%',
+				top: '5%',
+				textStyle: {
+					color: '#F0FFFF'
+				}
+			},
+			xAxis: {
+				type: 'category',
+				nameTextStyle: {
+					color: '#F0FFFF'
+				},
+				axisLine: {
+					lineStyle: {
+						color: '#F0FFFF'
+					}
+				},
+				axisTick: {
+					lineStyle: {
+						color: '#F0FFFF'
+					}
+				},
+				data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+			},
+			yAxis: {
+				type: 'value',
+				nameTextStyle: {
+					color: '#F0FFFF'
+				},
+				axisLine: {
+					lineStyle: {
+						color: '#F0FFFF'
+					}
+				},
+				axisTick: {
+					lineStyle: {
+						color: '#F0FFFF'
+					}
+				}
+			},
+			series: [{
+				data: [120, 200, 150, 80, 70, 110, 130],
+				type: 'bar'
+			}]
 		};
+		myChart1.setOption(option1);
+
+		var myChart2 = echarts.init(document.getElementById('info_chart2'));
+		option2 = {
+			title: {
+				text: "test",
+				left: '40%',
+				top: '5%',
+				textStyle: {
+					color: '#F0FFFF'
+				}
+			},
+			xAxis: {
+				nameTextStyle: {
+					color: '#F0FFFF'
+				},
+				axisLine: {
+					lineStyle: {
+						color: '#F0FFFF'
+					}
+				},
+				axisTick: {
+					lineStyle: {
+						color: '#F0FFFF'
+					}
+				}
+			},
+			yAxis: {
+				nameTextStyle: {
+					color: '#F0FFFF'
+				},
+				axisLine: {
+					lineStyle: {
+						color: '#F0FFFF'
+					}
+				},
+				axisTick: {
+					lineStyle: {
+						color: '#F0FFFF'
+					}
+				}
+			},
+			series: [{
+				symbolSize: 20,
+				data: [
+					[10.0, 8.04],
+					[8.0, 6.95],
+					[13.0, 7.58],
+					[9.0, 8.81],
+					[11.0, 8.33],
+					[14.0, 9.96],
+					[6.0, 7.24],
+					[4.0, 4.26],
+					[12.0, 10.84],
+					[7.0, 4.82],
+					[5.0, 5.68]
+				],
+				type: 'scatter'
+			}]
+		};
+		myChart2.setOption(option2);
+
+		function chart_toggle() {
+			$('#info_chart1').animate({
+				width: 'toggle'
+			})
+			$('#info_chart2').animate({
+				width: 'toggle'
+			})
+		}
+
+		// function type_select() {
+		// 	if ($('#model_type').val() == 'MODEL_PARAMETER') {
+		// 		$('#baseline').empty();
+		// 		$('#baseline').append('<option value="single">个体异常</option>');
+		// 		$('#baseline').append('<option value="all">整体异常</option>');
+		// 	}
+		// 	if ($('#model_type').val() == 'FPGROWTH_PARAMETER') {
+		// 		$('#baseline').empty();
+		// 		$('#baseline').append('<option value="PO">人与操作</option>');
+		// 		$('#baseline').append('<option value="OO">操作与操作</option>');
+		// 		$('#baseline').append('<option value="PP">人与人</option>');
+		// 	}
+		// };
 
 		function load_model() {
 			var model_type = $('#model_type').val();
@@ -285,46 +410,6 @@
 			});
 		};
 
-		// var socket;
-		// function connect() {
-		// 	var host = "ws://222.20.76.225:3368/";
-		// 	//CEO IP
-		// 	socket = new WebSocket(host);
-		// 	try {
-		// 		socket.onopen = function (msg) {
-		// 			var model = $('#model_selector').val();
-		// 			var start_date = $('#start_date').val();
-		// 			var end_date = $('#end_date').val();
-		// 			var msg = model + '\r\n' + start_date + '\r\n' + end_date + '\r\n\r\n';
-		// 			socket.send(msg);
-		// 			alert('已启动模型检测，请稍后查询！');
-		// 		};
-		// 		socket.onmessage = function (msg) {
-		// 			if (typeof msg.data == "string") {
-		// 				displayContent(msg.data);
-		// 			}
-		// 			else {
-
-		// 			}
-		// 		};
-		// 		socket.onclose = function (msg) {
-
-		// 		};
-		// 	}
-		// 	catch (ex) {
-		// 		alert(ex);
-		// 	}
-		// }
-
-		// window.onbeforeunload = function () {
-		// 	try {
-		// 		socket.close();
-		// 		socket = null;
-		// 	}
-		// 	catch (ex) {
-
-		// 	}
-		// };
 	</script>
 </body>
 

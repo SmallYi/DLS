@@ -159,6 +159,7 @@ def addconfiguretodatabase(request):
 	                            PREDICTION NUMBER(10,5), 
 	                            ABNORMAL NUMBER(1,0), 
 	                            INSERT_TIME DATE, 
+                                ACT_TIME DATE, 
                             )
                         ''' % table_name)
     
@@ -187,15 +188,6 @@ def addconfiguretodatabase(request):
                             )
                         ''' % (table_name, fields_study, base_line, baseline_values, base_lineunit, table_name + '_RESULT'))
 
-    # lstm = configure_lstm()
-    # lstm.modelname = model_name
-    # lstm.baseline = base_line
-    # lstm.baselinevalue = base_linevalue
-    # lstm.baselineunit = base_lineunit
-    # lstm.train = check_box_list
-    # lstm.flag = "0"
-    # lstm.save()
-
     return HttpResponseRedirect('/addok/')
 
 def addconfiguretodatabaseRelation(request):
@@ -206,27 +198,18 @@ def addconfiguretodatabaseRelation(request):
         min_confidence = request.POST["min_confidence"]
         model_name =request.POST["model2"]
 
-    # re = configure_relation()
-    # re.modelname = model_name
-    # re.operationtype = operation_type
-    # re.username = user_name
-    # re.minsupport = min_support
-    # re.minconfidence = min_confidence
-    # re.flag = '0'
-    # re.save()
-
     if operation_type == 'PeopleOperation':
         model_type = 'PO'
         agent_id = user_name
-        table_name = 'PO' + '_' + user_name + '_' + min_support + '_' + min_confidence + '_' + model_name
+        table_name = 'PO' + '_' + user_name + '_' + model_name
     elif operation_type == 'OperationOperation':
         model_type = 'OO'
         agent_id =''
-        table_name = 'OO' + '_' + min_support + '_' + min_confidence + '_' + model_name
+        table_name = 'OO' + '_' + model_name
     else:
         model_type = 'PP'
         agent_id =''
-        table_name = 'PP' + '_' + min_support + '_' + min_confidence + '_' + model_name
+        table_name = 'PP' + '_' + model_name
 
     appone.db.connect()
     appone.db.executeSQL('''
@@ -297,51 +280,54 @@ def taiyangxi(request):
 	return render(request, 'taiyangxi_small.html')
 
 def load_model(request):
-    ret_list = []
+    ret_dict = {}
     appone.db.connect()
     model_type = request.GET['model_type']
     baseline = request.GET['baseline']
     page = int(request.GET['page'])
     size = int(request.GET['size'])
+
     if model_type == None or baseline == None:
-        return JsonResponse(ret_list, safe = False)
-    
+        ret_dict['total'] = -1
+        return JsonResponse(ret_dict)
+
     if model_type == 'MODEL_PARAMETER':
         unit = 'BASELINE_UNIT'
-        baseline = "'" + baseline + "'"
     elif model_type == 'FPGROWTH_PARAMETER':
         unit = 'MODEL_TYPE'
-    ret_list.append(appone.db.executeSQL("SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'" % model_type))
-    ret_list.append(appone.db.executeSQL('''
+    ret_dict['total'] = appone.db.executeSQL("SELECT COUNT(*) FROM %s WHERE %s = '%s'" % (model_type, unit, baseline))
+    ret_dict['head'] = appone.db.executeSQL("SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'" % model_type)
+    ret_dict['body'] = appone.db.executeSQL('''
                                             SELECT * FROM
                                             (
                                                 SELECT A.*
-                                                FROM (SELECT * FROM %s WHERE %s = %s) A
+                                                FROM (SELECT * FROM %s WHERE %s = '%s') A
                                                 WHERE ROWNUM <= %d
                                             )   WHERE ROWNUM >= %d
-                                        ''' % (model_type, unit, baseline, page*size, page*size-14)))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) FROM %s WHERE %s = %s" % (model_type, unit, baseline)))
-    return JsonResponse(ret_list, safe = False)
+                                        ''' % (model_type, unit, baseline, page*size, page*size-14))
+    
+    return JsonResponse(ret_dict)
 
 def search(request):
+    ret_dict = {}
     model = request.GET['model']
     start_date = request.GET['start_date']
     end_date = request.GET['end_date']
     page = int(request.GET['page'])
     size = int(request.GET['size'])
-    ret_list = []
-    ret_list.append(appone.db.executeSQL("SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'" % model.upper()))
-    ret_list.append(appone.db.executeSQL('''
+    
+    ret_dict['total'] = -1
+    ret_dict['head'] = appone.db.executeSQL("SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s_RESULT'" % model.upper())
+    ret_dict['body'] = appone.db.executeSQL('''
                                             SELECT * FROM
                                             (
                                                 SELECT *
-                                                FROM (SELECT * FROM %s WHERE INSERT_TIME BETWEEN to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD'))
+                                                FROM (SELECT * FROM %s_RESULT WHERE INSERT_TIME BETWEEN to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD'))
                                                 WHERE ROWNUM <= %d
-                                            )   
-                                                WHERE ROWNUM >= %d
-                                        ''' % (model, start_date, end_date, page*size, page*size-14)))
-    ret_list.append(appone.db.executeSQL('''SELECT COUNT(*) FROM %s WHERE INSERT_TIME BETWEEN 
+                                            )   WHERE ROWNUM >= %d
+                                        ''' % (model, start_date, end_date, page*size, page*size-14))
+    ret_dict['total'] = appone.db.executeSQL('''SELECT COUNT(*) FROM %s_RESULT WHERE INSERT_TIME BETWEEN 
                                            to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD') 
-                                        ''' % (model, start_date, end_date)))                              
-    return JsonResponse(ret_list, safe = False)
+                                        ''' % (model, start_date, end_date))                              
+    return JsonResponse(ret_dict)
 
