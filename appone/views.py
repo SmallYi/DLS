@@ -14,16 +14,17 @@ import appone.db
 	
 def prediction(request):
     now = datetime.now()
-    one_day_before = now - timedelta(days = 1)
-    two_day_before = now - timedelta(days = 2)
-    three_day_before = now - timedelta(days = 3)
-    four_day_before = now - timedelta(days = 4)
-    five_day_before = now - timedelta(days = 5)
-    six_day_before = now - timedelta(days = 6)
-    seven_day_before = now - timedelta(days = 7)
-    eight_day_before = now - timedelta(days = 8)
-    nine_day_before = now - timedelta(days = 9)
-    ten_day_before = now - timedelta(days = 10)
+    one_day_before = (now - timedelta(days = 1)).strftime('%Y-%m-%d')
+    #print("%s"%(one_day_before))
+    two_day_before = (now - timedelta(days = 2)).strftime('%Y-%m-%d')
+    three_day_before = (now - timedelta(days = 3)).strftime('%Y-%m-%d')
+    four_day_before = (now - timedelta(days = 4)).strftime('%Y-%m-%d')
+    five_day_before = (now - timedelta(days = 5)).strftime('%Y-%m-%d')
+    six_day_before = (now - timedelta(days = 6)).strftime('%Y-%m-%d')
+    seven_day_before = (now - timedelta(days = 7)).strftime('%Y-%m-%d')
+    eight_day_before = (now - timedelta(days = 8)).strftime('%Y-%m-%d')
+    nine_day_before = (now - timedelta(days = 9)).strftime('%Y-%m-%d')
+    ten_day_before = (now - timedelta(days = 10)).strftime('%Y-%m-%d')
 
     now = '2017-02-17'
     one_day_before = '2017-02-16'
@@ -37,39 +38,48 @@ def prediction(request):
     nine_day_before = '2017-02-08'
     ten_day_before = '2017-02-07'
     history_time=[now, one_day_before, two_day_before, three_day_before, four_day_before, five_day_before, six_day_before, seven_day_before, eight_day_before, nine_day_before, ten_day_before]
-    low_threshold=0.995
-    high_threshold=0.998
-    ret_list=[]
+    agent=['5VM45975','S2A58BGQ','WDWCASZ0627345','Z1D3XB0A','Z4YAZWRB','537TT03OT','Z4YAZTH6']
+    low_threshold=0
+    high_threshold=1.006
+    ret_list1=[]
+    ret_list2=[]
     appone.db.connect()
-    for x in range(10):
-        ret_list.append(appone.db.executeSQL('''SELECT count(*) from LSTM_5VM45975_SINGLE
+    for y in range(7):
+        for x in range(10):
+            ret_list1.append(appone.db.executeSQL('''SELECT count(*) from %s
                                             WHERE ACT_TIME BETWEEN
                                             to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')
-                                            AND PREDICTION BETWEEN %f AND %f
-                                         '''% (history_time[x+1], history_time[x], low_threshold, high_threshold)))
-        ret_list.append(appone.db.executeSQL('''SELECT count(*) from LSTM_5VM45975_SINGLE
+                                            AND ABNORMAL=0
+                                         '''% ('LSTM_'+agent[y]+'_SINGLE', history_time[x+1], history_time[x])))
+            ret_list1.append(appone.db.executeSQL('''SELECT count(*) from %s
                                             WHERE ACT_TIME BETWEEN
                                             to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')
-                                          '''% (history_time[x+1], history_time[x])))
+                                          '''% ('LSTM_'+agent[y]+'_SINGLE', history_time[x+1], history_time[x])))
+    ret_dict = {'abnormalratio':ret_list1}
+    # for y in range(1):
+    #     for x in range(10):
+    #         ret_list2.append(appone.db.executeSQL('''SELECT count(*) from %s
+    #                                         WHERE ACT_TIME BETWEEN
+    #                                         to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')
+    #                                         AND PREDICTION BETWEEN %f AND %f
+    #                                      '''% ('LSTM_'+agent[y]+'_SINGLE', history_time[0], history_time[10], x, x+0.1)))
 
-    
-    
-                                                                                       
-    return JsonResponse(ret_list, safe=False)
+
+    return JsonResponse(ret_dict)
 
 def recordnumber(request):
     now = datetime.now()
-    one_day_before = now - timedelta(days = 1)
-    print("%s"%(one_day_before))
-    two_day_before = now - timedelta(days = 2)
-    three_day_before = now - timedelta(days = 3)
-    four_day_before = now - timedelta(days = 4)
-    five_day_before = now - timedelta(days = 5)
-    six_day_before = now - timedelta(days = 6)
-    seven_day_before = now - timedelta(days = 7)
-    eight_day_before = now - timedelta(days = 8)
-    nine_day_before = now - timedelta(days = 9)
-    ten_day_before = now - timedelta(days = 10)
+    one_day_before = (now - timedelta(days = 1)).strftime('%Y%m%d')
+    #print("%s"%(one_day_before))
+    two_day_before = (now - timedelta(days = 2)).strftime('%Y%m%d')
+    three_day_before = (now - timedelta(days = 3)).strftime('%Y%m%d')
+    four_day_before = (now - timedelta(days = 4)).strftime('%Y%m%d')
+    five_day_before = (now - timedelta(days = 5)).strftime('%Y%m%d')
+    six_day_before = (now - timedelta(days = 6)).strftime('%Y%m%d')
+    seven_day_before = (now - timedelta(days = 7)).strftime('%Y%m%d')
+    eight_day_before = (now - timedelta(days = 8)).strftime('%Y%m%d')
+    nine_day_before = (now - timedelta(days = 9)).strftime('%Y%m%d')
+    ten_day_before = (now - timedelta(days = 10)).strftime('%Y%m%d')
     ret_list=[]
 
     one_day_before = '20170122'

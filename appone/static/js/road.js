@@ -7,21 +7,36 @@ var i, j,  particles = [];
 //画散点图
 $(document).ready(function(){
 $.getJSON('/prediction/', function (ret) {
-    for (var j = 0; j < 20; j+=2) {		
+    for (var j = 0; j < 140; j+=2) {		
         var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
-        if(ret[j] / ret[j+1]>0.9)  var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
-        else if(ret[j] / ret[j+1]>0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
-        else if(ret[j] / ret[j+1]>0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
-        else if(ret[j] / ret[j+1]>0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
-        else if(ret[j] / ret[j+1]>0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
+        if(ret.abnormalratio[j] / ret.abnormalratio[j+1]>0.9)  var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
+        else if(ret.abnormalratio[j] / ret.abnormalratio[j+1]>0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
+        else if(ret.abnormalratio[j] / ret.abnormalratio[j+1]>0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
+        else if(ret.abnormalratio[j] / ret.abnormalratio[j+1]>0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
+        else if(ret.abnormalratio[j] / ret.abnormalratio[j+1]>0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
         else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
         var star = new THREE.Mesh(dian_geometry, dian_material);
         scene.add(star);
-        star.position.x = 12000 + 2000 * (j/2);
-        if(ret[j+1]==0)  star.position.y = 10000;
-        else star.position.y = (ret[j] / ret[j+1]) * 20000 + 10000;//console.log(ret[j] / ret[j+1]);
-        star.position.z = 450000;
+        star.position.x = 12000 + 2000 * (j/2)-20000*parseInt(j/20);
+        if(ret.abnormalratio[j+1]==0)  star.position.y = 10000;
+        else star.position.y = (ret.abnormalratio [j]/ ret.abnormalratio[j+1]) * 20000 + 10000;//console.log(ret.abnormalratio[j] / ret.abnormalratio[j+1]);
+        star.position.z = 450000-50000*parseInt(j/20);
     }
+    // var len_5VM45975 = 0;
+    // for (var i = 140; i < 150; i++) {
+    //     len_5VM45975 += parseInt(ret[i]);console.log(len_5VM45975);
+    // };
+
+    // for (var j = 140; j <150; j++) {
+		
+    //     var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
+    //     var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
+    //     var star = new THREE.Mesh(dian_geometry, dian_material);
+    //     scene.add(star);
+    //     star.position.x = -(10000 + 2000 * (j-140));
+    //     star.position.y = (ret[j] / len_5VM45975) * 20000 + 10000;console.log(ret[j] / len_5VM45975);
+    //     star.position.z = 450000;
+    // }
     
 
     // var len_S2A58BGQ = 0;
@@ -211,7 +226,7 @@ drawGridLeft(-10000, -30000, 10000, 30000, 10000, -10000, 0, 2000, 10);
 drawGridLeft(-10000, -30000, 10000, 30000, 10000, -10000, 50000, 2000, 10);
 
 //添加标题
-function title(username,z) {
+function titleRight(username,z) {
     var material = new THREE.MeshPhongMaterial({
         color: 0x66ccff,
         specular: 0x66ccff,
@@ -228,14 +243,41 @@ function title(username,z) {
         scene.add(mesh);
     });
 }
-title('5VM45975',450000);
-title('S2A58BGQ',400000);
-title('WDWCASZ0627345',350000);
-title('Z1D3XB0A',300000);
-title('Z4YAZWRB',250000);
+function titleLeft(username,z) {
+    var material = new THREE.MeshPhongMaterial({
+        color: 0x66ccff,
+        specular: 0x66ccff,
+        shininess: 0
+    });
+    var loader = new THREE.FontLoader();
+    loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) {
+        var mesh = new THREE.Mesh(new THREE.TextGeometry(username, {
+            font: font,
+            size: 1000,
+            height: 1000
+        }), material);
+        mesh.position.set(-24000,32000, z);
+        scene.add(mesh);
+    });
+}
+titleRight('5VM45975',450000);
+titleRight('S2A58BGQ',400000);
+titleRight('WDWCASZ0627345',350000);
+titleRight('Z1D3XB0A',300000);
+titleRight('Z4YAZWRB',250000);
+titleRight('537TT03OT',200000);
+titleRight('Z4YAZTH6',150000);
+
+titleLeft('5VM45975',450000);
+titleLeft('S2A58BGQ',400000);
+titleLeft('WDWCASZ0627345',350000);
+titleLeft('Z1D3XB0A',300000);
+titleLeft('Z4YAZWRB',250000);
+titleLeft('537TT03OT',200000);
+titleLeft('Z4YAZTH6',150000);
 
 //添加坐标变量
-function axisflag(x1, y1, x2, y2, z) {
+function axisflagRight(x1, y1, x2, y2, z) {
     var material = new THREE.MeshPhongMaterial({
         color: 0x66ccff,
         specular: 0x66ccff,
@@ -250,7 +292,7 @@ function axisflag(x1, y1, x2, y2, z) {
         }), material);
         mesh.position.set(x1, y1, z);
         scene.add(mesh);
-        var mesh = new THREE.Mesh(new THREE.TextGeometry('abnormalratio', {
+        var mesh = new THREE.Mesh(new THREE.TextGeometry('abnormal_ratio', {
             font: font,
             size: 800,
             height: 800
@@ -259,31 +301,55 @@ function axisflag(x1, y1, x2, y2, z) {
         scene.add(mesh);
     });
 }
-axisflag(32000, 8000, 2000, 32000, 450000);
-axisflag(32000, 8000, 2000, 32000, 400000);
-axisflag(-32000, 8000, -9000, 32000, 450000);
-axisflag(-32000, 8000, -9000, 32000, 400000);
+function axisflagLeft(x1, y1, x2, y2, z) {
+    var material = new THREE.MeshPhongMaterial({
+        color: 0x66ccff,
+        specular: 0x66ccff,
+        shininess: 0
+    });
+    var loader = new THREE.FontLoader();
+    loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) {
+        var mesh = new THREE.Mesh(new THREE.TextGeometry('lstm', {
+            font: font,
+            size: 800,
+            height: 800
+        }), material);
+        mesh.position.set(x1, y1, z);
+        scene.add(mesh);
+        var mesh = new THREE.Mesh(new THREE.TextGeometry('lstm_ratio', {
+            font: font,
+            size: 800,
+            height: 800
+        }), material);
+        mesh.position.set(x2, y2, z);
+        scene.add(mesh);
+    });
+}
+axisflagRight(32000, 8000, 2000, 32000, 450000);
+axisflagRight(32000, 8000, 2000, 32000, 400000);
+axisflagLeft(-32000, 8000, -9000, 32000, 450000);
+axisflagLeft(-32000, 8000, -9000, 32000, 400000);
 
-axisflag(32000, 8000, 2000, 32000, 350000);
-axisflag(32000, 8000, 2000, 32000, 300000);
-axisflag(-32000, 8000, -9000, 32000, 350000);
-axisflag(-32000, 8000, -9000, 32000, 300000);
-axisflag(32000, 8000, 2000, 32000, 250000);
-axisflag(32000, 8000, 2000, 32000, 200000);
-axisflag(-32000, 8000, -9000, 32000, 250000);
-axisflag(-32000, 8000, -9000, 32000, 200000);
-axisflag(32000, 8000, 2000, 32000, 250000);
-axisflag(32000, 8000, 2000, 32000, 200000);
-axisflag(-32000, 8000, -9000, 32000, 250000);
-axisflag(-32000, 8000, -9000, 32000, 200000);
-axisflag(32000, 8000, 2000, 32000, 150000);
-axisflag(32000, 8000, 2000, 32000, 100000);
-axisflag(-32000, 8000, -9000, 32000, 150000);
-axisflag(-32000, 8000, -9000, 32000, 100000);
-axisflag(32000, 8000, 2000, 32000, 50000);
-axisflag(32000, 8000, 2000, 32000, 0);
-axisflag(-32000, 8000, -9000, 32000, 50000);
-axisflag(-32000, 8000, -9000, 32000, 0);
+axisflagRight(32000, 8000, 2000, 32000, 350000);
+axisflagRight(32000, 8000, 2000, 32000, 300000);
+axisflagLeft(-32000, 8000, -9000, 32000, 350000);
+axisflagLeft(-32000, 8000, -9000, 32000, 300000);
+axisflagRight(32000, 8000, 2000, 32000, 250000);
+axisflagRight(32000, 8000, 2000, 32000, 200000);
+axisflagLeft(-32000, 8000, -9000, 32000, 250000);
+axisflagLeft(-32000, 8000, -9000, 32000, 200000);
+axisflagRight(32000, 8000, 2000, 32000, 250000);
+axisflagRight(32000, 8000, 2000, 32000, 200000);
+axisflagLeft(-32000, 8000, -9000, 32000, 250000);
+axisflagLeft(-32000, 8000, -9000, 32000, 200000);
+axisflagRight(32000, 8000, 2000, 32000, 150000);
+axisflagRight(32000, 8000, 2000, 32000, 100000);
+axisflagLeft(-32000, 8000, -9000, 32000, 150000);
+axisflagLeft(-32000, 8000, -9000, 32000, 100000);
+axisflagRight(32000, 8000, 2000, 32000, 50000);
+axisflagRight(32000, 8000, 2000, 32000, 0);
+axisflagLeft(-32000, 8000, -9000, 32000, 50000);
+axisflagLeft(-32000, 8000, -9000, 32000, 0);
 
 //添加坐标刻度
 //ystart,xstart画平行y,z轴的刻度时的起始y,x坐标
@@ -335,7 +401,7 @@ function axisvalueLeft(xstart, ystart, interval, a, b, c) {
     loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) {
         for (i = 0; i < 10; i++) {
             var x = -xstart - interval * i;
-            var value = i ;
+            var value = i/10 ;
             var meshtextx = new THREE.Mesh(new THREE.TextGeometry(value, {
                 font: font,
                 size: 800,
