@@ -14,120 +14,98 @@ import appone.db
 	
 def prediction(request):
     now = datetime.now()
-    one_month_before = now - timedelta(days = 500)
-    ret_list=[]
+    one_day_before = (now - timedelta(days = 1)).strftime('%Y-%m-%d')
+    #print("%s"%(one_day_before))
+    two_day_before = (now - timedelta(days = 2)).strftime('%Y-%m-%d')
+    three_day_before = (now - timedelta(days = 3)).strftime('%Y-%m-%d')
+    four_day_before = (now - timedelta(days = 4)).strftime('%Y-%m-%d')
+    five_day_before = (now - timedelta(days = 5)).strftime('%Y-%m-%d')
+    six_day_before = (now - timedelta(days = 6)).strftime('%Y-%m-%d')
+    seven_day_before = (now - timedelta(days = 7)).strftime('%Y-%m-%d')
+    eight_day_before = (now - timedelta(days = 8)).strftime('%Y-%m-%d')
+    nine_day_before = (now - timedelta(days = 9)).strftime('%Y-%m-%d')
+    ten_day_before = (now - timedelta(days = 10)).strftime('%Y-%m-%d')
+
+    now = '2017-02-17'
+    one_day_before = '2017-02-16'
+    two_day_before = '2017-02-15'
+    three_day_before = '2017-02-14'
+    four_day_before = '2017-02-13'
+    five_day_before = '2017-02-12'
+    six_day_before = '2017-02-11'
+    seven_day_before = '2017-02-10'
+    eight_day_before = '2017-02-09'
+    nine_day_before = '2017-02-08'
+    ten_day_before = '2017-02-07'
+    history_time=[now, one_day_before, two_day_before, three_day_before, four_day_before, five_day_before, six_day_before, seven_day_before, eight_day_before, nine_day_before, ten_day_before]
+    agent=['5VM45975','S2A58BGQ','WDWCASZ0627345','Z1D3XB0A','Z4YAZWRB','537TT03OT','Z4YAZTH6']
+    low_threshold=0
+    high_threshold=1.006
+    ret_list1=[]
+    ret_list2=[]
     appone.db.connect()
-    for x in range(10):
-        ret_list.append(appone.db.executeSQL('''
-                                                SELECT COUNT(*) from LSTM_5VM45975_SINGLE 
-                                                WHERE INSERT_TIME BETWEEN 
-                                                to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')
-                                                AND PREDICTION BETWEEN %f AND %f
-                                            ''' % (one_month_before.strftime('%Y-%m-%d'), now.strftime('%Y-%m-%d'), 0.1*x, 0.1*(x+1))))
-    for x in range(10):
-        ret_list.append(appone.db.executeSQL('''
-                                                SELECT COUNT(*) from LSTM_S2A58BGQ_SINGLE 
-                                                WHERE INSERT_TIME BETWEEN 
-                                                to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')
-                                                AND PREDICTION BETWEEN %f AND %f
-                                            ''' % (one_month_before.strftime('%Y-%m-%d'), now.strftime('%Y-%m-%d'), 0.1*x, 0.1*(x+1))))
+    for y in range(7):
+        for x in range(10):
+            ret_list1.append(appone.db.executeSQL('''SELECT count(*) from %s
+                                            WHERE ACT_TIME BETWEEN
+                                            to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')
+                                            AND ABNORMAL=0
+                                         '''% ('LSTM_'+agent[y]+'_SINGLE', history_time[x+1], history_time[x])))
+            ret_list1.append(appone.db.executeSQL('''SELECT count(*) from %s
+                                            WHERE ACT_TIME BETWEEN
+                                            to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')
+                                          '''% ('LSTM_'+agent[y]+'_SINGLE', history_time[x+1], history_time[x])))
+    ret_dict = {'abnormalratio':ret_list1}
+    # for y in range(1):
+    #     for x in range(10):
+    #         ret_list2.append(appone.db.executeSQL('''SELECT count(*) from %s
+    #                                         WHERE ACT_TIME BETWEEN
+    #                                         to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')
+    #                                         AND PREDICTION BETWEEN %f AND %f
+    #                                      '''% ('LSTM_'+agent[y]+'_SINGLE', history_time[0], history_time[10], x, x+0.1)))
 
-    for x in range(10):
-        ret_list.append(appone.db.executeSQL('''
-                                                SELECT COUNT(*) from LSTM_WDWCASZ0627345_SINGLE 
-                                                WHERE INSERT_TIME BETWEEN 
-                                                to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')
-                                                AND PREDICTION BETWEEN %f AND %f
-                                            ''' % (one_month_before.strftime('%Y-%m-%d'), now.strftime('%Y-%m-%d'), 0.1*x, 0.1*(x+1))))
 
-    for x in range(10):
-        ret_list.append(appone.db.executeSQL('''
-                                                SELECT COUNT(*) from LSTM_Z1D3XB0A_SINGLE 
-                                                WHERE INSERT_TIME BETWEEN 
-                                                to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')
-                                                AND PREDICTION BETWEEN %f AND %f
-                                            ''' % (one_month_before.strftime('%Y-%m-%d'), now.strftime('%Y-%m-%d'), 0.1*x, 0.1*(x+1)))) 
-
-    for x in range(10):
-        ret_list.append(appone.db.executeSQL('''
-                                                SELECT COUNT(*) from LSTM_Z4YAZWRB_SINGLE 
-                                                WHERE INSERT_TIME BETWEEN 
-                                                to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')
-                                                AND PREDICTION BETWEEN %f AND %f
-                                            ''' % (one_month_before.strftime('%Y-%m-%d'), now.strftime('%Y-%m-%d'), 0.1*x, 0.1*(x+1))))                                                                                       
-    return JsonResponse(ret_list, safe=False)
+    return JsonResponse(ret_dict)
 
 def recordnumber(request):
     now = datetime.now()
-    one_month_before = now - timedelta(days = 500)
+    one_day_before = (now - timedelta(days = 1)).strftime('%Y%m%d')
+    #print("%s"%(one_day_before))
+    two_day_before = (now - timedelta(days = 2)).strftime('%Y%m%d')
+    three_day_before = (now - timedelta(days = 3)).strftime('%Y%m%d')
+    four_day_before = (now - timedelta(days = 4)).strftime('%Y%m%d')
+    five_day_before = (now - timedelta(days = 5)).strftime('%Y%m%d')
+    six_day_before = (now - timedelta(days = 6)).strftime('%Y%m%d')
+    seven_day_before = (now - timedelta(days = 7)).strftime('%Y%m%d')
+    eight_day_before = (now - timedelta(days = 8)).strftime('%Y%m%d')
+    nine_day_before = (now - timedelta(days = 9)).strftime('%Y%m%d')
+    ten_day_before = (now - timedelta(days = 10)).strftime('%Y%m%d')
     ret_list=[]
+
+    one_day_before = '20170122'
+    two_day_before = '20170123'
+    three_day_before = '20170124'
+    four_day_before = '20170206'
+    five_day_before = '20170207'
+    six_day_before = '20170208'
+    seven_day_before = '20170209'
+    eight_day_before = '20170210'
+    nine_day_before = '20170211'
+    ten_day_before = '20170212'
+    history_time=[one_day_before, two_day_before, three_day_before, four_day_before, five_day_before, six_day_before, seven_day_before, eight_day_before, nine_day_before, ten_day_before]
+    agent =['WD-WCASZ0627345', 'S2A58BGQ', '5VM45975', 'Z1D3XB0A', 'Z4YAZWRB', 'Z4YAZVXM', 'Z4YAZW4W', 'Z4YAZVV4', '537TT03OT', '6VY152TL', 'Z4YAZTEF', 'Z4YAZTKF']
     appone.db.connect()
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170122 WHERE AGENT_ID = 'WD-WCASZ0627345' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170123 WHERE AGENT_ID = 'WD-WCASZ0627345' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170124 WHERE AGENT_ID = 'WD-WCASZ0627345' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170206 WHERE AGENT_ID = 'WD-WCASZ0627345' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170207 WHERE AGENT_ID = 'WD-WCASZ0627345' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170208 WHERE AGENT_ID = 'WD-WCASZ0627345' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170209 WHERE AGENT_ID = 'WD-WCASZ0627345' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170210 WHERE AGENT_ID = 'WD-WCASZ0627345' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170211 WHERE AGENT_ID = 'WD-WCASZ0627345' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170212 WHERE AGENT_ID = 'WD-WCASZ0627345' "))
-
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170122 WHERE AGENT_ID = 'S2A58BGQ' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170123 WHERE AGENT_ID = 'S2A58BGQ' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170124 WHERE AGENT_ID = 'S2A58BGQ' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170206 WHERE AGENT_ID = 'S2A58BGQ' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170207 WHERE AGENT_ID = 'S2A58BGQ' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170208 WHERE AGENT_ID = 'S2A58BGQ' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170209 WHERE AGENT_ID = 'S2A58BGQ' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170210 WHERE AGENT_ID = 'S2A58BGQ' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170211 WHERE AGENT_ID = 'S2A58BGQ' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170212 WHERE AGENT_ID = 'S2A58BGQ' "))  
-
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170122 WHERE AGENT_ID = '5VM45975' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170123 WHERE AGENT_ID = '5VM45975' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170124 WHERE AGENT_ID = '5VM45975' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170206 WHERE AGENT_ID = '5VM45975' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170207 WHERE AGENT_ID = '5VM45975' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170208 WHERE AGENT_ID = '5VM45975' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170209 WHERE AGENT_ID = '5VM45975' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170210 WHERE AGENT_ID = '5VM45975' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170211 WHERE AGENT_ID = '5VM45975' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170212 WHERE AGENT_ID = '5VM45975' "))  
-
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170122 WHERE AGENT_ID = 'Z1D3XB0A' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170123 WHERE AGENT_ID = 'Z1D3XB0A' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170124 WHERE AGENT_ID = 'Z1D3XB0A' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170206 WHERE AGENT_ID = 'Z1D3XB0A' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170207 WHERE AGENT_ID = 'Z1D3XB0A' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170208 WHERE AGENT_ID = 'Z1D3XB0A' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170209 WHERE AGENT_ID = 'Z1D3XB0A' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170210 WHERE AGENT_ID = 'Z1D3XB0A' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170211 WHERE AGENT_ID = 'Z1D3XB0A' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170212 WHERE AGENT_ID = 'Z1D3XB0A' "))   
-
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170122 WHERE AGENT_ID = 'Z4YAZWRB' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170123 WHERE AGENT_ID = 'Z4YAZWRB' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170124 WHERE AGENT_ID = 'Z4YAZWRB' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170206 WHERE AGENT_ID = 'Z4YAZWRB' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170207 WHERE AGENT_ID = 'Z4YAZWRB' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170208 WHERE AGENT_ID = 'Z4YAZWRB' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170209 WHERE AGENT_ID = 'Z4YAZWRB' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170210 WHERE AGENT_ID = 'Z4YAZWRB' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170211 WHERE AGENT_ID = 'Z4YAZWRB' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170212 WHERE AGENT_ID = 'Z4YAZWRB' "))   
-
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170122 WHERE AGENT_ID = 'Z4YAZVXM' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170123 WHERE AGENT_ID = 'Z4YAZVXM' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170124 WHERE AGENT_ID = 'Z4YAZVXM' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170206 WHERE AGENT_ID = 'Z4YAZVXM' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170207 WHERE AGENT_ID = 'Z4YAZVXM' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170208 WHERE AGENT_ID = 'Z4YAZVXM' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170209 WHERE AGENT_ID = 'Z4YAZVXM' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170210 WHERE AGENT_ID = 'Z4YAZVXM' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170211 WHERE AGENT_ID = 'Z4YAZVXM' "))
-    ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from DL_TMSAPP_C0A80006_20170212 WHERE AGENT_ID = 'Z4YAZVXM' "))   
-                                                                                    
+    for x in range(12):
+        ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from %s WHERE AGENT_ID = '%s' " %('DL_TMSAPP_C0A80006_'+history_time[0], agent[x])))
+        ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from %s WHERE AGENT_ID = '%s' " %('DL_TMSAPP_C0A80006_'+history_time[1], agent[x])))
+        ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from %s WHERE AGENT_ID = '%s' " %('DL_TMSAPP_C0A80006_'+history_time[2], agent[x])))
+        ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from %s WHERE AGENT_ID = '%s' " %('DL_TMSAPP_C0A80006_'+history_time[3], agent[x])))
+        ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from %s WHERE AGENT_ID = '%s' " %('DL_TMSAPP_C0A80006_'+history_time[4], agent[x])))
+        ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from %s WHERE AGENT_ID = '%s' " %('DL_TMSAPP_C0A80006_'+history_time[5], agent[x])))
+        ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from %s WHERE AGENT_ID = '%s' " %('DL_TMSAPP_C0A80006_'+history_time[6], agent[x])))
+        ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from %s WHERE AGENT_ID = '%s' " %('DL_TMSAPP_C0A80006_'+history_time[7], agent[x])))
+        ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from %s WHERE AGENT_ID = '%s' " %('DL_TMSAPP_C0A80006_'+history_time[8], agent[x])))
+        ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from %s WHERE AGENT_ID = '%s' " %('DL_TMSAPP_C0A80006_'+history_time[9], agent[x])))                                                                                    
     return JsonResponse(ret_list, safe=False)
 
 def addconfiguretodatabase(request):
