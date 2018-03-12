@@ -38,13 +38,49 @@ def prediction(request):
     nine_day_before = '2017-02-08'
     ten_day_before = '2017-02-07'
     history_time=[now, one_day_before, two_day_before, three_day_before, four_day_before, five_day_before, six_day_before, seven_day_before, eight_day_before, nine_day_before, ten_day_before]
-    agent=['5VM45975','S2A58BGQ','WDWCASZ0627345','Z1D3XB0A','Z4YAZWRB','537TT03OT','Z4YAZTH6']
-    low_threshold=0
-    high_threshold=1.006
+    agent=['5VM45975','S2A58BGQ','WDWCASZ0627345','Z1D3XB0A','Z4YAZWRB','537TT03OT','Z4YAZTH6','P02703102649','Z4YAZTKF','Z4YAZVXM']
     ret_list1=[]
     ret_list2=[]
+    length=0
+    maxtomin=0
+    min_prediction=0
     appone.db.connect()
-    for y in range(7):
+    for y in range(10):
+        normalization = []
+        a=[]
+        b=[0,0,0,0,0,0,0,0,0,0]
+        length= appone.db.executeSQL("select count(*) from %s"%('LSTM_'+agent[y]+'_SINGLE'))
+        normalization = appone.db.executeSQL("select prediction from %s"%('LSTM_'+agent[y]+'_SINGLE'))
+        maxtomin=appone.db.executeSQL("select max(prediction)-min(prediction) from %s"%('LSTM_'+agent[y]+'_SINGLE'))
+        min_prediction=appone.db.executeSQL("select min(prediction) from %s"%('LSTM_'+agent[y]+'_SINGLE'))
+        for i in range(length[0][0]):
+            a.append((normalization[i][0]-min_prediction[0][0])/maxtomin[0][0])
+        for j in range(length[0][0]):
+            if (a[j]>=0 and a[j]<0.1):
+                b[0]+=1;  
+            if (a[j]>=0.1 and a[j]<0.2):
+                b[1]+=1; 
+            if (a[j]>=0.2 and a[j]<0.3):
+                b[2]+=1; 
+            if (a[j]>=0.3 and a[j]<0.4):
+                b[3]+=1;  
+            if (a[j]>=0.4 and a[j]<0.5):
+                b[4]+=1; 
+            if (a[j]>=0.5 and a[j]<0.6):
+                b[5]+=1;
+            if (a[j]>=0.6 and a[j]<0.7):
+                b[6]+=1;  
+            if (a[j]>=0.7 and a[j]<0.8):
+                b[7]+=1; 
+            if (a[j]>=0.8 and a[j]<0.9):
+                b[8]+=1; 
+            if a[j]>=0.9 :
+                b[9]+=1;  
+        for j in range(10):
+            b[j]/=length[0][0]
+            ret_list2.append(b[j])
+
+
         for x in range(10):
             ret_list1.append(appone.db.executeSQL('''SELECT count(*) from %s
                                             WHERE ACT_TIME BETWEEN
@@ -55,16 +91,17 @@ def prediction(request):
                                             WHERE ACT_TIME BETWEEN
                                             to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')
                                           '''% ('LSTM_'+agent[y]+'_SINGLE', history_time[x+1], history_time[x])))
-    ret_dict = {'abnormalratio':ret_list1}
+
+    ret_dict = {'abnormalratio':ret_list1, 'lstm':ret_list2}
     # for y in range(1):
+    #     normalization = []
+    #     normalization = appone.db.executeSQL("select prediction from %s"%('LSTM_'+agent[y]+'_SINGLE'))
     #     for x in range(10):
     #         ret_list2.append(appone.db.executeSQL('''SELECT count(*) from %s
     #                                         WHERE ACT_TIME BETWEEN
     #                                         to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')
     #                                         AND PREDICTION BETWEEN %f AND %f
     #                                      '''% ('LSTM_'+agent[y]+'_SINGLE', history_time[0], history_time[10], x, x+0.1)))
-
-
     return JsonResponse(ret_dict)
 
 def recordnumber(request):
