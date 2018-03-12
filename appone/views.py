@@ -96,16 +96,8 @@ def recordnumber(request):
     agent =['WD-WCASZ0627345', 'S2A58BGQ', '5VM45975', 'Z1D3XB0A', 'Z4YAZWRB', 'Z4YAZVXM', 'Z4YAZW4W', 'Z4YAZVV4', '537TT03OT', '6VY152TL', 'Z4YAZTEF', 'Z4YAZTKF']
     appone.db.connect()
     for x in range(12):
-        ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from %s WHERE AGENT_ID = '%s' " %('DL_TMSAPP_C0A80006_'+history_time[0], agent[x])))
-        ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from %s WHERE AGENT_ID = '%s' " %('DL_TMSAPP_C0A80006_'+history_time[1], agent[x])))
-        ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from %s WHERE AGENT_ID = '%s' " %('DL_TMSAPP_C0A80006_'+history_time[2], agent[x])))
-        ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from %s WHERE AGENT_ID = '%s' " %('DL_TMSAPP_C0A80006_'+history_time[3], agent[x])))
-        ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from %s WHERE AGENT_ID = '%s' " %('DL_TMSAPP_C0A80006_'+history_time[4], agent[x])))
-        ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from %s WHERE AGENT_ID = '%s' " %('DL_TMSAPP_C0A80006_'+history_time[5], agent[x])))
-        ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from %s WHERE AGENT_ID = '%s' " %('DL_TMSAPP_C0A80006_'+history_time[6], agent[x])))
-        ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from %s WHERE AGENT_ID = '%s' " %('DL_TMSAPP_C0A80006_'+history_time[7], agent[x])))
-        ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from %s WHERE AGENT_ID = '%s' " %('DL_TMSAPP_C0A80006_'+history_time[8], agent[x])))
-        ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from %s WHERE AGENT_ID = '%s' " %('DL_TMSAPP_C0A80006_'+history_time[9], agent[x])))                                                                                    
+        for y in range(10):
+            ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from %s WHERE AGENT_ID = '%s' " %('DL_TMSAPP_C0A80006_'+history_time[y], agent[x])))                                                                                 
     return JsonResponse(ret_list, safe=False)
 
 def addconfiguretodatabase(request):
@@ -278,10 +270,10 @@ def load_model(request):
     ret_dict['body'] = appone.db.executeSQL('''
                                             SELECT * FROM
                                             (
-                                                SELECT A.*
+                                                SELECT A.*, ROWNUM RN
                                                 FROM (SELECT * FROM %s WHERE %s = '%s') A
                                                 WHERE ROWNUM <= %d
-                                            )   WHERE ROWNUM >= %d
+                                            )   WHERE RN >= %d
                                         ''' % (model_type, unit, baseline, page*size, page*size-14))
     
     return JsonResponse(ret_dict)
@@ -294,18 +286,79 @@ def search(request):
     page = int(request.GET['page'])
     size = int(request.GET['size'])
     
-    ret_dict['total'] = -1
+    if model == None:
+        ret_dict['total'] = -1
+        return JsonResponse(ret_dict)
     ret_dict['head'] = appone.db.executeSQL("SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s_RESULT'" % model.upper())
     ret_dict['body'] = appone.db.executeSQL('''
                                             SELECT * FROM
                                             (
-                                                SELECT *
-                                                FROM (SELECT * FROM %s_RESULT WHERE INSERT_TIME BETWEEN to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD'))
+                                                SELECT A.*, ROWNUM RN
+                                                FROM (SELECT * FROM %s_RESULT WHERE INSERT_TIME BETWEEN to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')) A
                                                 WHERE ROWNUM <= %d
-                                            )   WHERE ROWNUM >= %d
+                                            )   WHERE RN >= %d
                                         ''' % (model, start_date, end_date, page*size, page*size-14))
     ret_dict['total'] = appone.db.executeSQL('''SELECT COUNT(*) FROM %s_RESULT WHERE INSERT_TIME BETWEEN 
                                            to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD') 
                                         ''' % (model, start_date, end_date))                              
     return JsonResponse(ret_dict)
+
+def analyse_lstm(request):
+    model = request.GET['model']
+    chart = request.GET['chart']
+
+    if chart == '-1':
+        return render(request, 'analyse_lstm.html', {'model': model})
+
+    ret_dict = {}
+    page = int(request.GET['page'])
+    size = int(request.GET['size'])
+    appone.db.connect()
+
+    ret_dict['total'] = -1
+    ret_dict['head'] = appone.db.executeSQL("SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'" % model.upper())
+    ret_dict['body'] = appone.db.executeSQL('''
+                                            SELECT * FROM
+                                            (
+                                                SELECT A.*, ROWNUM RN
+                                                FROM (SELECT * FROM %s) A
+                                                WHERE ROWNUM <= %d
+                                            )   WHERE RN >= %d
+                                            ''' % (model, page*size, page*size-14))
+    ret_dict['total'] = appone.db.executeSQL('''SELECT COUNT(*) FROM %s 
+                                            ''' % (model))
+    if chart == '0':
+        return JsonResponse(ret_dict)
+
+    bar_list = []
+    for x in range(20):
+        bar_tmp = appone.db.executeSQL('''
+                                            SELECT COUNT(*) FROM %s
+                                                WHERE PREDICTION BETWEEN %f AND %f
+                                            ''' % (model, 0.05*x, 0.05*x+0.05))
+        bar_list.append(bar_tmp[0][0])
+    ret_dict['bar'] = bar_list
+
+    code_list = appone.db.executeSQL('''
+                                    SELECT KEY, CODE FROM SIGNALFIELD_CODE
+                                        WHERE FIELD_NAME = 'APP_NAME'
+                                    ''')
+    code_dict = {}
+    for e in code_list:
+        code_dict[e[0]] = e[1]
+    ret_sql = appone.db.executeSQL('''
+                                    SELECT ACT_TIME, DATA FROM %s
+                                ''' % (model))
+    
+    scatter_list = []
+    for record in ret_sql:
+        x = record[0].hour * 60 + record[0].minute
+        y = code_dict.get(record[1].split(' ')[2], -1)
+        # change the 2
+        if y != -1:
+            scatter_list.append((x,y))
+    ret_dict['scatter'] = scatter_list
+
+    return JsonResponse(ret_dict)
+    
 
