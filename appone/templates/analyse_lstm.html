@@ -140,7 +140,6 @@
 		</div>
 	</div>
 	<script>
-
 		// $(function () {
 		// 	function addzero(num) {
 		// 		if (num > 0 && num < 10) {
@@ -181,7 +180,11 @@
 						color: '#F0FFFF'
 					}
 				},
-				data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+				data: ['0.05', '0.1', '0.15', '0.2', '0.25',
+					'0.3', '0.35', '0.4', '0.45', '0.5',
+					'0.55', '0.6', '0.65', '0.7', '0.75',
+					'0.8', '0.85', '0.9', '0.95', '1.0',
+				]
 			},
 			yAxis: {
 				type: 'value',
@@ -200,7 +203,7 @@
 				}
 			},
 			series: [{
-				data: [120, 200, 150, 80, 70, 110, 130],
+				data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 				type: 'bar'
 			}]
 		};
@@ -247,20 +250,8 @@
 				}
 			},
 			series: [{
-				symbolSize: 20,
-				data: [
-					[10.0, 8.04],
-					[8.0, 6.95],
-					[13.0, 7.58],
-					[9.0, 8.81],
-					[11.0, 8.33],
-					[14.0, 9.96],
-					[6.0, 7.24],
-					[4.0, 4.26],
-					[12.0, 10.84],
-					[7.0, 4.82],
-					[5.0, 5.68]
-				],
+				symbolSize: 4,
+				data: [],
 				type: 'scatter'
 			}]
 		};
@@ -275,6 +266,56 @@
 			})
 		}
 
+		$(document).ready(function () {
+			$.getJSON('/analyse_lstm/', { 'model': 'LSTM_5VM45975_SINGLE', 'chart': 1, 'page': 1, 'size': 15 }, function (ret) {
+				option1.series[0].data = ret.bar;
+				myChart1.setOption(option1);
+				option2.series[0].data = ret.scatter;
+				myChart2.setOption(option2);
+				$('#result_table_head').empty();
+				$('#result_table_body').empty();
+				var thead_str = "<tr>";
+				for (var i = 0; i < ret.head.length; i++) {
+					thead_str += ('<th>' + ret.head[i] + '</th>');
+				};
+				thead_str += ('<th>Num</th>');
+				thead_str += "</tr>";
+				$('#result_table_head').append(thead_str);
+
+				for (var i = 0; i < ret.body.length; i++) {
+					var tbody_str = "<tr>";
+					for (var j = 0; j < ret.body[i].length; j++) {
+						tbody_str += ('<td>' + ret.body[i][j] + '</td>');
+					};
+					tbody_str += "</tr>";
+					$('#result_table_body').append(tbody_str);
+				};
+				$('#Paginator').jqPaginator({
+					totalCounts: parseInt(ret.total),
+					pageSize: 15,
+					visiblePages: 10,
+					currentPage: 1,
+					onPageChange: function (num, type) {
+						if (type == "change") {
+							model = $('#model_selector').val();
+							$.getJSON("/analyse_lstm/", { 'model': 'LSTM_5VM45975_SINGLE', 'chart': 0, 'page': num, 'size': 15 }, function (ret) {
+								$('#result_table_body').empty();
+								var tbody_str = '<tr>';
+								for (var i = 0; i < ret.body.length; i++) {
+									var tbody_str = "<tr>";
+									for (var j = 0; j < ret.body[i].length; j++) {
+										tbody_str += ('<td>' + ret.body[i][j] + '</td>');
+									};
+									tbody_str += "</tr>";
+									$('#result_table_body').append(tbody_str);
+								};
+							});
+						}
+					}
+				});
+				return;
+			})
+		});
 		// function type_select() {
 		// 	if ($('#model_type').val() == 'MODEL_PARAMETER') {
 		// 		$('#baseline').empty();

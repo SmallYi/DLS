@@ -3,46 +3,80 @@ var planeDefinition = 100;
 var planeSize = 1245000;
 var totalObjects = 50000;
 var frame = 0;
-var i, j,  particles = []; 
+var i, j, particles = [];
 //画散点图
-$(document).ready(function(){
-$.getJSON('/prediction/', function (ret) {
-    for (var j = 0; j < 200; j+=2) {		
-        var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
-        if(ret.abnormalratio[j] / ret.abnormalratio[j+1]>0.09)  var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
-        else if(ret.abnormalratio[j] / ret.abnormalratio[j+1]>0.08) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
-        else if(ret.abnormalratio[j] / ret.abnormalratio[j+1]>0.07) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3366});
-        else if(ret.abnormalratio[j] / ret.abnormalratio[j+1]>0.06) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
-        else if(ret.abnormalratio[j] / ret.abnormalratio[j+1]>0.05) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff9999 });
-        else if(ret.abnormalratio[j] / ret.abnormalratio[j+1]>0.04) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
-        else if(ret.abnormalratio[j] / ret.abnormalratio[j+1]>0.03) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
-        else if(ret.abnormalratio[j] / ret.abnormalratio[j+1]>0.02) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
-        else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
-        var star = new THREE.Mesh(dian_geometry, dian_material);
-        scene.add(star);
-        star.position.x = 12000 + 2000 * (j/2)-20000*parseInt(j/20);
-        if(ret.abnormalratio[j+1]==0)  star.position.y = 10000;
-        else if(ret.abnormalratio [j]/ ret.abnormalratio[j+1]>0.1)   star.position.y = 30000;
-        else star.position.y = (ret.abnormalratio [j]/ ret.abnormalratio[j+1]) * 200000 + 10000;
-        //console.log(ret.abnormalratio[j] / ret.abnormalratio[j+1]);
-        star.position.z = 450000-50000*parseInt(j/20);
-    }
-    for(var i = 0; i < 100; i++)  {
-        var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
-        if(ret.lstm[i]>0.9)  var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
-        else if(ret.lstm[i]>0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
-        else if(ret.lstm[i]>0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
-        else if(ret.lstm[i]>0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
-        else if(ret.lstm[i]>0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
-        else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
-        var star = new THREE.Mesh(dian_geometry, dian_material);
-        scene.add(star);
-        star.position.x = -(12000 + 2000 * (i%10));
-        star.position.y = (ret.lstm[i]) * 20000 + 10000;//console.log(ret.lstm[i]);
-        star.position.z = 450000-50000*parseInt(i/10);
-    }
-})
+$(document).ready(function () {
+    $.getJSON('/prediction/', function (ret) {
+        for (var j = 0; j < 200; j += 2) {
+            var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
+            if (ret.abnormalratio[j] / ret.abnormalratio[j + 1] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
+            else if (ret.abnormalratio[j] / ret.abnormalratio[j + 1] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
+            else if (ret.abnormalratio[j] / ret.abnormalratio[j + 1] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
+            else if (ret.abnormalratio[j] / ret.abnormalratio[j + 1] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
+            else if (ret.abnormalratio[j] / ret.abnormalratio[j + 1] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
+            else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
+            var star = new THREE.Mesh(dian_geometry, dian_material);
+            scene.add(star);
+            star.position.x = 12000 + 2000 * (j / 2) - 20000 * parseInt(j / 20);
+            if (ret.abnormalratio[j + 1] == 0) star.position.y = 10000;
+            else star.position.y = (ret.abnormalratio[j] / ret.abnormalratio[j + 1]) * 20000 + 10000;//console.log(ret.abnormalratio[j] / ret.abnormalratio[j+1]);
+            star.position.z = 450000 - 50000 * parseInt(j / 20);
+        }
+        for (var i = 0; i < 100; i++) {
+            var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
+            if (ret.lstm[i] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
+            else if (ret.lstm[i] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
+            else if (ret.lstm[i] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
+            else if (ret.lstm[i] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
+            else if (ret.lstm[i] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
+            else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
+            var star = new THREE.Mesh(dian_geometry, dian_material);
+            scene.add(star);
+            star.position.x = -(12000 + 2000 * (i % 10));
+            star.position.y = (ret.lstm[i]) * 20000 + 10000;//console.log(ret.lstm[i]);
+            star.position.z = 450000 - 50000 * parseInt(i / 10);
+        }
+    })
 });
+var mouse = new THREE.Vector3();
+var raycaster = new THREE.Raycaster();
+function onClick(event) {
+    event.preventDefault();
+    //将屏幕像素坐标转化成camare坐标
+    mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
+    mouse.y = - (event.clientY / renderer.domElement.clientHeight) * 2 + 1;
+    //设置射线的起点是相机
+    raycaster.setFromCamera(mouse, camera);
+
+    //将射线投影到屏幕，如果scene.children里的某个或多个形状相交，则返回这些形状
+    //第二个参数是设置是否递归，默认是false，也就是不递归。当scene里面添加了Group对象的实例时，就需要设置这个参数为true
+    //第一个参数不传scene.children也可以，传一个group.children或一个形状数组都可以（这样可以实现一些特别的效果如点击内部的效果）
+    //另外，因为返回的是一个数组，所以遍历数组就可以获得所有相交的对象，当元素重叠时，特别有用
+    var intersects = raycaster.intersectObjects(scene.children);
+
+    function showInfo(sprite_x) {
+        if (sprite_x.material.opacity == 0) {
+            sprite_x.material.opacity = 0.6;
+            count_act += 1;
+            secCancelAction();
+        } else {
+            sprite_x.material.opacity = 0;
+            count_act -= 1;
+            secStartAction();
+        }
+    }
+
+    if (intersects.length > 0) {
+        var currObj = intersects[0].object;
+        console.log(currObj);
+        if (currObj.name) {
+            window.location.href = ('analyse_lstm/?chart=-1&model=' + currObj.name);
+        }
+    }
+    renderer.render(scene, camera);
+}
+document.addEventListener("mousedown", onClick, false);
+
 
 var container = document.createElement('div');
 document.body.appendChild(container);
@@ -52,7 +86,6 @@ camera.position.x = 0;
 camera.position.z = 550000;
 camera.position.y = 10000;
 camera.lookAt(new THREE.Vector3(0, 6000, 0));
-
 
 var scene = new THREE.Scene();
 scene.fog = new THREE.Fog(0x23233f, 1, 300000);
@@ -160,62 +193,75 @@ drawGridRight(10000, 30000, 10000, 30000, 10000, 10000, 50000, 2000, 10);
 drawGridLeft(-10000, -30000, 10000, 30000, 10000, -10000, 0, 2000, 10);
 drawGridLeft(-10000, -30000, 10000, 30000, 10000, -10000, 50000, 2000, 10);
 
-//添加标题
-function titleRight(username,z) {
-    var material = new THREE.MeshPhongMaterial({
-        color: 0x66ccff,
-        specular: 0x66ccff,
-        shininess: 0
-    });
-    var loader = new THREE.FontLoader();
-    loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) {
-        var mesh = new THREE.Mesh(new THREE.TextGeometry(username, {
-            font: font,
-            size: 1000,
-            height: 1000
-        }), material);
-        mesh.position.set(16000,32000, z);
-        scene.add(mesh);
-    });
-}
-function titleLeft(username,z) {
-    var material = new THREE.MeshPhongMaterial({
-        color: 0x66ccff,
-        specular: 0x66ccff,
-        shininess: 0
-    });
-    var loader = new THREE.FontLoader();
-    loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) {
-        var mesh = new THREE.Mesh(new THREE.TextGeometry(username, {
-            font: font,
-            size: 1000,
-            height: 1000
-        }), material);
-        mesh.position.set(-24000,32000, z);
-        scene.add(mesh);
-    });
-}
-titleRight('5VM45975',450000);
-titleRight('S2A58BGQ',400000);
-titleRight('WDWCASZ0627345',350000);
-titleRight('Z1D3XB0A',300000);
-titleRight('Z4YAZWRB',250000);
-titleRight('537TT03OT',200000);
-titleRight('Z4YAZTH6',150000);
-titleRight('P02703102649',100000);
-titleRight('Z4YAZTKF',50000);
-titleRight('Z4YAZVXM',0);
+var tR1 = new Object();
+var tR2 = new Object();
+var tR3 = new Object();
+var tR4 = new Object();
+var tR5 = new Object();
+var tR6 = new Object();
+var tR7 = new Object();
 
-titleLeft('5VM45975',450000);
-titleLeft('S2A58BGQ',400000);
-titleLeft('WDWCASZ0627345',350000);
-titleLeft('Z1D3XB0A',300000);
-titleLeft('Z4YAZWRB',250000);
-titleLeft('537TT03OT',200000);
-titleLeft('Z4YAZTH6',150000);
-titleLeft('P02703102649',100000);
-titleLeft('Z4YAZTKF',50000);
-titleLeft('Z4YAZVXM',0);
+var tL1 = new Object();
+var tL2 = new Object();
+var tL3 = new Object();
+var tL4 = new Object();
+var tL5 = new Object();
+var tL6 = new Object();
+var tL7 = new Object();
+//添加标题
+function titleRight(username, z, mesh) {
+    var material = new THREE.MeshPhongMaterial({
+        color: 0x66ccff,
+        specular: 0x66ccff,
+        shininess: 0
+    });
+    var loader = new THREE.FontLoader();
+    loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) {
+        mesh = new THREE.Mesh(new THREE.TextGeometry(username, {
+            font: font,
+            size: 1000,
+            height: 1000
+        }), material);
+        mesh.name = username;
+        mesh.position.set(16000, 32000, z);
+        scene.add(mesh);
+    });
+
+}
+function titleLeft(username, z, mesh) {
+    var material = new THREE.MeshPhongMaterial({
+        color: 0x66ccff,
+        specular: 0x66ccff,
+        shininess: 0
+    });
+    var loader = new THREE.FontLoader();
+    loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) {
+        mesh = new THREE.Mesh(new THREE.TextGeometry(username, {
+            font: font,
+            size: 1000,
+            height: 1000
+        }), material);
+        mesh.name = username;
+        mesh.position.set(-24000, 32000, z);
+        scene.add(mesh);
+    });
+}
+titleRight('LSTM_5VM45975_SINGLE', 450000, tR1);
+titleRight('LSTM_S2A58BGQ_SINGLE', 400000, tR2);
+titleRight('LSTM_WDWCASZ0627345_SINGLE', 350000, tR3);
+titleRight('LSTM_Z1D3XB0A_SINGLE', 300000, tR4);
+titleRight('LSTM_Z4YAZWRB_SINGLE', 250000, tR5);
+titleRight('LSTM_537TT03OT_SINGLE', 200000, tR6);
+titleRight('LSTM_Z4YAZTH6_SINGLE', 150000, tR7);
+
+titleLeft('LSTM_5VM45975_SINGLE', 450000, tL1);
+titleLeft('LSTM_S2A58BGQ_SINGLE', 400000, tL2);
+titleLeft('LSTM_WDWCASZ0627345_SINGLE', 350000, tL3);
+titleLeft('LSTM_Z1D3XB0A_SINGLE', 300000, tL4);
+titleLeft('LSTM_Z4YAZWRB_SINGLE', 250000, tL5);
+titleLeft('LSTM_537TT03OT_SINGLE', 200000, tL6);
+titleLeft('LSTM_Z4YAZTH6_SINGLE', 150000, tL7);
+
 //添加坐标变量
 function axisflagRight(x1, y1, x2, y2, z) {
     var material = new THREE.MeshPhongMaterial({
@@ -306,7 +352,7 @@ function axisvalueRight(xstart, ystart, interval, a, b, c) {
     loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) {
         for (i = 0; i <= 10; i++) {
             var x = xstart + interval * i;
-            var value = i ;
+            var value = i;
             var meshtextx = new THREE.Mesh(new THREE.TextGeometry(value, {
                 font: font,
                 size: 800,
@@ -319,7 +365,7 @@ function axisvalueRight(xstart, ystart, interval, a, b, c) {
     loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) {
         for (i = 0; i <= 10; i++) {
             var y = ystart + interval * i;
-            var value = i / 100;
+            var value = i / 10;
             var meshtextx = new THREE.Mesh(new THREE.TextGeometry(value, {
                 font: font,
                 size: 800,
@@ -340,7 +386,7 @@ function axisvalueLeft(xstart, ystart, interval, a, b, c) {
     loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) {
         for (i = 0; i <= 10; i++) {
             var x = -xstart - interval * i;
-            var value = i/10 ;
+            var value = i / 10;
             var meshtextx = new THREE.Mesh(new THREE.TextGeometry(value, {
                 font: font,
                 size: 700,

@@ -38,5 +38,6 @@ urlpatterns = [
 	url(r'^addconfiguretodatabaseRelation/', appone_views.addconfiguretodatabaseRelation),
 	url(r'^addok2/', appone_views.addok2),
 	url(r'taiyangxi_small$', appone_views.taiyangxi, name='taiyangxi_small'),
+	url(r'^analyse_lstm/', appone_views.analyse_lstm),
 ]
 
