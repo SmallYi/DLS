@@ -239,27 +239,21 @@ function titleLeft(username, z, mesh) {
         scene.add(mesh);
     });
 }
-titleRight('5VM45975', 450000, tR1);
-titleRight('S2A58BGQ', 400000, tR2);
-titleRight('WDWCASZ0627345', 350000, tR3);
-titleRight('Z1D3XB0A', 300000, tR4);
-titleRight('Z4YAZWRB', 250000, tR5);
-titleRight('537TT03OT', 200000, tR6);
-titleRight('Z4YAZTH6', 150000, tR7);
-titleRight('P02703102649', 100000, tR8);
-titleRight('Z4YAZTKF', 50000, tR9);
-titleRight('Z4YAZVXM', 0, tR10);
+titleRight('LSTM_5VM45975_SINGLE', 450000, tR1);
+titleRight('LSTM_S2A58BGQ_SINGLE', 400000, tR2);
+titleRight('LSTM_WDWCASZ0627345_SINGLE', 350000, tR3);
+titleRight('LSTM_Z1D3XB0A_SINGLE', 300000, tR4);
+titleRight('LSTM_Z4YAZWRB_SINGLE', 250000, tR5);
+titleRight('LSTM_537TT03OT_SINGLE', 200000, tR6);
+titleRight('LSTM_Z4YAZTH6_SINGLE', 150000, tR7);
 
-titleLeft('5VM45975', 450000, tL1);
-titleLeft('S2A58BGQ', 400000, tL2);
-titleLeft('WDWCASZ0627345', 350000, tL3);
-titleLeft('Z1D3XB0A', 300000, tL4);
-titleLeft('Z4YAZWRB', 250000, tL5);
-titleLeft('537TT03OT', 200000, tL6);
-titleLeft('Z4YAZTH6', 150000, tL7);
-titleLeft('P02703102649',100000, tL8);
-titleLeft('Z4YAZTKF',50000, tL9);
-titleLeft('Z4YAZVXM',0, tL10);
+titleLeft('LSTM_5VM45975_SINGLE', 450000, tL1);
+titleLeft('LSTM_S2A58BGQ_SINGLE', 400000, tL2);
+titleLeft('LSTM_WDWCASZ0627345_SINGLE', 350000, tL3);
+titleLeft('LSTM_Z1D3XB0A_SINGLE', 300000, tL4);
+titleLeft('LSTM_Z4YAZWRB_SINGLE', 250000, tL5);
+titleLeft('LSTM_537TT03OT_SINGLE', 200000, tL6);
+titleLeft('LSTM_Z4YAZTH6_SINGLE', 150000, tL7);
 
 //添加坐标变量
 function axisflagRight(x1, y1, x2, y2, z) {
@@ -409,25 +403,25 @@ function axisvalueLeft(xstart, ystart, interval, a, b, c) {
         }
     });
 }
-axisvalueRight(10000, 10000, 2000, 8000, 8000, 400000);
-axisvalueRight(10000, 10000, 2000, 8000, 8000, 450000);
+axisvalueRight(10000, 10000, 2000, 7000, 8000, 400000);
+axisvalueRight(10000, 10000, 2000, 7000, 8000, 450000);
 axisvalueLeft(10000, 10000, 2000, -8000, 8000, 400000);
 axisvalueLeft(10000, 10000, 2000, -8000, 8000, 450000);
 
-axisvalueRight(10000, 10000, 2000, 8000, 8000, 300000);
-axisvalueRight(10000, 10000, 2000, 8000, 8000, 350000);
+axisvalueRight(10000, 10000, 2000, 7000, 8000, 300000);
+axisvalueRight(10000, 10000, 2000, 7000, 8000, 350000);
 axisvalueLeft(10000, 10000, 2000, -8000, 8000, 300000);
 axisvalueLeft(10000, 10000, 2000, -8000, 8000, 350000);
-axisvalueRight(10000, 10000, 2000, 8000, 8000, 200000);
-axisvalueRight(10000, 10000, 2000, 8000, 8000, 250000);
+axisvalueRight(10000, 10000, 2000, 7000, 8000, 200000);
+axisvalueRight(10000, 10000, 2000, 7000, 8000, 250000);
 axisvalueLeft(10000, 10000, 2000, -8000, 8000, 200000);
 axisvalueLeft(10000, 10000, 2000, -8000, 8000, 250000);
-axisvalueRight(10000, 10000, 2000, 8000, 8000, 100000);
-axisvalueRight(10000, 10000, 2000, 8000, 8000, 150000);
+axisvalueRight(10000, 10000, 2000, 7000, 8000, 100000);
+axisvalueRight(10000, 10000, 2000, 7000, 8000, 150000);
 axisvalueLeft(10000, 10000, 2000, -8000, 8000, 100000);
 axisvalueLeft(10000, 10000, 2000, -8000, 8000, 150000);
-axisvalueRight(10000, 10000, 2000, 8000, 8000, 50000);
-axisvalueRight(10000, 10000, 2000, 8000, 8000, 0);
+axisvalueRight(10000, 10000, 2000, 7000, 8000, 50000);
+axisvalueRight(10000, 10000, 2000, 7000, 8000, 0);
 axisvalueLeft(10000, 10000, 2000, -8000, 8000, 50000);
 axisvalueLeft(10000, 10000, 2000, -8000, 8000, 0);
 
@@ -474,7 +468,7 @@ render();
 
 function render() {
     requestAnimationFrame(render);
-    if (camera.position.z <= 0)
+    if (camera.position.z <= 20000)
         camera.position.z = 550000;
     else
         camera.position.z -= 200;

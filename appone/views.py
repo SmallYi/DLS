@@ -9,6 +9,26 @@ from django.http import JsonResponse
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 import appone.db
+
+def thresold(request):
+    appone.db.connect()
+    center = 0
+    max = 0
+    min = 0
+    max_thresold = 0
+    min_thresold = 0
+    max = appone.db.executeSQL("select max(prediction) from LSTM_ALL")
+    min = appone.db.executeSQL("select min(prediction) from LSTM_ALL")
+    center=appone.db.executeSQL("select centers from MODEL_PARAMETER where model_name='LSTM_all' ")
+    #print(center[0][0].split(","))
+    a=center[0][0].split(",")
+    max_thresold=a[3]
+    min_thresold=a[0]
+    #print(max_thresold,min_thresold)
+    ret_list=[]
+    ret_list.append(max_thresold)
+    ret_list.append(min_thresold)
+    return JsonResponse(ret_list,safe=False)
 	
 def prediction(request):
     now = datetime.now()

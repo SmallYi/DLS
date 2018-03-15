@@ -1,10 +1,10 @@
 ﻿(function (canvasbox, _window) {
 	/* 基础 */
-	var abnormal_lightcolor1 = localStorage.getItem('abnormal_ratio');//获取模型1异常记录比例
-	var abnormal_lightcolor2 = localStorage.getItem('abnormal_ratio');//获取模型2异常记录比例
-	var abnormal_lightcolor3 = localStorage.getItem('abnormal_ratio');//获取模型3异常记录比例
-	var abnormal_lightcolor4 = localStorage.getItem('abnormal_ratio');//获取模型4异常记录比例
-	var abnormal_lightcolor5 = localStorage.getItem('abnormal_ratio');//获取模型5异常记录比例
+	var abnormal_lightcolor1 = 0;
+	var abnormal_lightcolor2 = 0;
+	var abnormal_lightcolor3 = 0;
+	var abnormal_lightcolor4 = 0;
+	var abnormal_lightcolor5 = 0;
 
 	var scene, camera, renderer, states, controls, particles = [], bluePoint;
 	var initCamera;
@@ -450,8 +450,10 @@
 
 		// 公转
 		function gongzhuan() {
-			abnormal_lightcolor1 = localStorage.getItem('abnormal_ratio');//获取模型1异常记录比例
-			abnormal_lightcolor2 = localStorage.getItem('abnormal_ratio');//获取模型2异常记录比例
+			abnormal_lightcolor1 = localStorage.getItem('single_abnormal_rate');//获取lstm个体模型异常记录比例
+			agent_name = localStorage.getItem('agent_id');//获取lstm个体模型user
+			abnormal_lightcolor2 = localStorage.getItem('all_abnormal_rate');//获取模型2异常记录比例
+			console.log(abnormal_lightcolor1, agent_name, abnormal_lightcolor2);
 			abnormal_lightcolor3 = localStorage.getItem('abnormal_ratio');//获取模型3异常记录比例
 			abnormal_lightcolor4 = localStorage.getItem('abnormal_ratio');//获取模型4异常记录比例
 			abnormal_lightcolor5 = localStorage.getItem('abnormal_ratio');//获取模型5异常记录比例
@@ -462,9 +464,15 @@
 			huo_warn.position.set(70 * Math.sin(huo_deg) + 18, 0, 70 * Math.cos(huo_deg));
 			sprite_huo.position.set(70 * Math.sin(huo_deg) + 50, 0, 70 * Math.cos(huo_deg));
 			if (count % 8 == 1 || count % 8 == 2 || count % 8 == 3) {
-				blackPoint_huo.position.copy(huo_warn.position);
+				//blackPoint_huo.position.copy(huo_warn.position);
+				redPoint_huo.intensity = 0;
+				redPoint_huo.position.copy(huo_warn.position);
+				orangePoint_huo.intensity = 0;
+				orangePoint_huo.position.copy(huo_warn.position);
+				greenPoint_huo.intensity = 0;
+				greenPoint_huo.position.copy(huo_warn.position);
 			}
-			else if (abnormal_lightcolor1 > 0.8)//异常比例大于0.3时视为异常，显示红色
+			else if (abnormal_lightcolor1 > 0.7)//异常比例大于0.3时视为异常，显示红色
 			{
 				redPoint_huo.intensity = 4;
 				redPoint_huo.position.copy(huo_warn.position);
@@ -473,7 +481,7 @@
 				greenPoint_huo.intensity = 0;
 				greenPoint_huo.position.copy(huo_warn.position);
 			}
-			else if (abnormal_lightcolor1 > 0.7 && abnormal_lightcolor1 <= 0.8) {
+			else if (abnormal_lightcolor1 > 0.1 && abnormal_lightcolor1 <= 0.8) {
 				orangePoint_huo.intensity = 4;
 				orangePoint_huo.position.copy(huo_warn.position);
 				redPoint_huo.intensity = 0;
@@ -495,7 +503,13 @@
 			mu_warn.position.set(100 * Math.sin(mu_deg) + 18, 0, 100 * Math.cos(mu_deg));
 			sprite_mu.position.set(100 * Math.sin(mu_deg) + 50, 0, 100 * Math.cos(mu_deg));
 			if (count % 8 == 1 || count % 8 == 2 || count % 8 == 3) {
-				blackPoint_mu.position.copy(mu_warn.position);
+				//blackPoint_mu.position.copy(mu_warn.position);
+				redPoint_huo.intensity = 0;
+				redPoint_huo.position.copy(huo_warn.position);
+				orangePoint_huo.intensity = 0;
+				orangePoint_huo.position.copy(huo_warn.position);
+				greenPoint_huo.intensity = 0;
+				greenPoint_huo.position.copy(huo_warn.position);
 			}
 			else if (abnormal_lightcolor2 > 0.7)//异常比例大于0.3时视为异常，显示红色
 			{
@@ -506,7 +520,7 @@
 				greenPoint_mu.intensity = 0;
 				greenPoint_mu.position.copy(mu_warn.position);
 			}
-			else if (abnormal_lightcolor2 > 0.6 && abnormal_lightcolor2 <= 0.7) {
+			else if (abnormal_lightcolor2 > 0.1 && abnormal_lightcolor2 <= 0.7) {
 				orangePoint_mu.intensity = 4;
 				orangePoint_mu.position.copy(mu_warn.position);
 				redPoint_mu.intensity = 0;
@@ -528,9 +542,15 @@
 			tu_warn.position.set(140 * Math.sin(tu_deg) + 18, 0, 140 * Math.cos(tu_deg));
 			sprite_tu.position.set(140 * Math.sin(tu_deg) + 50, 0, 140 * Math.cos(tu_deg));
 			if (count % 8 == 1 || count % 8 == 2 || count % 8 == 3) {
-				blackPoint_tu.position.copy(tu_warn.position);
+				//blackPoint_tu.position.copy(tu_warn.position);
+				redPoint_huo.intensity = 0;
+				redPoint_huo.position.copy(huo_warn.position);
+				orangePoint_huo.intensity = 0;
+				orangePoint_huo.position.copy(huo_warn.position);
+				greenPoint_huo.intensity = 0;
+				greenPoint_huo.position.copy(huo_warn.position);
 			}
-			else if (abnormal_lightcolor3 > 0.3)//异常比例大于0.1时视为异常，显示红色
+			else if (abnormal_lightcolor3 > 0.7)//异常比例大于0.1时视为异常，显示红色
 			{
 				redPoint_tu.intensity = 4;
 				redPoint_tu.position.copy(tu_warn.position);
@@ -539,7 +559,7 @@
 				greenPoint_tu.intensity = 0;
 				greenPoint_tu.position.copy(tu_warn.position);
 			}
-			else if (abnormal_lightcolor3 > 0.2 && abnormal_lightcolor3 <= 0.3) {
+			else if (abnormal_lightcolor3 > 0.1 && abnormal_lightcolor3 <= 0.3) {
 				orangePoint_tu.intensity = 4;
 				orangePoint_tu.position.copy(tu_warn.position);
 				redPoint_tu.intensity = 0;
@@ -562,7 +582,13 @@
 			tian_warn.position.set(195 * Math.sin(tian_deg) + 18, 0, 195 * Math.cos(tian_deg));
 			sprite_tian.position.set(195 * Math.sin(tian_deg) + 50, 0, 195 * Math.cos(tian_deg));
 			if (count % 8 == 1 || count % 8 == 2 || count % 8 == 3){
-				blackPoint_tian.position.copy(tian_warn.position);
+				//blackPoint_tian.position.copy(tian_warn.position);
+				redPoint_huo.intensity = 0;
+				redPoint_huo.position.copy(huo_warn.position);
+				orangePoint_huo.intensity = 0;
+				orangePoint_huo.position.copy(huo_warn.position);
+				greenPoint_huo.intensity = 0;
+				greenPoint_huo.position.copy(huo_warn.position);
 			}
 			else if (abnormal_lightcolor4 > 0.2)//异常比例大于0.3时视为异常，显示红色
 			{
@@ -595,7 +621,13 @@
 			hai_warn.position.set(250 * Math.sin(hai_deg) + 18, 0, 250 * Math.cos(hai_deg));
 			sprite_hai.position.set(250 * Math.sin(hai_deg) + 50, 0, 250 * Math.cos(hai_deg));
 			if (count % 8 == 1 || count % 8 == 2 || count % 8 == 3){
-				blackPoint_hai.position.copy(hai_warn.position);
+				//blackPoint_hai.position.copy(hai_warn.position);
+				redPoint_huo.intensity = 0;
+				redPoint_huo.position.copy(huo_warn.position);
+				orangePoint_huo.intensity = 0;
+				orangePoint_huo.position.copy(huo_warn.position);
+				greenPoint_huo.intensity = 0;
+				greenPoint_huo.position.copy(huo_warn.position);
 			}
 			else if (abnormal_lightcolor5 > 0.1)//异常比例大于0.3时视为异常，显示红色
 			{
@@ -739,10 +771,11 @@
 					showInfo(sprite_sun);
 				}
 				if (currObj.name == "huo") {
-					var abnormal_lightcolor1 = localStorage.getItem('abnormal_ratio');//获取模型1异常记录比例
+					var abnormal_lightcolor1 = localStorage.getItem('single_abnormal_rate');//获取模型1异常记录比例
+					var agent_name = localStorage.getItem('agent_id');//获取lstm个体模型user
 					ctx_huo.clearRect(0, 0, 500, 320);
 					if(abnormal_lightcolor1){
-						ctx_huo.fillText('异常率：' + abnormal_lightcolor1.toString(), 0, 100);
+						ctx_huo.fillText(agent_name+'异常率：' + abnormal_lightcolor1.toString(), 0, 100);
 					}else{
 						ctx_huo.fillText('暂无数据！', 0, 100);
 					}
@@ -750,10 +783,10 @@
 					showInfo(sprite_huo);
 				}
 				if (currObj.name == "mu") {
-					var abnormal_lightcolor2 = localStorage.getItem('abnormal_ratio');//获取模型2异常记录比例
+					var abnormal_lightcolor2 = localStorage.getItem('all_abnormal_rate');//获取模型2异常记录比例
 					ctx_mu.clearRect(0, 0, 500, 320);
 					if(abnormal_lightcolor2){
-						ctx_mu.fillText('异常率：' + abnormal_lightcolor2.toString(), 0, 100);
+						ctx_mu.fillText('LSTM整体异常率：' + abnormal_lightcolor2.toString(), 0, 100);
 					}else{
 						ctx_mu.fillText('暂无数据！', 0, 100);
 					}
