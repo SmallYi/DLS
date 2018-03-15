@@ -18,23 +18,40 @@
 	<script src="../static/js/stats.min.js"></script>
 	<script src="../static/js/OrbitControls.min.js"></script>
 </head>
-<script>
+<script>		
+	$(document).ready(function(){
+		$.getJSON('/thresold/', function (ret) {
+		var maxthresold = ret[0];
+		var minthresold = ret[1];
+		localStorage.setItem('max_thresold', maxthresold);
+		localStorage.setItem('min_thresold', minthresold);
+})
+	});
+</script>
+<script>	
 	var socket;
 	var host;
 	var a = new Array(), b, i = 0;
 	var low_threshold = 1, high_threshold = 9;//记录上下阈值，后期由传过来的数据决定
 	var abnormal_count = 0, ratio = 0;//记录异常记录数目
+	
+		
 	function connect() {
-		var host = "ws://222.20.76.225:3368/";
+		var host = "ws://222.20.78.70:3368/ws";
 		socket = new WebSocket(host);
+		obj = {
+			'algorithm' : 'start'
+		}
 		try {
 			socket.onopen = function (msg) {	
-				socket.send("start");
+				socket.send(JSON.stringify(obj));
+				//alert("pcc");
 			};
 			socket.onmessage = function (msg) {
 				if (typeof msg.data == "string") {
+					//console.log(msg.data);
 					displayContent(msg.data);
-					i++;
+					//i++;
 				}
 			};
 			socket.onclose = function (msg) {
@@ -56,20 +73,42 @@
 		}
 	};
 
-	function $(id) { return document.getElementById(id); }
+	//function $(id) { return document.getElementById(id); }
 
 	function displayContent(msg) {
 		a.push(msg);
-		b = a.pop();//lstm预测值
-		if (b < low_threshold || b > high_threshold) abnormal_count++;
-		ratio = abnormal_count / i;
-		//var strs= new Array(); //定义一数组
-		//strs=b.split("."); //字符分割 
-		console.log(ratio);
-		console.log(b);
-		localStorage.setItem('lstm', b);
-		localStorage.setItem('number', i);//数据编号
-		localStorage.setItem('abnormal_ratio', ratio);
+		b = a.pop();
+		var obj = JSON.parse(b);
+		var data = obj.data;
+		var type = obj.type;
+		var description = obj.description;
+		if(type=="realtime") {
+			i++;
+			var act = obj.data.act_time;
+			var flag = obj.data.abnormal;
+			var lstm = obj.data.prediction;
+			var detail = obj.data.item;
+			var agent = obj.description.agent_id;
+			var modeltype = obj.description.model_type;//lstm模型名
+			
+			localStorage.setItem('acttime', act);
+		    localStorage.setItem('lstmvalue', lstm);
+			localStorage.setItem('details', detail);
+			localStorage.setItem('descriptions', agent);
+			localStorage.setItem('number', i);//数据编号
+			
+			if(modeltype=="single")  {//lstm个体模型				
+				var single_abnormalrate = obj.data.abnormal_rate;
+				localStorage.setItem('agent_id',agent);
+				localStorage.setItem('single_abnormal_rate',single_abnormalrate);
+				//console.log(single_abnormalrate);
+			}
+			if(modeltype=="all")  {//lstm整体模型
+				var all_abnormalrate = obj.data.abnormal_rate;
+				localStorage.setItem('all_abnormal_rate',all_abnormalrate);
+				//console.log(all_abnormalrate);
+			}
+		}
 	}
 	function onkey(event) {
 		if (event.keyCode == 13) {
@@ -95,16 +134,16 @@
 			<a href="/history" style="z-index:0;font-size:1vw;">历史数据</a>
 		</p>
 	</div>
-	<div id="cover_relation" ondblclick="left_dblclick();" style="position: absolute; height: 50%; width: 20%; left: 0; top: 40%; z-index: 2;"></div>
+	<!-- <div id="cover_relation" ondblclick="left_dblclick();" style="position: absolute; height: 50%; width: 20%; left: 0; top: 40%; z-index: 2;"></div>
 	<iframe id="frame_relation" src="{% url 'relation' %}" frameborder='no' style="position: absolute; height: 50%; width: 20%; left: 0; top: 40%; z-index:1;"></iframe>
-	<iframe id="frame_taiyangxi" src="{% url 'taiyangxi_small' %}" frameborder='no' style="position: absolute; height: 50%; width: 20%; left: 0; top: 40%; z-index:0;"></iframe>
+	<iframe id="frame_taiyangxi" src="{% url 'taiyangxi_small' %}" frameborder='no' style="position: absolute; height: 50%; width: 20%; left: 0; top: 40%; z-index:0;"></iframe> -->
 
 	<div class="zuobiaoxi2">
 		<div id="realtime" style="height: 300px; width: 300px;z-index:2;"></div>
 	</div>
-	<div id="cover_single" ondblclick="right_dblclick();" style="position: absolute; height: 50%; width: 20%; right: 0; top: 40%; z-index: 2;"></div>
+	<!-- <div id="cover_single" ondblclick="right_dblclick();" style="position: absolute; height: 50%; width: 20%; right: 0; top: 40%; z-index: 2;"></div>
 	<iframe id="frame_single" src="{% url 'single' %}" frameborder='no' style="position: absolute; height: 50%; width: 20%; right: 0; top: 40%; z-index: 1;"></iframe>
-	<iframe id="frame_taiyangxi2" src="{% url 'taiyangxi_small' %}" frameborder='no' style="position: absolute; height: 50%; width: 20%; right: 0; top: 40%; z-index: 0;"></iframe>
+	<iframe id="frame_taiyangxi2" src="{% url 'taiyangxi_small' %}" frameborder='no' style="position: absolute; height: 50%; width: 20%; right: 0; top: 40%; z-index: 0;"></iframe> -->
 
 	<script>
 		var flag_right = true;
@@ -151,6 +190,7 @@
 
 	<script src="../static/js/taiyangxi.js"></script>
 	<script src="../static/js/realtime1.js"></script>
+	
 </body>
 
 </html>

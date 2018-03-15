@@ -9,17 +9,22 @@ $(document).ready(function(){
 $.getJSON('/prediction/', function (ret) {
     for (var j = 0; j < 200; j+=2) {		
         var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
-        if(ret.abnormalratio[j] / ret.abnormalratio[j+1]>0.9)  var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
-        else if(ret.abnormalratio[j] / ret.abnormalratio[j+1]>0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
-        else if(ret.abnormalratio[j] / ret.abnormalratio[j+1]>0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
-        else if(ret.abnormalratio[j] / ret.abnormalratio[j+1]>0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
-        else if(ret.abnormalratio[j] / ret.abnormalratio[j+1]>0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
+        if(ret.abnormalratio[j] / ret.abnormalratio[j+1]>0.09)  var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
+        else if(ret.abnormalratio[j] / ret.abnormalratio[j+1]>0.08) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
+        else if(ret.abnormalratio[j] / ret.abnormalratio[j+1]>0.07) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3366});
+        else if(ret.abnormalratio[j] / ret.abnormalratio[j+1]>0.06) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
+        else if(ret.abnormalratio[j] / ret.abnormalratio[j+1]>0.05) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff9999 });
+        else if(ret.abnormalratio[j] / ret.abnormalratio[j+1]>0.04) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
+        else if(ret.abnormalratio[j] / ret.abnormalratio[j+1]>0.03) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
+        else if(ret.abnormalratio[j] / ret.abnormalratio[j+1]>0.02) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
         else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
         var star = new THREE.Mesh(dian_geometry, dian_material);
         scene.add(star);
         star.position.x = 12000 + 2000 * (j/2)-20000*parseInt(j/20);
         if(ret.abnormalratio[j+1]==0)  star.position.y = 10000;
-        else star.position.y = (ret.abnormalratio [j]/ ret.abnormalratio[j+1]) * 20000 + 10000;//console.log(ret.abnormalratio[j] / ret.abnormalratio[j+1]);
+        else if(ret.abnormalratio [j]/ ret.abnormalratio[j+1]>0.1)   star.position.y = 30000;
+        else star.position.y = (ret.abnormalratio [j]/ ret.abnormalratio[j+1]) * 200000 + 10000;
+        //console.log(ret.abnormalratio[j] / ret.abnormalratio[j+1]);
         star.position.z = 450000-50000*parseInt(j/20);
     }
     for(var i = 0; i < 100; i++)  {
@@ -314,7 +319,7 @@ function axisvalueRight(xstart, ystart, interval, a, b, c) {
     loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) {
         for (i = 0; i <= 10; i++) {
             var y = ystart + interval * i;
-            var value = i / 10;
+            var value = i / 100;
             var meshtextx = new THREE.Mesh(new THREE.TextGeometry(value, {
                 font: font,
                 size: 800,
@@ -359,25 +364,25 @@ function axisvalueLeft(xstart, ystart, interval, a, b, c) {
         }
     });
 }
-axisvalueRight(10000, 10000, 2000, 8000, 8000, 400000);
-axisvalueRight(10000, 10000, 2000, 8000, 8000, 450000);
+axisvalueRight(10000, 10000, 2000, 7000, 8000, 400000);
+axisvalueRight(10000, 10000, 2000, 7000, 8000, 450000);
 axisvalueLeft(10000, 10000, 2000, -8000, 8000, 400000);
 axisvalueLeft(10000, 10000, 2000, -8000, 8000, 450000);
 
-axisvalueRight(10000, 10000, 2000, 8000, 8000, 300000);
-axisvalueRight(10000, 10000, 2000, 8000, 8000, 350000);
+axisvalueRight(10000, 10000, 2000, 7000, 8000, 300000);
+axisvalueRight(10000, 10000, 2000, 7000, 8000, 350000);
 axisvalueLeft(10000, 10000, 2000, -8000, 8000, 300000);
 axisvalueLeft(10000, 10000, 2000, -8000, 8000, 350000);
-axisvalueRight(10000, 10000, 2000, 8000, 8000, 200000);
-axisvalueRight(10000, 10000, 2000, 8000, 8000, 250000);
+axisvalueRight(10000, 10000, 2000, 7000, 8000, 200000);
+axisvalueRight(10000, 10000, 2000, 7000, 8000, 250000);
 axisvalueLeft(10000, 10000, 2000, -8000, 8000, 200000);
 axisvalueLeft(10000, 10000, 2000, -8000, 8000, 250000);
-axisvalueRight(10000, 10000, 2000, 8000, 8000, 100000);
-axisvalueRight(10000, 10000, 2000, 8000, 8000, 150000);
+axisvalueRight(10000, 10000, 2000, 7000, 8000, 100000);
+axisvalueRight(10000, 10000, 2000, 7000, 8000, 150000);
 axisvalueLeft(10000, 10000, 2000, -8000, 8000, 100000);
 axisvalueLeft(10000, 10000, 2000, -8000, 8000, 150000);
-axisvalueRight(10000, 10000, 2000, 8000, 8000, 50000);
-axisvalueRight(10000, 10000, 2000, 8000, 8000, 0);
+axisvalueRight(10000, 10000, 2000, 7000, 8000, 50000);
+axisvalueRight(10000, 10000, 2000, 7000, 8000, 0);
 axisvalueLeft(10000, 10000, 2000, -8000, 8000, 50000);
 axisvalueLeft(10000, 10000, 2000, -8000, 8000, 0);
 
@@ -424,7 +429,7 @@ render();
 
 function render() {
     requestAnimationFrame(render);
-    if (camera.position.z <= 0)
+    if (camera.position.z <= 20000)
         camera.position.z = 550000;
     else
         camera.position.z -= 200;
