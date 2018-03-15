@@ -63,17 +63,10 @@
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-md-2" style="height: 400px;">
-				<div class="col-sm-6">
+				<div class="col-sm-12">
 					<button class="btn btn-info" onclick="chart_toggle();">
 						显示/隐藏图表
 					</button>
-				</div>
-				<div class="col-sm-6">
-					<select class="form-control" id="ab" onchange="ab_select();">
-						<option value="all">全部数据</option>
-						<option value="0">正常数据</option>
-						<option value="1">异常数据</option>
-					</select>
 				</div>
 			</div>
 
@@ -114,10 +107,7 @@
 						color: '#F0FFFF'
 					}
 				},
-				data: ['0.05', '0.1', '0.15', '0.2', '0.25',
-					'0.3', '0.35', '0.4', '0.45', '0.5',
-					'0.55', '0.6', '0.65', '0.7', '0.75',
-					'0.8', '0.85', '0.9', '0.95', '1.0',
+				data: ['1', '2', '3', '4', '5', '6', '0.7', '8', '9', '10'
 				]
 			},
 			yAxis: {
@@ -137,7 +127,7 @@
 				}
 			},
 			series: [{
-				data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+				data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 				type: 'bar'
 			}]
 		};
@@ -146,48 +136,35 @@
 		var myChart2 = echarts.init(document.getElementById('info_chart2'));
 		option2 = {
 			title: {
-				text: "No Data",
+				text: 'No Data',
 				left: 'center',
 				top: '5%',
 				textStyle: {
 					color: '#F0FFFF'
 				}
 			},
-			xAxis: {
-				nameTextStyle: {
-					color: '#F0FFFF'
-				},
-				axisLine: {
-					lineStyle: {
-						color: '#F0FFFF'
-					}
-				},
-				axisTick: {
-					lineStyle: {
-						color: '#F0FFFF'
+			tooltip: {
+				trigger: 'item',
+				formatter: "{a} <br/>{b} : {c} ({d}%)"
+			},
+			series: [
+				{
+					name: '未知',
+					type: 'pie',
+					radius: '70%',
+					center: ['50%', '60%'],
+					data: [
+						{ value: 1, name: 'No Data' }
+					],
+					itemStyle: {
+						emphasis: {
+							shadowBlur: 10,
+							shadowOffsetX: 0,
+							shadowColor: 'rgba(0, 0, 0, 0.5)'
+						}
 					}
 				}
-			},
-			yAxis: {
-				nameTextStyle: {
-					color: '#F0FFFF'
-				},
-				axisLine: {
-					lineStyle: {
-						color: '#F0FFFF'
-					}
-				},
-				axisTick: {
-					lineStyle: {
-						color: '#F0FFFF'
-					}
-				}
-			},
-			series: [{
-				symbolSize: 4,
-				data: [],
-				type: 'scatter'
-			}]
+			]
 		};
 		myChart2.setOption(option2);
 
@@ -203,13 +180,10 @@
 		$(document).ready(function () {
 			model = $("#hide_bt").text();
 			model = model.slice(5, -4);
-			$.getJSON('/analyse_lstm/', { 'model': model, 'chart': 1, 'page': 1, 'size': 15, 'ab': 'all' }, function (ret) {
+			$.getJSON('/analyse_fp/', { 'model': model, 'chart': 1, 'page': 1, 'size': 15 }, function (ret) {
 				option1.title.text = model;
 				option1.series[0].data = ret.bar;
 				myChart1.setOption(option1);
-				option2.title.text = model;
-				option2.series[0].data = ret.scatter;
-				myChart2.setOption(option2);
 				$('#result_table_head').empty();
 				$('#result_table_body').empty();
 				var thead_str = "<tr>";
@@ -235,7 +209,7 @@
 					currentPage: 1,
 					onPageChange: function (num, type) {
 						if (type == "change") {
-							$.getJSON("/analyse_lstm/", { 'model': model, 'chart': 0, 'page': num, 'size': 15, 'ab': 'all' }, function (ret) {
+							$.getJSON("/analyse_fp/", { 'model': model, 'chart': 0, 'page': num, 'size': 15 }, function (ret) {
 								$('#result_table_body').empty();
 								var tbody_str = '<tr>';
 								for (var i = 0; i < ret.body.length; i++) {
@@ -253,45 +227,6 @@
 				return;
 			})
 		});
-		function ab_select() {
-			model = $("#hide_bt").text();
-			model = model.slice(5, -4);
-			ab = $("#ab").val();
-			$.getJSON('/analyse_lstm/', { 'model': model, 'chart': 0, 'page': 1, 'size': 15, 'ab': ab }, function (ret) {
-				$('#result_table_body').empty();
-				for (var i = 0; i < ret.body.length; i++) {
-					var tbody_str = "<tr>";
-					for (var j = 0; j < ret.body[i].length; j++) {
-						tbody_str += ('<td>' + ret.body[i][j] + '</td>');
-					};
-					tbody_str += "</tr>";
-					$('#result_table_body').append(tbody_str);
-				};
-				$('#Paginator').jqPaginator({
-					totalCounts: parseInt(ret.total),
-					pageSize: 15,
-					visiblePages: 10,
-					currentPage: 1,
-					onPageChange: function (num, type) {
-						if (type == "change") {
-							$.getJSON("/analyse_lstm/", { 'model': model, 'chart': 0, 'page': num, 'size': 15, 'ab': ab }, function (ret) {
-								$('#result_table_body').empty();
-								var tbody_str = '<tr>';
-								for (var i = 0; i < ret.body.length; i++) {
-									var tbody_str = "<tr>";
-									for (var j = 0; j < ret.body[i].length; j++) {
-										tbody_str += ('<td>' + ret.body[i][j] + '</td>');
-									};
-									tbody_str += "</tr>";
-									$('#result_table_body').append(tbody_str);
-								};
-							});
-						}
-					}
-				});
-				return;
-			})
-		};
 	</script>
 </body>
 
