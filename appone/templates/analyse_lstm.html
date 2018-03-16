@@ -62,13 +62,13 @@
 	<div id="info_chart2" style="position: absolute; left: 20px; top: 500px; z-index: 1; height: 400px; width: 400px"></div>
 	<div class="container-fluid">
 		<div class="row">
-			<div class="col-md-2" style="height: 400px;">
-				<div class="col-sm-6">
+			<div class="col-md-3" style="height: 400px;">
+				<div class="col-sm-4">
 					<button class="btn btn-info" onclick="chart_toggle();">
 						显示/隐藏图表
 					</button>
 				</div>
-				<div class="col-sm-6">
+				<div class="col-sm-4 col-sm-offset-2">
 					<select class="form-control" id="ab" onchange="ab_select();">
 						<option value="all">全部数据</option>
 						<option value="0">正常数据</option>
@@ -77,7 +77,7 @@
 				</div>
 			</div>
 
-			<div class="col-md-10">
+			<div class="col-md-9">
 				<table class="table table-condensed" id="result_table" style="height: 750px; color:azure">
 					<thead id="result_table_head"></thead>
 					<tbody id="result_table_body"></tbody>

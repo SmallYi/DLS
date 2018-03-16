@@ -9,9 +9,10 @@ def connect():
     if connection:
         return 1
     try:
-        connection = cx_Oracle.connect("system/123456@222.20.73.170/orcl")
+        connection = cx_Oracle.connect("system/123456@222.20.72.194/orcl")
     except cx_Oracle.Error as e:
         connection = None
+        print(e)
         return -1
     else:
         cursor = connection.cursor()
@@ -29,5 +30,7 @@ def disconnect():
         return 1
     
 def executeSQL(sql):
-    cursor.execute(sql)
-    return cursor.fetchall()
+    if connection:
+        cursor.execute(sql)
+        return cursor.fetchall()
+    raise cx_Oracle.Error("Hey!Hava you connected to DB?")

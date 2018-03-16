@@ -224,11 +224,8 @@
 			canvas.width = '500';
 			ctx_sun = canvas.getContext("2d");
 			ctx_sun.fillStyle = "#ffff00";
-			ctx_sun.font = "Bold 80px Arial";
+			ctx_sun.font = "Bold 60px Arial";
 			ctx_sun.lineWidth = 4;
-			ctx_sun.fillText("User: Adam", 0, 100);
-			ctx_sun.fillText("Mod: Single", 0, 200);
-			ctx_sun.fillText("Warning: 3", 0, 300);
 			let texture = new THREE.Texture(canvas);
 			texture.needsUpdate = true;
 			var spriteMaterial = new THREE.SpriteMaterial({ map: texture, opacity: 0 });
@@ -260,11 +257,8 @@
 			canvas.width = '500';
 			ctx_huo = canvas.getContext("2d");
 			ctx_huo.fillStyle = "#ffff00";
-			ctx_huo.font = "Bold 80px Arial";
+			ctx_huo.font = "Bold 60px Arial";
 			ctx_huo.lineWidth = 4;
-			ctx_huo.fillText("User: Adam", 0, 100);
-			ctx_huo.fillText("Mod: Single", 0, 200);
-			ctx_huo.fillText("Warning: 3", 0, 300);
 			let texture = new THREE.Texture(canvas);
 			texture.needsUpdate = true;
 			var spriteMaterial = new THREE.SpriteMaterial({ map: texture, opacity: 0 });
@@ -299,11 +293,8 @@
 			canvas.width = '500';
 			ctx_mu = canvas.getContext("2d");
 			ctx_mu.fillStyle = "#ffff00";
-			ctx_mu.font = "Bold 80px Arial";
+			ctx_mu.font = "Bold 60px Arial";
 			ctx_mu.lineWidth = 4;
-			ctx_mu.fillText("User: Bob", 0, 100);
-			ctx_mu.fillText("Mod: Single", 0, 200);
-			ctx_mu.fillText("Warning: 0", 0, 300);
 			let texture = new THREE.Texture(canvas);
 			texture.needsUpdate = true;
 			var spriteMaterial = new THREE.SpriteMaterial({ map: texture, opacity: 0 });
@@ -338,11 +329,8 @@
 			canvas.width = '500';
 			ctx_tu = canvas.getContext("2d");
 			ctx_tu.fillStyle = "#ffff00";
-			ctx_tu.font = "Bold 80px Arial";
+			ctx_tu.font = "Bold 60px Arial";
 			ctx_tu.lineWidth = 4;
-			ctx_tu.fillText("User: Cindy", 0, 100);
-			ctx_tu.fillText("Mod: Single", 0, 200);
-			ctx_tu.fillText("Warning: 2", 0, 300);
 			let texture = new THREE.Texture(canvas);
 			texture.needsUpdate = true;
 			var spriteMaterial = new THREE.SpriteMaterial({ map: texture, opacity: 0 });
@@ -376,11 +364,8 @@
 			canvas.width = '500';
 			ctx_tian = canvas.getContext("2d");
 			ctx_tian.fillStyle = "#ffff00";
-			ctx_tian.font = "Bold 80px Arial";
+			ctx_tian.font = "Bold 60px Arial";
 			ctx_tian.lineWidth = 4;
-			ctx_tian.fillText("User: Elis", 0, 100);
-			ctx_tian.fillText("Mod: Single", 0, 200);
-			ctx_tian.fillText("Warning: 0", 0, 300);
 			let texture = new THREE.Texture(canvas);
 			texture.needsUpdate = true;
 			var spriteMaterial = new THREE.SpriteMaterial({ map: texture, opacity: 0 });
@@ -412,11 +397,8 @@
 			canvas.width = '500';
 			ctx_hai = canvas.getContext("2d");
 			ctx_hai.fillStyle = "#ffff00";
-			ctx_hai.font = "Bold 80px Arial";
+			ctx_hai.font = "Bold 60px Arial";
 			ctx_hai.lineWidth = 4;
-			ctx_hai.fillText("User: Fancy", 0, 100);
-			ctx_hai.fillText("Mod: Single", 0, 200);
-			ctx_hai.fillText("Warning: 4", 0, 300);
 			let texture = new THREE.Texture(canvas);
 			texture.needsUpdate = true;
 			var spriteMaterial = new THREE.SpriteMaterial({ map: texture, opacity: 0 });
@@ -764,18 +746,19 @@
 
 			if (intersects.length > 0) {
 				var currObj = intersects[0].object;
-				//console.log(currObj);
-				if (currObj.name == "taiyang") {
-					ctx_sun.fillText('暂无数据！', 0, 100);
-					sprite_sun.material.map.needsUpdate = true;
-					showInfo(sprite_sun);
-				}
+				// if (currObj.name == "taiyang") {
+				// 	ctx_sun.clearRect(0, 0, 500, 320);
+				// 	ctx_sun.fillText('暂无数据！', 0, 100);
+				// 	sprite_sun.material.map.needsUpdate = true;
+				// 	showInfo(sprite_sun);
+				// }
 				if (currObj.name == "huo") {
 					var abnormal_lightcolor1 = localStorage.getItem('single_abnormal_rate');//获取模型1异常记录比例
 					var agent_name = localStorage.getItem('agent_id');//获取lstm个体模型user
 					ctx_huo.clearRect(0, 0, 500, 320);
 					if(abnormal_lightcolor1){
-						ctx_huo.fillText(agent_name+'异常率：' + abnormal_lightcolor1.toString(), 0, 100);
+						ctx_huo.fillText(agent_name, 0, 100);
+						ctx_huo.fillText('异常率：' + abnormal_lightcolor1.toString(), 0, 200)
 					}else{
 						ctx_huo.fillText('暂无数据！', 0, 100);
 					}
@@ -786,7 +769,8 @@
 					var abnormal_lightcolor2 = localStorage.getItem('all_abnormal_rate');//获取模型2异常记录比例
 					ctx_mu.clearRect(0, 0, 500, 320);
 					if(abnormal_lightcolor2){
-						ctx_mu.fillText('LSTM整体异常率：' + abnormal_lightcolor2.toString(), 0, 100);
+						ctx_mu.fillText('整体异常率:', 0, 100);
+						ctx_mu.fillText(abnormal_lightcolor2.toString(), 0, 200);
 					}else{
 						ctx_mu.fillText('暂无数据！', 0, 100);
 					}

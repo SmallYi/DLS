@@ -38,32 +38,6 @@ $(document).ready(function () {
         }
     })
 });
-var mouse = new THREE.Vector3();
-var raycaster = new THREE.Raycaster();
-function onClick(event) {
-    event.preventDefault();
-    //将屏幕像素坐标转化成camare坐标
-    mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
-    mouse.y = - (event.clientY / renderer.domElement.clientHeight) * 2 + 1;
-    //设置射线的起点是相机
-    raycaster.setFromCamera(mouse, camera);
-
-    //将射线投影到屏幕，如果scene.children里的某个或多个形状相交，则返回这些形状
-    //第二个参数是设置是否递归，默认是false，也就是不递归。当scene里面添加了Group对象的实例时，就需要设置这个参数为true
-    //第一个参数不传scene.children也可以，传一个group.children或一个形状数组都可以（这样可以实现一些特别的效果如点击内部的效果）
-    //另外，因为返回的是一个数组，所以遍历数组就可以获得所有相交的对象，当元素重叠时，特别有用
-    var intersects = raycaster.intersectObjects(scene.children);
-
-    if (intersects.length > 0) {
-        var currObj = intersects[0].object;
-        if (currObj.name) {
-            window.location.href = ('analyse_lstm/?chart=-1&model=' + currObj.name);
-        }
-    }
-    renderer.render(scene, camera);
-}
-document.addEventListener("mousedown", onClick, false);
-
 
 var container = document.createElement('div');
 document.body.appendChild(container);
@@ -71,7 +45,7 @@ document.body.appendChild(container);
 var camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 1, 400000)
 camera.position.x = 0;
 camera.position.z = 550000;
-camera.position.y = 10000;
+camera.position.y = 20000;
 camera.lookAt(new THREE.Vector3(0, 6000, 0));
 
 var scene = new THREE.Scene();
@@ -239,21 +213,27 @@ function titleLeft(username, z, mesh) {
         scene.add(mesh);
     });
 }
-titleRight('LSTM_5VM45975_SINGLE', 450000, tR1);
-titleRight('LSTM_S2A58BGQ_SINGLE', 400000, tR2);
-titleRight('LSTM_WDWCASZ0627345_SINGLE', 350000, tR3);
-titleRight('LSTM_Z1D3XB0A_SINGLE', 300000, tR4);
-titleRight('LSTM_Z4YAZWRB_SINGLE', 250000, tR5);
-titleRight('LSTM_537TT03OT_SINGLE', 200000, tR6);
-titleRight('LSTM_Z4YAZTH6_SINGLE', 150000, tR7);
+titleRight('5VM45975', 450000, tR1);
+titleRight('S2A58BGQ', 400000, tR2);
+titleRight('WDWCASZ0627345', 350000, tR3);
+titleRight('Z1D3XB0A', 300000, tR4);
+titleRight('Z4YAZWRB', 250000, tR5);
+titleRight('537TT03OT', 200000, tR6);
+titleRight('Z4YAZTH6', 150000, tR7);
+titleRight('P02703102649', 250000, tR8);
+titleRight('Z4YAZTKF', 200000, tR9);
+titleRight('Z4YAZVXM', 150000, tR10);
 
-titleLeft('LSTM_5VM45975_SINGLE', 450000, tL1);
-titleLeft('LSTM_S2A58BGQ_SINGLE', 400000, tL2);
-titleLeft('LSTM_WDWCASZ0627345_SINGLE', 350000, tL3);
-titleLeft('LSTM_Z1D3XB0A_SINGLE', 300000, tL4);
-titleLeft('LSTM_Z4YAZWRB_SINGLE', 250000, tL5);
-titleLeft('LSTM_537TT03OT_SINGLE', 200000, tL6);
-titleLeft('LSTM_Z4YAZTH6_SINGLE', 150000, tL7);
+titleLeft('5VM45975', 450000, tL1);
+titleLeft('S2A58BGQ', 400000, tL2);
+titleLeft('WDWCASZ0627345', 350000, tL3);
+titleLeft('Z1D3XB0A', 300000, tL4);
+titleLeft('Z4YAZWRB', 250000, tL5);
+titleLeft('537TT03OT', 200000, tL6);
+titleLeft('Z4YAZTH6', 150000, tL7);
+titleLeft('P02703102649', 250000, tL8);
+titleLeft('Z4YAZTKF', 200000, tL9);
+titleLeft('Z4YAZVXM', 150000, tL10);
 
 //添加坐标变量
 function axisflagRight(x1, y1, x2, y2, z) {
@@ -477,3 +457,29 @@ function render() {
     //  dateVerts();
     renderer.render(scene, camera);
 }
+
+var mouse = new THREE.Vector3();
+var raycaster = new THREE.Raycaster();
+function onClick(event) {
+    event.preventDefault();
+    //将屏幕像素坐标转化成camare坐标
+    mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
+    mouse.y = - (event.clientY / renderer.domElement.clientHeight) * 2 + 1;
+    //设置射线的起点是相机
+    raycaster.setFromCamera(mouse, camera);
+
+    //将射线投影到屏幕，如果scene.children里的某个或多个形状相交，则返回这些形状
+    //第二个参数是设置是否递归，默认是false，也就是不递归。当scene里面添加了Group对象的实例时，就需要设置这个参数为true
+    //第一个参数不传scene.children也可以，传一个group.children或一个形状数组都可以（这样可以实现一些特别的效果如点击内部的效果）
+    //另外，因为返回的是一个数组，所以遍历数组就可以获得所有相交的对象，当元素重叠时，特别有用
+    var intersects = raycaster.intersectObjects(scene.children);
+
+    if (intersects.length > 0) {
+        var currObj = intersects[0].object;
+        if (currObj.name) {
+            window.location.href = ('analyse_lstm/?chart=-1&model=' + currObj.name);
+        }
+    }
+    renderer.render(scene, camera);
+}
+document.addEventListener("mousedown", onClick, false);

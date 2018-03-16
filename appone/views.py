@@ -3,12 +3,13 @@ import os
 import cx_Oracle
 import time
 from datetime import datetime, timedelta
-from django.db import connection,transaction
+from django.db import connection, transaction
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 import appone.db
+
 
 def thresold(request):
     appone.db.connect()
@@ -17,99 +18,99 @@ def thresold(request):
     min = 0
     max_thresold = 0
     min_thresold = 0
-    max = appone.db.executeSQL("select max(prediction) from LSTM_ALL")
-    min = appone.db.executeSQL("select min(prediction) from LSTM_ALL")
-    center=appone.db.executeSQL("select centers from MODEL_PARAMETER where model_name='LSTM_all' ")
-    #print(center[0][0].split(","))
-    a=center[0][0].split(",")
-    max_thresold=a[3]
-    min_thresold=a[0]
-    #print(max_thresold,min_thresold)
-    ret_list=[]
+    max = appone.db.executeSQL("SELECT MAX(PREDICTION) FROM LSTM_ALL")
+    min = appone.db.executeSQL("SELECT MIN(PREDICTION) FROM LSTM_ALL")
+    center = appone.db.executeSQL(
+        "SELECT CENTERS FROM MODEL_PARAMETER WHERE MODEL_NAME='LSTM_all' ")
+    a = center[0][0].split(",")
+    max_thresold = a[3]
+    min_thresold = a[0]
+    ret_list = []
     ret_list.append(max_thresold)
     ret_list.append(min_thresold)
-    return JsonResponse(ret_list,safe=False)
-	
-def prediction(request):
-    now = datetime.now()
-    one_day_before = (now - timedelta(days = 1)).strftime('%Y-%m-%d')
-    two_day_before = (now - timedelta(days = 2)).strftime('%Y-%m-%d')
-    three_day_before = (now - timedelta(days = 3)).strftime('%Y-%m-%d')
-    four_day_before = (now - timedelta(days = 4)).strftime('%Y-%m-%d')
-    five_day_before = (now - timedelta(days = 5)).strftime('%Y-%m-%d')
-    six_day_before = (now - timedelta(days = 6)).strftime('%Y-%m-%d')
-    seven_day_before = (now - timedelta(days = 7)).strftime('%Y-%m-%d')
-    eight_day_before = (now - timedelta(days = 8)).strftime('%Y-%m-%d')
-    nine_day_before = (now - timedelta(days = 9)).strftime('%Y-%m-%d')
-    ten_day_before = (now - timedelta(days = 10)).strftime('%Y-%m-%d')
+    return JsonResponse(ret_list, safe=False)
 
-    now = '2017-02-17'
-    one_day_before = '2017-02-16'
-    two_day_before = '2017-02-15'
-    three_day_before = '2017-02-14'
-    four_day_before = '2017-02-13'
-    five_day_before = '2017-02-12'
-    six_day_before = '2017-02-11'
-    seven_day_before = '2017-02-10'
-    eight_day_before = '2017-02-09'
-    nine_day_before = '2017-02-08'
-    ten_day_before = '2017-02-07'
-    history_time=[now, one_day_before, two_day_before, three_day_before, four_day_before, five_day_before, six_day_before, seven_day_before, eight_day_before, nine_day_before, ten_day_before]
-    agent=['5VM45975','S2A58BGQ','WDWCASZ0627345','Z1D3XB0A','Z4YAZWRB','537TT03OT','Z4YAZTH6','P02703102649','Z4YAZTKF','Z4YAZVXM']
-    ret_list1=[]
-    ret_list2=[]
-    length=0
-    maxtomin=0
-    min_prediction=0
+def prediction(request):
+    # history_time = []
+    # now = datetime.now()
+    # history_time.append(now)
+    # for x in range(1,11):
+    #     history_time.append((now - timedelta(days = x)).strftime('%Y-%m-%d'))
+
+    history_time = [
+        '2017-02-16', '2017-02-15', '2017-02-14', '2017-02-13', '2017-02-12',
+        '2017-02-11', '2017-02-10', '2017-02-09', '2017-02-08', '2017-02-07'
+    ]
+    agent = [
+        '5VM45975', 'S2A58BGQ', 'WDWCASZ0627345', 'Z1D3XB0A', 'Z4YAZWRB',
+        '537TT03OT', 'Z4YAZTH6', 'P02703102649', 'Z4YAZTKF', 'Z4YAZVXM'
+    ]
+    ret_list1 = []
+    ret_list2 = []
+    length = 0
+    maxtomin = 0
+    min_prediction = 0
     appone.db.connect()
     for y in range(10):
         normalization = []
-        a=[]
-        b=[0,0,0,0,0,0,0,0,0,0]
-        length= appone.db.executeSQL("select count(*) from %s"%('LSTM_'+agent[y]+'_SINGLE'))
-        normalization = appone.db.executeSQL("select prediction from %s"%('LSTM_'+agent[y]+'_SINGLE'))
-        maxtomin=appone.db.executeSQL("select max(prediction)-min(prediction) from %s"%('LSTM_'+agent[y]+'_SINGLE'))
-        min_prediction=appone.db.executeSQL("select min(prediction) from %s"%('LSTM_'+agent[y]+'_SINGLE'))
+        a = []
+        b = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        length = appone.db.executeSQL("SELECT COUNT(*) FROM %s" %
+                                      ('LSTM_' + agent[y] + '_SINGLE'))
+        normalization = appone.db.executeSQL("SELECT PREDICTION FROM %s" %
+                                             ('LSTM_' + agent[y] + '_SINGLE'))
+        maxtomin = appone.db.executeSQL(
+            "SELECT MAX(PREDICTION)-MIN(PREDICTION) FROM %s" %
+            ('LSTM_' + agent[y] + '_SINGLE'))
+        min_prediction = appone.db.executeSQL(
+            "SELECT MIN(PREDICTION) FROM %s" %
+            ('LSTM_' + agent[y] + '_SINGLE'))
         for i in range(length[0][0]):
-            a.append((normalization[i][0]-min_prediction[0][0])/maxtomin[0][0])
+            a.append(
+                (normalization[i][0] - min_prediction[0][0]) / maxtomin[0][0])
         for j in range(length[0][0]):
-            if (a[j]>=0 and a[j]<0.1):
-                b[0]+=1
-            if (a[j]>=0.1 and a[j]<0.2):
-                b[1]+=1 
-            if (a[j]>=0.2 and a[j]<0.3):
-                b[2]+=1
-            if (a[j]>=0.3 and a[j]<0.4):
-                b[3]+=1 
-            if (a[j]>=0.4 and a[j]<0.5):
-                b[4]+=1
-            if (a[j]>=0.5 and a[j]<0.6):
-                b[5]+=1
-            if (a[j]>=0.6 and a[j]<0.7):
-                b[6]+=1
-            if (a[j]>=0.7 and a[j]<0.8):
-                b[7]+=1
-            if (a[j]>=0.8 and a[j]<0.9):
-                b[8]+=1
-            if a[j]>=0.9 :
-                b[9]+=1 
+            if (a[j] >= 0 and a[j] < 0.1):
+                b[0] += 1
+            if (a[j] >= 0.1 and a[j] < 0.2):
+                b[1] += 1
+            if (a[j] >= 0.2 and a[j] < 0.3):
+                b[2] += 1
+            if (a[j] >= 0.3 and a[j] < 0.4):
+                b[3] += 1
+            if (a[j] >= 0.4 and a[j] < 0.5):
+                b[4] += 1
+            if (a[j] >= 0.5 and a[j] < 0.6):
+                b[5] += 1
+            if (a[j] >= 0.6 and a[j] < 0.7):
+                b[6] += 1
+            if (a[j] >= 0.7 and a[j] < 0.8):
+                b[7] += 1
+            if (a[j] >= 0.8 and a[j] < 0.9):
+                b[8] += 1
+            if a[j] >= 0.9:
+                b[9] += 1
         for j in range(10):
-            b[j]/=length[0][0]
+            b[j] /= length[0][0]
             ret_list2.append(b[j])
 
-
         for x in range(10):
-            ret_list1.append(appone.db.executeSQL('''SELECT count(*) from %s
+            ret_list1.append(
+                appone.db.executeSQL('''SELECT COUNT(*) from %s
                                             WHERE ACT_TIME BETWEEN
                                             to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')
                                             AND ABNORMAL=0
-                                         '''% ('LSTM_'+agent[y]+'_SINGLE', history_time[x+1], history_time[x])))
-            ret_list1.append(appone.db.executeSQL('''SELECT count(*) from %s
+                                         ''' %
+                                     ('LSTM_' + agent[y] + '_SINGLE',
+                                      history_time[x + 1], history_time[x])))
+            ret_list1.append(
+                appone.db.executeSQL('''SELECT COUNT(*) FROM %s
                                             WHERE ACT_TIME BETWEEN
                                             to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')
-                                          '''% ('LSTM_'+agent[y]+'_SINGLE', history_time[x+1], history_time[x])))
+                                          ''' %
+                                     ('LSTM_' + agent[y] + '_SINGLE',
+                                      history_time[x + 1], history_time[x])))
 
-    ret_dict = {'abnormalratio':ret_list1, 'lstm':ret_list2}
+    ret_dict = {'abnormalratio': ret_list1, 'lstm': ret_list2}
     # for y in range(1):
     #     normalization = []
     #     normalization = appone.db.executeSQL("select prediction from %s"%('LSTM_'+agent[y]+'_SINGLE'))
@@ -122,37 +123,31 @@ def prediction(request):
     return JsonResponse(ret_dict)
 
 def recordnumber(request):
-    now = datetime.now()
-    one_day_before = (now - timedelta(days = 1)).strftime('%Y%m%d')
-    #print("%s"%(one_day_before))
-    two_day_before = (now - timedelta(days = 2)).strftime('%Y%m%d')
-    three_day_before = (now - timedelta(days = 3)).strftime('%Y%m%d')
-    four_day_before = (now - timedelta(days = 4)).strftime('%Y%m%d')
-    five_day_before = (now - timedelta(days = 5)).strftime('%Y%m%d')
-    six_day_before = (now - timedelta(days = 6)).strftime('%Y%m%d')
-    seven_day_before = (now - timedelta(days = 7)).strftime('%Y%m%d')
-    eight_day_before = (now - timedelta(days = 8)).strftime('%Y%m%d')
-    nine_day_before = (now - timedelta(days = 9)).strftime('%Y%m%d')
-    ten_day_before = (now - timedelta(days = 10)).strftime('%Y%m%d')
-    ret_list=[]
+    # history_time = []
+    # now = datetime.now()
+    # history_time.append(now)
+    # for x in range(1,11):
+    #     history_time.append((now - timedelta(days = x)).strftime('%Y-%m-%d'))
 
-    one_day_before = '20170122'
-    two_day_before = '20170123'
-    three_day_before = '20170124'
-    four_day_before = '20170206'
-    five_day_before = '20170207'
-    six_day_before = '20170208'
-    seven_day_before = '20170209'
-    eight_day_before = '20170210'
-    nine_day_before = '20170211'
-    ten_day_before = '20170212'
-    history_time=[one_day_before, two_day_before, three_day_before, four_day_before, five_day_before, six_day_before, seven_day_before, eight_day_before, nine_day_before, ten_day_before]
-    agent =['WD-WCASZ0627345', 'S2A58BGQ', '5VM45975', 'Z1D3XB0A', 'Z4YAZWRB', 'Z4YAZVXM', 'Z4YAZW4W', 'Z4YAZVV4', '537TT03OT', '6VY152TL', 'Z4YAZTEF', 'Z4YAZTKF']
+    history_time = [
+        '20170122', '20170123', '20170124', '20170206', '20170207', '20170208',
+        '20170209', '20170210', '20170211', '20170212'
+    ]
+    agent = [
+        'WD-WCASZ0627345', 'S2A58BGQ', '5VM45975', 'Z1D3XB0A', 'Z4YAZWRB',
+        'Z4YAZVXM', 'Z4YAZW4W', 'Z4YAZVV4', '537TT03OT', '6VY152TL',
+        'Z4YAZTEF', 'Z4YAZTKF'
+    ]
+    ret_list = []
     appone.db.connect()
     for x in range(12):
         for y in range(10):
-            ret_list.append(appone.db.executeSQL("SELECT COUNT(*) from %s WHERE AGENT_ID = '%s' " %('DL_TMSAPP_C0A80006_'+history_time[y], agent[x])))                                                                                 
+            ret_list.append(
+                appone.db.executeSQL(
+                    "SELECT COUNT(*) FROM %s WHERE AGENT_ID = '%s' " %
+                    ('DL_TMSAPP_C0A80006_' + history_time[y], agent[x])))
     return JsonResponse(ret_list, safe=False)
+
 
 def addconfiguretodatabase(request):
     if request.method == "POST":
@@ -160,18 +155,18 @@ def addconfiguretodatabase(request):
         base_linevalue = request.POST["line"]
         base_lineunit = request.POST["baseunit"]
         model_name = request.POST["model"]
-        check_box_list = request.POST.getlist('check_box_list') 
-    
+        check_box_list = request.POST.getlist('check_box_list')
+
     if len(check_box_list) == 2:
         fields_study = check_box_list[0] + ',' + check_box_list[1]
     else:
         fields_study = ''
-    
+
     if base_lineunit == 'single':
         baseline_values = base_linevalue
     else:
         baseline_values = 'all'
-    
+
     table_name = 'agentid' + '_' + base_lineunit + '_' + base_linevalue + '_' + model_name
     table_name.replace('-', '')
 
@@ -186,7 +181,7 @@ def addconfiguretodatabase(request):
                                 ACT_TIME DATE, 
                             )
                         ''' % table_name)
-    
+
     appone.db.connect()
     appone.db.executeSQL('''
                             INSERT INTO MODEL_PARAMETER 
@@ -210,9 +205,11 @@ def addconfiguretodatabase(request):
                                 sysdate,
                                 0
                             )
-                        ''' % (table_name, fields_study, base_line, baseline_values, base_lineunit, table_name))
+                        ''' % (table_name, fields_study, base_line,
+                               baseline_values, base_lineunit, table_name))
 
     return HttpResponseRedirect('/addok/')
+
 
 def addconfiguretodatabaseRelation(request):
     if request.method == "POST":
@@ -220,7 +217,7 @@ def addconfiguretodatabaseRelation(request):
         user_name = request.POST["user_name"]
         min_support = request.POST["min_support"]
         min_confidence = request.POST["min_confidence"]
-        model_name =request.POST["model2"]
+        model_name = request.POST["model2"]
 
     if operation_type == 'PeopleOperation':
         model_type = 'PO'
@@ -228,11 +225,11 @@ def addconfiguretodatabaseRelation(request):
         table_name = 'PO' + '_' + user_name + '_' + model_name
     elif operation_type == 'OperationOperation':
         model_type = 'OO'
-        agent_id =''
+        agent_id = ''
         table_name = 'OO' + '_' + model_name
     else:
         model_type = 'PP'
-        agent_id =''
+        agent_id = ''
         table_name = 'PP' + '_' + model_name
 
     appone.db.connect()
@@ -269,7 +266,9 @@ def addconfiguretodatabaseRelation(request):
                                 '%s',
                                 '%s'
                             )
-                        ''' % (table_name, float(min_support), float(min_confidence), table_name, table_name, model_type, agent_id))
+                        ''' % (table_name, float(min_support),
+                               float(min_confidence), table_name, table_name,
+                               model_type, agent_id))
 
     return HttpResponseRedirect('/addok2/')
 
@@ -277,7 +276,7 @@ def addok(request):
     return render(request, 'addok.html')
 
 def addok2(request):
-    return render(request, 'addok2.html')    
+    return render(request, 'addok2.html')
 
 def addconfigure(request):
     return render(request, 'configureadd.html')
@@ -292,16 +291,16 @@ def simulate(request):
     return render(request, 'realtimecommunicate.html')
 
 def single(request):
-	return render(request, 'single_mesh.html')
+    return render(request, 'single_mesh.html')
 
 def relation(request):
-	return render(request, 'relation2.html')
+    return render(request, 'relation2.html')
 
 def history(request):
     return render(request, 'history.html')
 
 def taiyangxi(request):
-	return render(request, 'taiyangxi_small.html')
+    return render(request, 'taiyangxi_small.html')
 
 def load_model(request):
     ret_dict = {}
@@ -319,8 +318,12 @@ def load_model(request):
         unit = 'BASELINE_UNIT'
     elif model_type == 'FPGROWTH_PARAMETER':
         unit = 'MODEL_TYPE'
-    ret_dict['total'] = appone.db.executeSQL("SELECT COUNT(*) FROM %s WHERE %s = '%s'" % (model_type, unit, baseline))
-    ret_dict['head'] = appone.db.executeSQL("SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'" % model_type)
+    ret_dict['total'] = appone.db.executeSQL(
+        "SELECT COUNT(*) FROM %s WHERE %s = '%s'" % (model_type, unit,
+                                                     baseline))
+    ret_dict['head'] = appone.db.executeSQL(
+        "SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'" %
+        model_type)
     ret_dict['body'] = appone.db.executeSQL('''
                                             SELECT * FROM
                                             (
@@ -328,8 +331,9 @@ def load_model(request):
                                                 FROM (SELECT * FROM %s WHERE %s = '%s') A
                                                 WHERE ROWNUM <= %d
                                             )   WHERE RN >= %d
-                                        ''' % (model_type, unit, baseline, page*size, page*size-14))
-    
+                                        ''' % (model_type, unit, baseline,
+                                               page * size, page * size - 14))
+
     return JsonResponse(ret_dict)
 
 def search(request):
@@ -339,11 +343,13 @@ def search(request):
     end_date = request.GET['end_date']
     page = int(request.GET['page'])
     size = int(request.GET['size'])
-    
+
     if model == None:
         ret_dict['total'] = -1
         return JsonResponse(ret_dict)
-    ret_dict['head'] = appone.db.executeSQL("SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'" % model.upper())
+    ret_dict['head'] = appone.db.executeSQL(
+        "SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'" %
+        model.upper())
     ret_dict['body'] = appone.db.executeSQL('''
                                             SELECT * FROM
                                             (
@@ -351,10 +357,12 @@ def search(request):
                                                 FROM (SELECT * FROM %s WHERE INSERT_TIME BETWEEN to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')) A
                                                 WHERE ROWNUM <= %d
                                             )   WHERE RN >= %d
-                                        ''' % (model, start_date, end_date, page*size, page*size-14))
-    ret_dict['total'] = appone.db.executeSQL('''SELECT COUNT(*) FROM %s WHERE INSERT_TIME BETWEEN 
+                                        ''' % (model, start_date, end_date,
+                                               page * size, page * size - 14))
+    ret_dict['total'] = appone.db.executeSQL(
+        '''SELECT COUNT(*) FROM %s WHERE INSERT_TIME BETWEEN 
                                            to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD') 
-                                        ''' % (model, start_date, end_date))                              
+                                        ''' % (model, start_date, end_date))
     return JsonResponse(ret_dict)
 
 def analyse_lstm(request):
@@ -377,7 +385,9 @@ def analyse_lstm(request):
     model = 'LSTM_' + model + '_SINGLE'
 
     ret_dict['total'] = -1
-    ret_dict['head'] = appone.db.executeSQL("SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'" % model.upper())
+    ret_dict['head'] = appone.db.executeSQL(
+        "SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'" %
+        model.upper())
     ret_dict['body'] = appone.db.executeSQL('''
                                             SELECT * FROM
                                             (
@@ -385,7 +395,9 @@ def analyse_lstm(request):
                                                 FROM (SELECT * FROM %s %s) A
                                                 WHERE ROWNUM <= %d
                                             )   WHERE RN >= %d
-                                            ''' % (model, ab_select, page*size, page*size-14))
+                                            ''' %
+                                            (model, ab_select, page * size,
+                                             page * size - 14))
     ret_dict['total'] = appone.db.executeSQL('''SELECT COUNT(*) FROM %s %s
                                             ''' % (model, ab_select))
     if chart == '0':
@@ -396,7 +408,8 @@ def analyse_lstm(request):
         bar_tmp = appone.db.executeSQL('''
                                             SELECT COUNT(*) FROM %s
                                                 WHERE PREDICTION BETWEEN %f AND %f
-                                            ''' % (model, 0.05*x, 0.05*x+0.05))
+                                            ''' % (model, 0.05 * x,
+                                                   0.05 * x + 0.05))
         bar_list.append(bar_tmp[0][0])
     ret_dict['bar'] = bar_list
 
@@ -410,18 +423,18 @@ def analyse_lstm(request):
     ret_sql = appone.db.executeSQL('''
                                     SELECT ACT_TIME, DATA FROM %s
                                 ''' % (model))
-    
+
     scatter_list = []
     for record in ret_sql:
         x = record[0].hour * 60 + record[0].minute
         y = code_dict.get(record[1].split(' ')[2], -1)
         # change the 2
         if y != -1:
-            scatter_list.append((x,y))
+            scatter_list.append((x, y))
     ret_dict['scatter'] = scatter_list
 
     return JsonResponse(ret_dict)
-    
+
 def analyse_fp(request):
     model = request.GET['model']
     chart = request.GET['chart']
@@ -436,7 +449,9 @@ def analyse_fp(request):
 
     model = 'PO_' + model + '_20180314'
     ret_dict['total'] = -1
-    ret_dict['head'] = appone.db.executeSQL("SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'" % model.upper())
+    ret_dict['head'] = appone.db.executeSQL(
+        "SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'" %
+        model.upper())
     ret_dict['body'] = appone.db.executeSQL('''
                                             SELECT * FROM
                                             (
@@ -444,21 +459,20 @@ def analyse_fp(request):
                                                 FROM (SELECT * FROM %s) A
                                                 WHERE ROWNUM <= %d
                                             )   WHERE RN >= %d
-                                            ''' % (model, page*size, page*size-14))
+                                            ''' % (model, page * size,
+                                                   page * size - 14))
     ret_dict['total'] = appone.db.executeSQL('''SELECT COUNT(*) FROM %s 
                                             ''' % (model))
     if chart == '0':
         return JsonResponse(ret_dict)
 
     bar_list = []
-    for x in range(1,11):
+    for x in range(1, 11):
         bar_tmp = appone.db.executeSQL('''
                                             SELECT COUNT(*) FROM %s
                                                 WHERE VALUE = %d
                                             ''' % (model, x))
         bar_list.append(bar_tmp[0][0])
     ret_dict['bar'] = bar_list
-
-
 
     return JsonResponse(ret_dict)
