@@ -447,11 +447,11 @@ def analyse_fp(request):
     size = int(request.GET['size'])
     appone.db.connect()
 
-    model = 'PO_' + model + '_20180314'
+    data_tbname = 'PO_' + model + '_20180314'
     ret_dict['total'] = -1
     ret_dict['head'] = appone.db.executeSQL(
         "SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'" %
-        model.upper())
+        data_tbname.upper())
     ret_dict['body'] = appone.db.executeSQL('''
                                             SELECT * FROM
                                             (
@@ -459,10 +459,10 @@ def analyse_fp(request):
                                                 FROM (SELECT * FROM %s) A
                                                 WHERE ROWNUM <= %d
                                             )   WHERE RN >= %d
-                                            ''' % (model, page * size,
+                                            ''' % (data_tbname, page * size,
                                                    page * size - 14))
     ret_dict['total'] = appone.db.executeSQL('''SELECT COUNT(*) FROM %s 
-                                            ''' % (model))
+                                            ''' % (data_tbname))
     if chart == '0':
         return JsonResponse(ret_dict)
 
@@ -470,9 +470,56 @@ def analyse_fp(request):
     for x in range(1, 11):
         bar_tmp = appone.db.executeSQL('''
                                             SELECT COUNT(*) FROM %s
-                                                WHERE VALUE = %d
-                                            ''' % (model, x))
+                                                WHERE VALUE = %d AND TYPE = 1
+                                            ''' % (data_tbname, x))
         bar_list.append(bar_tmp[0][0])
     ret_dict['bar'] = bar_list
 
+    bar2_xdata = []
+    bar2_ydata = []
+    date_list = []
+    bar2_tbname = 'PO_' + model + '_RELATIONAPP'
+    ret_sql = appone.db.executeSQL('''
+                                        SELECT DISTINCT ACT_DATE FROM %s
+                                        ''' % (bar2_tbname))
+    for x in ret_sql: 
+        date_list.append(x[0])
+    date_list.sort()
+    for d in date_list:
+        r_num = appone.db.executeSQL('''
+                                        SELECT COUNT(*) FROM %s 
+                                            WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
+                                                AND FPITEMS_COUNT <> 0
+                                        ''' % (bar2_tbname, d.strftime('%Y-%m-%d')))
+        a_num = appone.db.executeSQL('''
+                                        SELECT COUNT(*) FROM %s 
+                                            WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
+                                        ''' % (bar2_tbname, d.strftime('%Y-%m-%d')))
+        bar2_xdata.append(d.strftime('%Y-%m-%d'))
+        bar2_ydata.append(r_num[0][0]/a_num[0][0])
+    ret_dict['bar2_xdata'] = bar2_xdata
+    ret_dict['bar2_ydata'] = bar2_ydata
+
     return JsonResponse(ret_dict)
+
+    # pie_list = []
+    # date_list = []
+    # pie_tbname = 'PO_' + model + '_RELATIONAPP'
+    # ret_sql = appone.db.executeSQL('''
+    #                                     SELECT DISTINCT ACT_DATE FROM %s
+    #                                     ''' % (pie_tbname))
+    # for x in ret_sql: 
+    #     date_list.append(x[0])
+    # date_list.sort()
+    # for d in date_list:
+    #     r_num = appone.db.executeSQL('''
+    #                                     SELECT COUNT(*) FROM %s 
+    #                                         WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
+    #                                             AND FPITEMS_COUNT <> 0
+    #                                     ''' % (pie_tbname, d.strftime('%Y-%m-%d')))
+    #     a_num = appone.db.executeSQL('''
+    #                                     SELECT COUNT(*) FROM %s 
+    #                                         WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
+    #                                     ''' % (pie_tbname, d.strftime('%Y-%m-%d')))
+    #     pie_list.append({'value': r_num[0][0]/a_num[0][0], 'name': d.strftime('%Y-%m-%d')})
+    # ret_dict['pie'] = pie_list

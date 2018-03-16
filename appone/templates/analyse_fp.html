@@ -107,7 +107,7 @@
 						color: '#F0FFFF'
 					}
 				},
-				data: ['1', '2', '3', '4', '5', '6', '0.7', '8', '9', '10'
+				data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'
 				]
 			},
 			yAxis: {
@@ -136,36 +136,87 @@
 		var myChart2 = echarts.init(document.getElementById('info_chart2'));
 		option2 = {
 			title: {
-				text: 'No Data',
+				text: "No Data",
 				left: 'center',
-				top: '5%',
+				top: '0%',
 				textStyle: {
 					color: '#F0FFFF'
 				}
 			},
-			tooltip: {
-				trigger: 'item',
-				formatter: "{a} <br/>{b} : {c} ({d}%)"
+			xAxis: {
+				type: 'category',
+				nameTextStyle: {
+					color: '#F0FFFF'
+				},
+				axisLine: {
+					lineStyle: {
+						color: '#F0FFFF'
+					}
+				},
+				axisTick: {
+					lineStyle: {
+						color: '#F0FFFF'
+					}
+				},
+				axisLabel:{
+					rotate: 45
+				},
+				data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'
+				]
 			},
-			series: [
-				{
-					name: '未知',
-					type: 'pie',
-					radius: '70%',
-					center: ['50%', '60%'],
-					data: [
-						{ value: 1, name: 'No Data' }
-					],
-					itemStyle: {
-						emphasis: {
-							shadowBlur: 10,
-							shadowOffsetX: 0,
-							shadowColor: 'rgba(0, 0, 0, 0.5)'
-						}
+			yAxis: {
+				type: 'value',
+				nameTextStyle: {
+					color: '#F0FFFF'
+				},
+				axisLine: {
+					lineStyle: {
+						color: '#F0FFFF'
+					}
+				},
+				axisTick: {
+					lineStyle: {
+						color: '#F0FFFF'
 					}
 				}
-			]
+			},
+			series: [{
+				data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+				type: 'bar'
+			}]
 		};
+		// option2 = {
+		// 	title: {
+		// 		text: 'No Data',
+		// 		left: 'center',
+		// 		top: '5%',
+		// 		textStyle: {
+		// 			color: '#F0FFFF'
+		// 		}
+		// 	},
+		// 	tooltip: {
+		// 		trigger: 'item',
+		// 		formatter: "{a} <br/>{b} : {c} ({d}%)"
+		// 	},
+		// 	series: [
+		// 		{
+		// 			name: '未知',
+		// 			type: 'pie',
+		// 			radius: '70%',
+		// 			center: ['50%', '60%'],
+		// 			data: [
+		// 				{ value: 1, name: 'No Data' }
+		// 			],
+		// 			itemStyle: {
+		// 				emphasis: {
+		// 					shadowBlur: 10,
+		// 					shadowOffsetX: 0,
+		// 					shadowColor: 'rgba(0, 0, 0, 0.5)'
+		// 				}
+		// 			}
+		// 		}
+		// 	]
+		// };
 		myChart2.setOption(option2);
 
 		function chart_toggle() {
@@ -184,6 +235,11 @@
 				option1.title.text = model;
 				option1.series[0].data = ret.bar;
 				myChart1.setOption(option1);
+				option2.title.text = model + "\n关联操作占比";
+				// option2.series[0].data = ret.pie;
+				option2.xAxis.data = ret.bar2_xdata;
+				option2.series[0].data = ret.bar2_ydata;
+				myChart2.setOption(option2);
 				$('#result_table_head').empty();
 				$('#result_table_body').empty();
 				var thead_str = "<tr>";
