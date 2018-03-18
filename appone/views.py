@@ -466,14 +466,35 @@ def analyse_fp(request):
     if chart == '0':
         return JsonResponse(ret_dict)
 
-    bar_list = []
-    for x in range(1, 11):
-        bar_tmp = appone.db.executeSQL('''
-                                            SELECT COUNT(*) FROM %s
-                                                WHERE VALUE = %d AND TYPE = 1
-                                            ''' % (data_tbname, x))
-        bar_list.append(bar_tmp[0][0])
-    ret_dict['bar'] = bar_list
+    # bar_list = []
+    # for x in range(1, 11):
+    #     bar_tmp = appone.db.executeSQL('''
+    #                                         SELECT COUNT(*) FROM %s
+    #                                             WHERE VALUE = %d AND TYPE = 1
+    #                                         ''' % (data_tbname, x))
+    #     bar_list.append(bar_tmp[0][0])
+    # ret_dict['bar'] = bar_list
+
+    bar1_xdata = []
+    bar1_ydata = []
+    bar1_tbname = 'PO_' + model + '_RELATIONAPP'
+    ret_sql = appone.db.executeSQL('''
+                                    SELECT MAX(FPITEMS_COUNT), MIN(FPITEMS_COUNT) FROM %s
+                                    ''' % (bar1_tbname))
+    max_count = ret_sql[0][0]
+    min_count = ret_sql[0][1]
+    step_count = (max_count - min_count) / 10
+    for i in range(0,11):
+        bar1_xdata.append(min_count + step_count * i)
+        bar1_xdata[i] = round(bar1_xdata[i])
+    for i in range(10):
+        ret_sql = appone.db.executeSQL('''
+                                        SELECT COUNT(*) FROM %s 
+                                            WHERE FPITEMS_COUNT BETWEEN %d AND %d
+                                        ''' % (bar1_tbname, bar1_xdata[i], bar1_xdata[i+1]))
+        bar1_ydata.append(ret_sql[0][0])    
+    ret_dict['bar1_xdata'] = bar1_xdata
+    ret_dict['bar1_ydata'] = bar1_ydata
 
     bar2_xdata = []
     bar2_ydata = []
