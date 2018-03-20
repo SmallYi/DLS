@@ -23,8 +23,11 @@
 		$.getJSON('/thresold/', function (ret) {
 		var maxthresold = ret[0];
 		var minthresold = ret[1];
+		var relationratio_Z4YAZWRB = ret[2];
+		//console.log(relationratio_Z4YAZWRB);
 		localStorage.setItem('max_thresold', maxthresold);
 		localStorage.setItem('min_thresold', minthresold);
+		localStorage.setItem('person_to_operation', relationratio_Z4YAZWRB);
 })
 	});
 </script>
@@ -134,16 +137,16 @@
 			<a href="/history" style="z-index:0;font-size:1vw;">历史数据</a>
 		</p>
 	</div>
-	<div id="cover_relation" ondblclick="left_dblclick();" style="position: absolute; height: 50%; width: 20%; left: 0; top: 40%; z-index: 2;"></div>
+	<!-- <div id="cover_relation" ondblclick="left_dblclick();" style="position: absolute; height: 50%; width: 20%; left: 0; top: 40%; z-index: 2;"></div>
 	<iframe id="frame_relation" src="{% url 'relation' %}" frameborder='no' style="position: absolute; height: 50%; width: 20%; left: 0; top: 40%; z-index:1;"></iframe>
-	<iframe id="frame_taiyangxi" src="{% url 'taiyangxi_small' %}" frameborder='no' style="position: absolute; height: 50%; width: 20%; left: 0; top: 40%; z-index:0;"></iframe>
+	<iframe id="frame_taiyangxi" src="{% url 'taiyangxi_small' %}" frameborder='no' style="position: absolute; height: 50%; width: 20%; left: 0; top: 40%; z-index:0;"></iframe> -->
 
 	<div class="zuobiaoxi2">
 		<div id="realtime" style="height: 300px; width: 300px;z-index:2;"></div>
 	</div>
-	<div id="cover_single" ondblclick="right_dblclick();" style="position: absolute; height: 50%; width: 20%; right: 0; top: 40%; z-index: 2;"></div>
+	<!-- <div id="cover_single" ondblclick="right_dblclick();" style="position: absolute; height: 50%; width: 20%; right: 0; top: 40%; z-index: 2;"></div>
 	<iframe id="frame_single" src="{% url 'single' %}" frameborder='no' style="position: absolute; height: 50%; width: 20%; right: 0; top: 40%; z-index: 1;"></iframe>
-	<iframe id="frame_taiyangxi2" src="{% url 'taiyangxi_small' %}" frameborder='no' style="position: absolute; height: 50%; width: 20%; right: 0; top: 40%; z-index: 0;"></iframe>
+	<iframe id="frame_taiyangxi2" src="{% url 'taiyangxi_small' %}" frameborder='no' style="position: absolute; height: 50%; width: 20%; right: 0; top: 40%; z-index: 0;"></iframe> -->
 
 	<script>
 		var flag_right = true;

@@ -25,9 +25,17 @@ def thresold(request):
     a = center[0][0].split(",")
     max_thresold = a[3]
     min_thresold = a[0]
+
+    count_Z4YAZWRB = appone.db.executeSQL("SELECT COUNT(*) FROM PO_Z4YAZWRB_RELATIONAPP")
+    relation_app = appone.db.executeSQL("SELECT COUNT(*) FROM PO_Z4YAZWRB_RELATIONAPP WHERE FPITEMS_COUNT > 0")
+    b = count_Z4YAZWRB[0][0]
+    c = relation_app[0][0]
+    d =c/b
+    print(d)
     ret_list = []
     ret_list.append(max_thresold)
     ret_list.append(min_thresold)
+    ret_list.append(d)
     return JsonResponse(ret_list, safe=False)
 
 def prediction(request):
@@ -37,7 +45,7 @@ def prediction(request):
     # for x in range(1,11):
     #     history_time.append((now - timedelta(days = x)).strftime('%Y-%m-%d'))
 
-    history_time = [
+    history_time = ['2018-03-20',
         '2017-02-16', '2017-02-15', '2017-02-14', '2017-02-13', '2017-02-12',
         '2017-02-11', '2017-02-10', '2017-02-09', '2017-02-08', '2017-02-07'
     ]
@@ -69,26 +77,9 @@ def prediction(request):
             a.append(
                 (normalization[i][0] - min_prediction[0][0]) / maxtomin[0][0])
         for j in range(length[0][0]):
-            if (a[j] >= 0 and a[j] < 0.1):
-                b[0] += 1
-            if (a[j] >= 0.1 and a[j] < 0.2):
-                b[1] += 1
-            if (a[j] >= 0.2 and a[j] < 0.3):
-                b[2] += 1
-            if (a[j] >= 0.3 and a[j] < 0.4):
-                b[3] += 1
-            if (a[j] >= 0.4 and a[j] < 0.5):
-                b[4] += 1
-            if (a[j] >= 0.5 and a[j] < 0.6):
-                b[5] += 1
-            if (a[j] >= 0.6 and a[j] < 0.7):
-                b[6] += 1
-            if (a[j] >= 0.7 and a[j] < 0.8):
-                b[7] += 1
-            if (a[j] >= 0.8 and a[j] < 0.9):
-                b[8] += 1
-            if a[j] >= 0.9:
-                b[9] += 1
+             if (int(a[j]*10)<10):
+                 b[int(a[j]*10)] += 1
+
         for j in range(10):
             b[j] /= length[0][0]
             ret_list2.append(b[j])

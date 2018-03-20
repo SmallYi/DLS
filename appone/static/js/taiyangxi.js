@@ -2,7 +2,7 @@
 	/* 基础 */
 	var abnormal_lightcolor1 = 0;
 	var abnormal_lightcolor2 = 0;
-	var abnormal_lightcolor3 = 0;
+	var person_to_operation = 0;
 	var abnormal_lightcolor4 = 0;
 	var abnormal_lightcolor5 = 0;
 
@@ -435,7 +435,8 @@
 			abnormal_lightcolor1 = localStorage.getItem('single_abnormal_rate');//获取lstm个体模型异常记录比例
 			agent_name = localStorage.getItem('agent_id');//获取lstm个体模型user
 			abnormal_lightcolor2 = localStorage.getItem('all_abnormal_rate');//获取模型2异常记录比例
-			console.log(abnormal_lightcolor1, agent_name, abnormal_lightcolor2);
+			person_to_operation = localStorage.getItem('person_to_operation');//人与操作关联比例
+			//console.log(person_to_operation);
 			abnormal_lightcolor3 = localStorage.getItem('abnormal_ratio');//获取模型3异常记录比例
 			abnormal_lightcolor4 = localStorage.getItem('abnormal_ratio');//获取模型4异常记录比例
 			abnormal_lightcolor5 = localStorage.getItem('abnormal_ratio');//获取模型5异常记录比例
@@ -778,10 +779,11 @@
 					showInfo(sprite_mu);
 				}
 				if (currObj.name == "tu") {
-					var abnormal_lightcolor3 = localStorage.getItem('abnormal_ratio');//获取模型3异常记录比例
+					var abnormal_lightcolor3 = localStorage.getItem('person_to_operation');//获取模型3异常记录比例
 					ctx_tu.clearRect(0, 0, 500, 320);
 					if(abnormal_lightcolor3){
-						ctx_tu.fillText('异常率：' + abnormal_lightcolor3.toString(), 0, 100);
+						ctx_tu.fillText('Z4YAZWRB', 0, 100);
+						ctx_tu.fillText('关联率：' + abnormal_lightcolor3.toString(), 0, 200);
 					}else{
 						ctx_tu.fillText('暂无数据！', 0, 100);
 					}
