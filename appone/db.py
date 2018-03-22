@@ -33,4 +33,12 @@ def executeSQL(sql):
     if connection:
         cursor.execute(sql)
         return cursor.fetchall()
-    raise cx_Oracle.Error("Hey!Hava you connected to DB?")
+    else:
+        raise cx_Oracle.Error("Hey!Hava you connected to DB?")
+
+def executeSQL2(sql):
+    if connection:
+        cursor.execute(sql)
+        return
+    else:
+        raise cx_Oracle.Error("Hey!Hava you connected to DB?")
