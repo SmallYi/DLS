@@ -13,11 +13,7 @@ import appone.db
 
 def thresold(request):
     appone.db.connect()
-    center = 0
-    max = 0
-    min = 0
-    max_thresold = 0
-    min_thresold = 0
+    agent = ['Z4YAZWRB', '537TT03OT', '5VM42727', '5VM452F4', '5VMTSDK5' ]
     max = appone.db.executeSQL("SELECT MAX(PREDICTION) FROM LSTM_ALL")
     min = appone.db.executeSQL("SELECT MIN(PREDICTION) FROM LSTM_ALL")
     center = appone.db.executeSQL(
@@ -25,17 +21,51 @@ def thresold(request):
     a = center[0][0].split(",")
     max_thresold = a[3]
     min_thresold = a[0]
+    count_oo = appone.db.executeSQL("SELECT COUNT(*) FROM OO_RELATIONAPP")
+    relation_oo = appone.db.executeSQL("SELECT COUNT(*) FROM OO_RELATIONAPP WHERE FPITEMS_COUNT > 0")
+    e = count_oo[0][0]
+    f = relation_oo[0][0]
+    g = f/e
+    count_pp = appone.db.executeSQL("SELECT COUNT(*) FROM PP_RELATIONPEOPLE")
+    relation_pp = appone.db.executeSQL("SELECT COUNT(*) FROM PP_RELATIONPEOPLE WHERE FPITEMS_COUNT > 0")
+    h = count_pp[0][0]
+    i = relation_pp[0][0]
+    j =i/h
 
-    count_Z4YAZWRB = appone.db.executeSQL("SELECT COUNT(*) FROM PO_Z4YAZWRB_RELATIONAPP")
-    relation_app = appone.db.executeSQL("SELECT COUNT(*) FROM PO_Z4YAZWRB_RELATIONAPP WHERE FPITEMS_COUNT > 0")
-    b = count_Z4YAZWRB[0][0]
-    c = relation_app[0][0]
-    d =c/b
-    print(d)
     ret_list = []
     ret_list.append(max_thresold)
     ret_list.append(min_thresold)
-    ret_list.append(d)
+    ret_list.append(j)
+    ret_list.append(g)
+    for k in range(5):
+        count = appone.db.executeSQL("SELECT COUNT(*) FROM %s" %('PO_'+agent[k]+'_RELATIONAPP'))
+        relation_app = appone.db.executeSQL("SELECT COUNT(*) FROM %s WHERE FPITEMS_COUNT > 0" %('PO_'+agent[k]+'_RELATIONAPP'))
+        b = count[0][0]
+        c = relation_app[0][0]
+        d =c/b
+        #print(d)
+        ret_list.append(d)
+
+    # count_Z4YAZWRB = appone.db.executeSQL("SELECT COUNT(*) FROM PO_Z4YAZWRB_RELATIONAPP")
+    # relation_app_Z4YAZWRB = appone.db.executeSQL("SELECT COUNT(*) FROM PO_Z4YAZWRB_RELATIONAPP WHERE FPITEMS_COUNT > 0")
+    # b = count_Z4YAZWRB[0][0]
+    # c = relation_app_Z4YAZWRB[0][0]
+    # d = c/b
+   
+    # count_537TT03OT = appone.db.executeSQL("SELECT COUNT(*) FROM PO_537TT03OT_RELATIONAPP")
+    # relation_app_537TT03OT = appone.db.executeSQL("SELECT COUNT(*) FROM PO_537TT03OT_RELATIONAPP WHERE FPITEMS_COUNT > 0")
+    # b1 = count_537TT03OT[0][0]
+    # c1 = relation_app_537TT03OT[0][0]
+    # d1 = c1/b1 
+    # count_5VM42727 = appone.db.executeSQL("SELECT COUNT(*) FROM PO_5VM42727_RELATIONAPP")
+    # relation_app_5VM42727 = appone.db.executeSQL("SELECT COUNT(*) FROM PO_5VM42727_RELATIONAPP WHERE FPITEMS_COUNT > 0")
+    # b2 = count_5VM42727[0][0]
+    # c2 = relation_app_5VM42727[0][0]
+    # d2 = c2/b2 
+    
+    # ret_list.append(d)
+    # ret_list.append(d1)
+    # ret_list.append(d2)
     return JsonResponse(ret_list, safe=False)
 
 def prediction(request):

@@ -23,11 +23,23 @@
 		$.getJSON('/thresold/', function (ret) {
 		var maxthresold = ret[0];
 		var minthresold = ret[1];
-		var relationratio_Z4YAZWRB = ret[2];
-		//console.log(relationratio_Z4YAZWRB);
+		var relation_pp = ret[2];
+		var relationratio_OO = ret[3];
+		var relationratio_Z4YAZWRB = ret[4];
+		var relationratio_537TT03OT = ret[5];
+		var relationratio_5VM42727 = ret[6];
+		var relationratio_5VM452F4 = ret[7];
+		var relationratio_5VMTSDK5 = ret[8];				
+
 		localStorage.setItem('max_thresold', maxthresold);
-		localStorage.setItem('min_thresold', minthresold);
-		localStorage.setItem('person_to_operation', relationratio_Z4YAZWRB);
+		localStorage.setItem('min_thresold', minthresold);		
+		localStorage.setItem('operation_to_operation', relationratio_OO);
+		localStorage.setItem('people_to_people', relation_pp);
+		localStorage.setItem('person_to_operation_Z4YAZWRB', relationratio_Z4YAZWRB);
+		localStorage.setItem('person_to_operation_537TT03OT', relationratio_537TT03OT);
+		localStorage.setItem('person_to_operation_5VM42727', relationratio_5VM42727);
+		localStorage.setItem('person_to_operation_5VM452F4', relationratio_5VM452F4);
+		localStorage.setItem('person_to_operation_5VMTSDK5', relationratio_5VMTSDK5);
 })
 	});
 </script>
