@@ -188,23 +188,56 @@ def addconfiguretodatabase(request):
     else:
         baseline_values = 'all'
 
-    table_name = 'agentid' + '_' + base_lineunit + '_' + base_linevalue + '_' + model_name
+    table_name = 'agentid' + '_' + base_lineunit + '_' + baseline_values + '_' + model_name
     table_name.replace('-', '')
 
     appone.db.connect()
-    appone.db.executeSQL('''
+    print('''
                             CREATE TABLE %s 
                             (	
                                 DATA VARCHAR2(1024 BYTE) PRIMARY KEY, 
 	                            PREDICTION NUMBER(10,5), 
 	                            ABNORMAL NUMBER(1,0), 
 	                            INSERT_TIME DATE, 
-                                ACT_TIME DATE, 
+                                ACT_TIME DATE
+                            )
+                        ''' % table_name)
+    appone.db.executeSQL2('''
+                            CREATE TABLE %s 
+                            (	
+                                DATA VARCHAR2(1024 BYTE) PRIMARY KEY, 
+	                            PREDICTION NUMBER(10,5), 
+	                            ABNORMAL NUMBER(1,0), 
+	                            INSERT_TIME DATE, 
+                                ACT_TIME DATE
                             )
                         ''' % table_name)
 
-    appone.db.connect()
-    appone.db.executeSQL('''
+    print('''
+                            INSERT INTO MODEL_PARAMETER 
+                            (	
+                                MODEL_NAME, 
+	                            FIELDS_STUDY, 
+	                            FIELD_BASELINE, 
+	                            BASELINE_VALUES, 
+                                BASELINE_UNIT,
+                                RESULT_TABLENAME,
+                                INSERT_TIME,
+                                DETECT_FLAG
+                            ) VALUSES
+                            (
+                                '%s',
+                                '%s',
+                                '%s',
+                                '%s',
+                                '%s',
+                                '%s',
+                                sysdate,
+                                0
+                            )
+                        ''' % (table_name, fields_study, base_line,
+                               baseline_values, base_lineunit, table_name))
+    appone.db.executeSQL2('''
                             INSERT INTO MODEL_PARAMETER 
                             (	
                                 MODEL_NAME, 
@@ -253,19 +286,28 @@ def addconfiguretodatabaseRelation(request):
         agent_id = ''
         table_name = 'PP' + '_' + model_name
 
+    # same name?
     appone.db.connect()
-    appone.db.executeSQL('''
+    print('''
                             CREATE TABLE %s 
                             (	
                                 ITEMS VARCHAR2(1024 BYTE) PRIMARY KEY, 
 	                            VALUE NUMBER(10,2), 
 	                            TYPE NUMBER(1,0), 
-	                            INSERT_TIME DATE, 
+	                            INSERT_TIME DATE
+                            )
+                        ''' % table_name)
+    appone.db.executeSQL2('''
+                            CREATE TABLE %s 
+                            (	
+                                ITEMS VARCHAR2(1024 BYTE) PRIMARY KEY, 
+	                            VALUE NUMBER(10,2), 
+	                            TYPE NUMBER(1,0), 
+	                            INSERT_TIME DATE
                             )
                         ''' % table_name)
 
-    appone.db.connect()
-    appone.db.executeSQL('''
+    print('''
                             INSERT INTO MODEL_PARAMETER 
                             (	
                                 FPMODELNAME, 
@@ -277,6 +319,31 @@ def addconfiguretodatabaseRelation(request):
                                 MODEL_TYPE,
                                 AGENT_ID
                             ) VALUSES
+                            (
+                                '%s',
+                                %f,
+                                %f,
+                                'fpgrowth/%s.csv',
+                                '%s',
+                                sysdate,
+                                '%s',
+                                '%s'
+                            )
+                        ''' % (table_name, float(min_support),
+                               float(min_confidence), table_name, table_name,
+                               model_type, agent_id))
+    appone.db.executeSQL2('''
+                            INSERT INTO FPGROWTH_PARAMETER 
+                            (	
+                                FPMODELNAME, 
+	                            MINSUPPORT, 
+	                            MINCONFIDENCE, 
+	                            INPUTFILE, 
+                                OUTPUTTABLE,
+                                INSERT_TIME,
+                                MODEL_TYPE,
+                                AGENT_ID
+                            ) VALUES
                             (
                                 '%s',
                                 %f,
