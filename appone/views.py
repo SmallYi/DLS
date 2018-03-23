@@ -38,34 +38,13 @@ def thresold(request):
     ret_list.append(j)
     ret_list.append(g)
     for k in range(5):
-        count = appone.db.executeSQL("SELECT COUNT(*) FROM %s" %('PO_'+agent[k]+'_RELATIONAPP'))
-        relation_app = appone.db.executeSQL("SELECT COUNT(*) FROM %s WHERE FPITEMS_COUNT > 0" %('PO_'+agent[k]+'_RELATIONAPP'))
+        count = appone.db.executeSQL("SELECT DISTINCT COUNT(*) FROM %s WHERE FPITEMS_COUNT >= 10*(SELECT MINSUPPORT FROM FPGROWTH_PARAMETER WHERE FPMODELNAME = '%s')" %('PO_'+agent[k]+'_RELATIONAPP','PO_'+agent[k]+'_20180314'))
+        relation_app = appone.db.executeSQL("SELECT DISTINCT COUNT(*) FROM %s WHERE FPITEMS_COUNT >= 0" %('PO_'+agent[k]+'_RELATIONAPP'))
         b = count[0][0]
         c = relation_app[0][0]
-        d =c/b
-        #print(d)
+        d = b/c
+        print(d)
         ret_list.append(d)
-
-    # count_Z4YAZWRB = appone.db.executeSQL("SELECT COUNT(*) FROM PO_Z4YAZWRB_RELATIONAPP")
-    # relation_app_Z4YAZWRB = appone.db.executeSQL("SELECT COUNT(*) FROM PO_Z4YAZWRB_RELATIONAPP WHERE FPITEMS_COUNT > 0")
-    # b = count_Z4YAZWRB[0][0]
-    # c = relation_app_Z4YAZWRB[0][0]
-    # d = c/b
-   
-    # count_537TT03OT = appone.db.executeSQL("SELECT COUNT(*) FROM PO_537TT03OT_RELATIONAPP")
-    # relation_app_537TT03OT = appone.db.executeSQL("SELECT COUNT(*) FROM PO_537TT03OT_RELATIONAPP WHERE FPITEMS_COUNT > 0")
-    # b1 = count_537TT03OT[0][0]
-    # c1 = relation_app_537TT03OT[0][0]
-    # d1 = c1/b1 
-    # count_5VM42727 = appone.db.executeSQL("SELECT COUNT(*) FROM PO_5VM42727_RELATIONAPP")
-    # relation_app_5VM42727 = appone.db.executeSQL("SELECT COUNT(*) FROM PO_5VM42727_RELATIONAPP WHERE FPITEMS_COUNT > 0")
-    # b2 = count_5VM42727[0][0]
-    # c2 = relation_app_5VM42727[0][0]
-    # d2 = c2/b2 
-    
-    # ret_list.append(d)
-    # ret_list.append(d1)
-    # ret_list.append(d2)
     return JsonResponse(ret_list, safe=False)
 
 def prediction(request):
@@ -224,7 +203,7 @@ def addconfiguretodatabase(request):
                                 RESULT_TABLENAME,
                                 INSERT_TIME,
                                 DETECT_FLAG
-                            ) VALUSES
+                            ) VALUES
                             (
                                 '%s',
                                 '%s',
@@ -248,7 +227,7 @@ def addconfiguretodatabase(request):
                                 RESULT_TABLENAME,
                                 INSERT_TIME,
                                 DETECT_FLAG
-                            ) VALUSES
+                            ) VALUES
                             (
                                 '%s',
                                 '%s',
@@ -318,7 +297,7 @@ def addconfiguretodatabaseRelation(request):
                                 INSERT_TIME,
                                 MODEL_TYPE,
                                 AGENT_ID
-                            ) VALUSES
+                            ) VALUES
                             (
                                 '%s',
                                 %f,

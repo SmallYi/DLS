@@ -785,17 +785,18 @@
 					var abnormal_lightcolor3_5VM452F4 = localStorage.getItem('person_to_operation_5VM452F4');
 					var abnormal_lightcolor3_5VMTSDK5 = localStorage.getItem('person_to_operation_5VMTSDK5');
 					
-					// console.log(abnormal_lightcolor3_Z4YAZWRB);
-					// console.log(abnormal_lightcolor3_537TT03OT);
-					// console.log(abnormal_lightcolor3_5VM42727);
-					// console.log(abnormal_lightcolor3_5VM452F4);
-					// console.log(abnormal_lightcolor3_5VMTSDK5);
-					ctx_tu.clearRect(0, 0, 500, 320);
+					 console.log(abnormal_lightcolor3_Z4YAZWRB);
+					 console.log(abnormal_lightcolor3_537TT03OT);
+					 console.log(abnormal_lightcolor3_5VM42727);
+					 console.log(abnormal_lightcolor3_5VM452F4);
+					 console.log(abnormal_lightcolor3_5VMTSDK5);
+					ctx_tu.clearRect(0, 0, 700, 620);
 					if(abnormal_lightcolor3_Z4YAZWRB){
 						ctx_tu.fillText('people_to_operation', 0, 100);
 						ctx_tu.fillText('Z4YAZWRB关联率：' + abnormal_lightcolor3_Z4YAZWRB.toString(), 0, 200);
-						ctx_tu.fillText('537TT03OT关联率：' + abnormal_lightcolor3_537TT03OT.toString(), 0, 200);
-						ctx_tu.fillText('5VM42727关联率：' + abnormal_lightcolor3_5VM42727.toString(), 0, 200);
+						ctx_tu.fillText('537TT03OT关联率：' + abnormal_lightcolor3_537TT03OT.toString(), 0, 300);
+						ctx_tu.fillText('5VM42727关联率：' + abnormal_lightcolor3_5VM42727.toString(), 0, 400);
+						ctx_tu.fillText('5VM452F4关联率：' + abnormal_lightcolor3_5VM452F4.toString(), 0, 500);
 					}else{
 						ctx_tu.fillText('暂无数据！', 0, 100);
 					}
