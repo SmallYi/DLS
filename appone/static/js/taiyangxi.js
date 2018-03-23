@@ -220,8 +220,8 @@
 			taiyang.name = "taiyang";
 
 			let canvas = document.createElement("canvas");
-			canvas.height = '320';
-			canvas.width = '500';
+			canvas.height = '520';
+			canvas.width = '800';
 			ctx_sun = canvas.getContext("2d");
 			ctx_sun.fillStyle = "#ffff00";
 			ctx_sun.font = "Bold 60px Arial";
@@ -253,8 +253,8 @@
 			huo.name = 'huo';
 
 			let canvas = document.createElement("canvas");
-			canvas.height = '320';
-			canvas.width = '500';
+			canvas.height = '520';
+			canvas.width = '800';
 			ctx_huo = canvas.getContext("2d");
 			ctx_huo.fillStyle = "#ffff00";
 			ctx_huo.font = "Bold 60px Arial";
@@ -289,8 +289,8 @@
 			mu.name = "mu";
 
 			let canvas = document.createElement("canvas");
-			canvas.height = '320';
-			canvas.width = '500';
+			canvas.height = '520';
+			canvas.width = '800';
 			ctx_mu = canvas.getContext("2d");
 			ctx_mu.fillStyle = "#ffff00";
 			ctx_mu.font = "Bold 60px Arial";
@@ -325,8 +325,8 @@
 			tu.name = "tu";
 
 			let canvas = document.createElement("canvas");
-			canvas.height = '320';
-			canvas.width = '500';
+			canvas.height = '520';
+			canvas.width = '800';
 			ctx_tu = canvas.getContext("2d");
 			ctx_tu.fillStyle = "#ffff00";
 			ctx_tu.font = "Bold 60px Arial";
@@ -360,8 +360,8 @@
 			tian.name = "tian";
 
 			let canvas = document.createElement("canvas");
-			canvas.height = '320';
-			canvas.width = '500';
+			canvas.height = '520';
+			canvas.width = '800';
 			ctx_tian = canvas.getContext("2d");
 			ctx_tian.fillStyle = "#ffff00";
 			ctx_tian.font = "Bold 60px Arial";
@@ -393,8 +393,8 @@
 			hai.name = "hai";
 
 			let canvas = document.createElement("canvas");
-			canvas.height = '320';
-			canvas.width = '500';
+			canvas.height = '520';
+			canvas.width = '800';
 			ctx_hai = canvas.getContext("2d");
 			ctx_hai.fillStyle = "#ffff00";
 			ctx_hai.font = "Bold 60px Arial";
@@ -756,10 +756,10 @@
 				if (currObj.name == "huo") {
 					var abnormal_lightcolor1 = localStorage.getItem('single_abnormal_rate');//获取模型1异常记录比例
 					var agent_name = localStorage.getItem('agent_id');//获取lstm个体模型user
-					ctx_huo.clearRect(0, 0, 500, 320);
+					ctx_huo.clearRect(0, 0, 800, 520);
 					if(abnormal_lightcolor1){
 						ctx_huo.fillText(agent_name, 0, 100);
-						ctx_huo.fillText('异常率：' + abnormal_lightcolor1.toString(), 0, 200)
+						ctx_huo.fillText('异常率：' + parseFloat(abnormal_lightcolor1).toFixed(4).toString(), 0, 200)
 					}else{
 						ctx_huo.fillText('暂无数据！', 0, 100);
 					}
@@ -768,10 +768,10 @@
 				}
 				if (currObj.name == "mu") {
 					var abnormal_lightcolor2 = localStorage.getItem('all_abnormal_rate');//获取模型2异常记录比例
-					ctx_mu.clearRect(0, 0, 500, 320);
+					ctx_mu.clearRect(0, 0, 800, 520);
 					if(abnormal_lightcolor2){
 						ctx_mu.fillText('整体异常率:', 0, 100);
-						ctx_mu.fillText(abnormal_lightcolor2.toString(), 0, 200);
+						ctx_mu.fillText(parseFloat(abnormal_lightcolor2).toFixed(4).toString(), 0, 200);
 					}else{
 						ctx_mu.fillText('暂无数据！', 0, 100);
 					}
@@ -790,12 +790,12 @@
 					// console.log(abnormal_lightcolor3_5VM42727);
 					// console.log(abnormal_lightcolor3_5VM452F4);
 					// console.log(abnormal_lightcolor3_5VMTSDK5);
-					ctx_tu.clearRect(0, 0, 500, 320);
+					ctx_tu.clearRect(0, 0, 800, 520);
 					if(abnormal_lightcolor3_Z4YAZWRB){
 						ctx_tu.fillText('people_to_operation', 0, 100);
-						ctx_tu.fillText('Z4YAZWRB关联率：' + abnormal_lightcolor3_Z4YAZWRB.toString(), 0, 200);
-						ctx_tu.fillText('537TT03OT关联率：' + abnormal_lightcolor3_537TT03OT.toString(), 0, 200);
-						ctx_tu.fillText('5VM42727关联率：' + abnormal_lightcolor3_5VM42727.toString(), 0, 200);
+						ctx_tu.fillText('Z4YAZWRB关联率：' + parseFloat(abnormal_lightcolor3_Z4YAZWRB).toFixed(4).toString(), 0, 200);
+						ctx_tu.fillText('537TT03OT关联率：' + parseFloat(abnormal_lightcolor3_537TT03OT).toFixed(4).toString(), 0, 300);
+						ctx_tu.fillText('5VM42727关联率：' + parseFloat(abnormal_lightcolor3_5VM42727).toFixed(4).toString(), 0, 400);
 					}else{
 						ctx_tu.fillText('暂无数据！', 0, 100);
 					}
@@ -804,10 +804,10 @@
 				}
 				if (currObj.name == "tian") {
 					var abnormal_lightcolor4 = localStorage.getItem('operation_to_operation');//获取模型4异常记录比例
-					ctx_tian.clearRect(0, 0, 500, 320);
+					ctx_tian.clearRect(0, 0, 800, 520);
 					if(abnormal_lightcolor4){
 						ctx_tu.fillText('operation_to_operation', 0, 100);
-						ctx_tian.fillText('关联率：' + abnormal_lightcolor4.toString(), 0, 200);
+						ctx_tian.fillText('关联率：' + parseFloat(abnormal_lightcolor4).toFixed(4).toString(), 0, 200);
 					}else{
 						ctx_tian.fillText('暂无数据！', 0, 100);
 					}
@@ -816,10 +816,10 @@
 				}
 				if (currObj.name == "hai") {
 					var abnormal_lightcolor5 = localStorage.getItem('people_to_people');//获取模型5异常记录比例
-					ctx_hai.clearRect(0, 0, 500, 320);
+					ctx_hai.clearRect(0, 0, 800, 520);
 					if(abnormal_lightcolor5){
 						ctx_tu.fillText('people_to_people', 0, 100);
-						ctx_hai.fillText('关联率：' + abnormal_lightcolor5.toString(), 0, 200);
+						ctx_hai.fillText('关联率：' + parseFloat(abnormal_lightcolor5).toFixed(4).toString(), 0, 200);
 					}else{
 						ctx_hai.fillText('暂无数据！', 0, 100);
 					}
