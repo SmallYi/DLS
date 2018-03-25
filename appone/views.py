@@ -424,6 +424,14 @@ def load_model(request):
 
     return JsonResponse(ret_dict)
 
+def load_agent(request):
+    ret_dict = {}
+    appone.db.connect()
+    ret_dict['agent'] = appone.db.executeSQL('''
+                                            SELECT TERM_AGENT_ID FROM CP_TERMINAL_INFO
+                                            ''')
+    return JsonResponse(ret_dict)
+
 def search(request):
     ret_dict = {}
     model = request.GET['model']
