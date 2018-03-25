@@ -15,19 +15,6 @@
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
     <script>
-        // function run(){  
-        //     var bar = document.getElementById("prog-b");     
-        //     bar.style.width=parseInt(bar.style.width) + 1 + "%";  
-        //     if(bar.style.width == "100%"){  
-        //          window.clearTimeout(timeout); 
-        //           return; 
-        //     } 
-        //      var timeout=window.setTimeout("run()",100); 
-        //  } 
-        // window.onload = function(){  
-        //       run(); 
-        // }  
-
         var socket;
         function connect() {
             var host = "ws://222.20.72.244:3368/ws";
@@ -38,19 +25,17 @@
                 socket.onopen = function (msg) {
                     var ms = localStorage.getItem('re');
                     socket.send(ms);
-                    alert(ms);
                 };
                 socket.onmessage = function (msg) {
                     if (typeof msg.data == "string") {
-                        //alert(msg.data);
                         ReceiveProgressData(msg.data);
                         i++;
                     }
                     else {
-                        alert("非文本消息");
                     }
                 };
                 socket.onclose = function (msg) {
+                    alert("socket closed!");
                 };
             }
             catch (ex) {
@@ -59,26 +44,19 @@
 
         }
 
-        
-
         //获取进度条数据
         function ReceiveProgressData(msg) {
-            // a.push(msg);alert("2");
-            // b = a.pop();//取最新的一条消息           
             var obj = JSON.parse(msg);
-            alert(obj.data);
-            if (obj.type == 'progress') { 
-                // var bar = document.getElementById("prog-b");
-                // bar.style.width =50;          
-                if (obj.data == 0) {alert("3");
+            if (obj.type == 'progress') {         
+                if (obj.data == 0) {
                     $("#prog-b").animate({
                         width: '0%'
                     });
                     $("#dcp").text(obj.description);
-                } else {alert("4");
+                } else {
                     $("#prog-b").animate({
-                        width: obj.data + '%'
-                    });alert("5");
+                        width: obj.data +'%'
+                    });
                     $("#dcp").text(obj.description);
                 }
             }
@@ -92,7 +70,6 @@
             }
         };
 
-        function $(id) { return document.getElementById(id); }
 
         function onkey(event) { if (event.keyCode == 13) { send(); } }
     </script>
@@ -133,7 +110,7 @@
         <div class="row">
             <div class="col-md-6 col-md-offset-3" style="height: 500px">
                 <div id="prog" class="col-md-12 progress" style="position: absolute; bottom: 0;">
-                    <div id="prog-b" class="progress-bar" role="progressbar" style="width: 50%;">
+                    <div id="prog-b" class="progress-bar" role="progressbar" style="width: 0%;">
 
                     </div>
                 </div>

@@ -26,7 +26,6 @@
                     alert("连接成功！");
                     var ms = localStorage.getItem('uid');
                     socket.send(ms);
-                    //alert(ms);
                 };
                 socket.onmessage = function (msg) {
                     if (typeof msg.data == "string") {
@@ -34,10 +33,11 @@
                         i++;
                     }
                     else {
-                        alert("非文本消息");
                     }
                 };
-                socket.onclose = function (msg) { };
+                socket.onclose = function (msg) {
+                    alert("socket closed!");
+                 };
             }
             catch (ex) {
                 log(ex);
@@ -46,13 +46,9 @@
         }
         //获取进度条数据
         function ReceiveProgressData(msg) {
-            a.push(msg);
-            b = a.pop();//取最新的一条消息
-            alert(b);
-            var obj = JSON.parse(b);
-           
+            var obj = JSON.parse(b);          
             if (obj.type == 'progress') {
-                if (obj.data == '-1') {
+                if (obj.data == '0') {
                     $("#prog-b").animate({
                         width: '0%'
                     });
@@ -74,8 +70,6 @@
             catch (ex) {
             }
         };
-
-        function $(id) { return document.getElementById(id); }
 
         function onkey(event) { if (event.keyCode == 13) { send(); } }
     </script>

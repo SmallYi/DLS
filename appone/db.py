@@ -39,6 +39,7 @@ def executeSQL(sql):
 def executeSQL2(sql):
     if connection:
         cursor.execute(sql)
+        connection.commit()
         return
     else:
         raise cx_Oracle.Error("Hey!Hava you connected to DB?")

@@ -152,7 +152,7 @@ def recordnumber(request):
 def addconfiguretodatabase(request):
     if request.method == "POST":
         base_line = request.POST["base"]
-        base_linevalue = request.POST["line"]
+        #base_linevalue = request.POST["line"]
         base_lineunit = request.POST["baseunit"]
         model_name = request.POST["model"]
         check_box_list = request.POST.getlist('check_box_list')
@@ -163,17 +163,17 @@ def addconfiguretodatabase(request):
         fields_study = ''
 
     if base_lineunit == 'single':
-        baseline_values = base_linevalue
+        base_linevalue = request.POST["line"]
+        table_name = 'agentid' + '_' + base_lineunit + '_' + base_linevalue + '_' + model_name
     else:
-        baseline_values = 'all'
-
-    table_name = 'agentid' + '_' + base_lineunit + '_' + baseline_values + '_' + model_name
-    table_name.replace('-', '')
+        base_linevalue = 'all'
+        table_name = 'agentid' + '_' + base_lineunit + '_' + model_name
+    table_name = table_name.replace('-', '')
     appone.db.connect()
 
     if len(appone.db.executeSQL('''
                         SELECT * FROM MODEL_PARAMETER WHERE MODEL_NAME = '%s'
-                        ''' % (table_name))) == 0:
+                        ''' % (table_name))) == 1:
         #return JsonResponse('Model exists!', safe=False)
         return HttpResponseRedirect('/addfail/')
 
@@ -224,7 +224,7 @@ def addconfiguretodatabase(request):
                                 0
                             )
                         ''' % (table_name, fields_study, base_line,
-                               baseline_values, base_lineunit, table_name))
+                               base_linevalue, base_lineunit, table_name))
     try:
         appone.db.executeSQL2('''
                             INSERT INTO MODEL_PARAMETER 
@@ -245,11 +245,11 @@ def addconfiguretodatabase(request):
                                 '%s',
                                 '%s',
                                 '%s',
-                                sysdate,
+                                to_DATE('2017-03-03', 'YYYY-MM-DD'),
                                 0
                             )
                             ''' % (table_name, fields_study, base_line,
-                                    baseline_values, base_lineunit, table_name))
+                                    base_linevalue, base_lineunit, table_name))
     except cx_Oracle.DatabaseError as e:
         print('Database except: ', e)
 
@@ -259,17 +259,16 @@ def addconfiguretodatabase(request):
 def addconfiguretodatabaseRelation(request):
     if request.method == "POST":
         operation_type = request.POST["relation_type"]
-        user_name = request.POST["user_name"]
+        #user_name = request.POST["user_name"]
         min_support = request.POST["min_support"]
         min_confidence = request.POST["min_confidence"]
         model_name = request.POST["model2"]
 
     if operation_type == 'PeopleOperation':
+        user_name = request.POST["user_name"]
         model_type = 'PO'
         agent_id = user_name
-        #print(user_name)
         table_name = 'PO' + '_' + user_name + '_' + model_name
-        #table_name = 'PO' + '_' + model_name + '_20180314'
     elif operation_type == 'OperationOperation':
         model_type = 'OO'
         agent_id = ''
@@ -278,11 +277,15 @@ def addconfiguretodatabaseRelation(request):
         model_type = 'PP'
         agent_id = ''
         table_name = 'PP' + '_' + model_name
+    table_name=table_name.replace('-', '')
     appone.db.connect()
 
-    if appone.db.executeSQL('''
+    print('''
                             SELECT * FROM FPGROWTH_PARAMETER WHERE FPMODELNAME = '%s'
-                            ''' % (table_name)):
+                            ''' % (table_name))
+    if len(appone.db.executeSQL('''
+                            SELECT * FROM FPGROWTH_PARAMETER WHERE FPMODELNAME = '%s'
+                            ''' % (table_name))) == 1:
         #return JsonResponse('Model exists!', safe=False)
         return HttpResponseRedirect('/addfail/')
 
@@ -306,7 +309,7 @@ def addconfiguretodatabaseRelation(request):
                         ''' % table_name)
 
     print('''
-                            INSERT INTO MODEL_PARAMETER 
+                            INSERT INTO FPGROWTH_PARAMETER 
                             (	
                                 FPMODELNAME, 
 	                            MINSUPPORT, 
@@ -348,7 +351,7 @@ def addconfiguretodatabaseRelation(request):
                                 %f,
                                 'fpgrowth/%s.csv',
                                 '%s',
-                                sysdate,
+                                to_DATE('2017-03-03', 'YYYY-MM-DD'),
                                 '%s',
                                 '%s'
                             )
