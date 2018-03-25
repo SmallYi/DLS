@@ -36,6 +36,7 @@ urlpatterns = [
 
 	url(r'^history', appone_views.history),
 	url(r'^load_model/', appone_views.load_model),
+	url(r'^load_agent/', appone_views.load_agent),
     url(r'^search/', appone_views.search),
 	url(r'^addconfiguretodatabaseRelation/', appone_views.addconfiguretodatabaseRelation),
 	url(r'^addok2/', appone_views.addok2),
