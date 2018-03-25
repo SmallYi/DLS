@@ -220,9 +220,9 @@ titleRight('Z1D3XB0A', 300000, tR4);
 titleRight('Z4YAZWRB', 250000, tR5);
 titleRight('537TT03OT', 200000, tR6);
 titleRight('Z4YAZTH6', 150000, tR7);
-titleRight('P02703102649', 250000, tR8);
-titleRight('Z4YAZTKF', 200000, tR9);
-titleRight('Z4YAZVXM', 150000, tR10);
+titleRight('P02703102649', 100000, tR8);
+titleRight('Z4YAZTKF', 50000, tR9);
+titleRight('Z4YAZVXM', 0, tR10);
 
 titleLeft('5VM45975', 450000, tL1);
 titleLeft('S2A58BGQ', 400000, tL2);
@@ -231,9 +231,9 @@ titleLeft('Z1D3XB0A', 300000, tL4);
 titleLeft('Z4YAZWRB', 250000, tL5);
 titleLeft('537TT03OT', 200000, tL6);
 titleLeft('Z4YAZTH6', 150000, tL7);
-titleLeft('P02703102649', 250000, tL8);
-titleLeft('Z4YAZTKF', 200000, tL9);
-titleLeft('Z4YAZVXM', 150000, tL10);
+titleLeft('P02703102649', 100000, tL8);
+titleLeft('Z4YAZTKF', 50000, tL9);
+titleLeft('Z4YAZVXM', 0, tL10);
 
 //添加坐标变量
 function axisflagRight(x1, y1, x2, y2, z) {

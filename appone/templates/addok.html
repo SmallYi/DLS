@@ -26,7 +26,7 @@
                     alert("连接成功！");
                     var ms = localStorage.getItem('uid');
                     socket.send(ms);
-                    alert(ms);
+                    //alert(ms);
                 };
                 socket.onmessage = function (msg) {
                     if (typeof msg.data == "string") {
@@ -48,7 +48,9 @@
         function ReceiveProgressData(msg) {
             a.push(msg);
             b = a.pop();//取最新的一条消息
+            alert(b);
             var obj = JSON.parse(b);
+           
             if (obj.type == 'progress') {
                 if (obj.data == '-1') {
                     $("#prog-b").animate({

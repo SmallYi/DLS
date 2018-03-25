@@ -169,8 +169,14 @@ def addconfiguretodatabase(request):
 
     table_name = 'agentid' + '_' + base_lineunit + '_' + baseline_values + '_' + model_name
     table_name.replace('-', '')
-
     appone.db.connect()
+
+    if len(appone.db.executeSQL('''
+                        SELECT * FROM MODEL_PARAMETER WHERE MODEL_NAME = '%s'
+                        ''' % (table_name))) == 0:
+        #return JsonResponse('Model exists!', safe=False)
+        return HttpResponseRedirect('/addfail/')
+
     print('''
                             CREATE TABLE %s 
                             (	
@@ -181,7 +187,8 @@ def addconfiguretodatabase(request):
                                 ACT_TIME DATE
                             )
                         ''' % table_name)
-    appone.db.executeSQL2('''
+    try:
+        appone.db.executeSQL2('''
                             CREATE TABLE %s 
                             (	
                                 DATA VARCHAR2(1024 BYTE) PRIMARY KEY, 
@@ -190,7 +197,9 @@ def addconfiguretodatabase(request):
 	                            INSERT_TIME DATE, 
                                 ACT_TIME DATE
                             )
-                        ''' % table_name)
+                            ''' % table_name)
+    except cx_Oracle.DatabaseError as e:
+        print('Database except: ', e)
 
     print('''
                             INSERT INTO MODEL_PARAMETER 
@@ -216,7 +225,8 @@ def addconfiguretodatabase(request):
                             )
                         ''' % (table_name, fields_study, base_line,
                                baseline_values, base_lineunit, table_name))
-    appone.db.executeSQL2('''
+    try:
+        appone.db.executeSQL2('''
                             INSERT INTO MODEL_PARAMETER 
                             (	
                                 MODEL_NAME, 
@@ -238,8 +248,10 @@ def addconfiguretodatabase(request):
                                 sysdate,
                                 0
                             )
-                        ''' % (table_name, fields_study, base_line,
-                               baseline_values, base_lineunit, table_name))
+                            ''' % (table_name, fields_study, base_line,
+                                    baseline_values, base_lineunit, table_name))
+    except cx_Oracle.DatabaseError as e:
+        print('Database except: ', e)
 
     return HttpResponseRedirect('/addok/')
 
@@ -255,7 +267,9 @@ def addconfiguretodatabaseRelation(request):
     if operation_type == 'PeopleOperation':
         model_type = 'PO'
         agent_id = user_name
+        #print(user_name)
         table_name = 'PO' + '_' + user_name + '_' + model_name
+        #table_name = 'PO' + '_' + model_name + '_20180314'
     elif operation_type == 'OperationOperation':
         model_type = 'OO'
         agent_id = ''
@@ -264,9 +278,14 @@ def addconfiguretodatabaseRelation(request):
         model_type = 'PP'
         agent_id = ''
         table_name = 'PP' + '_' + model_name
-
-    # same name?
     appone.db.connect()
+
+    if appone.db.executeSQL('''
+                            SELECT * FROM FPGROWTH_PARAMETER WHERE FPMODELNAME = '%s'
+                            ''' % (table_name)):
+        #return JsonResponse('Model exists!', safe=False)
+        return HttpResponseRedirect('/addfail/')
+
     print('''
                             CREATE TABLE %s 
                             (	
@@ -344,6 +363,9 @@ def addok(request):
 
 def addok2(request):
     return render(request, 'addok2.html')
+
+def addfail(request):
+    return render(request, 'addfail.html')
 
 def addconfigure(request):
     return render(request, 'configureadd.html')

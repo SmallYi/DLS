@@ -294,6 +294,8 @@
                 case 'PeopleOperation':
                     type = 'PO';
                     username = $("#user_name").val();
+                    //username = '537TT03OT';
+
                     break;
                 case 'OperationOperation':
                     type = 'OO';
@@ -304,7 +306,8 @@
                     username = '';
             }
             if(username){
-                var model_name = type + '_' + username + '_' + $("#min_support").val() + '_' + $("#min_confidence").val() + '_' + $("#model2").val();
+                //var model_name = type + '_' + username + '_' + $("#min_support").val() + '_' + $("#min_confidence").val() + '_' + $("#model2").val();
+                var model_name = type + '_' + username + '_' + $("#model2").val();
             }else{
                 var model_name = type + '_' + $("#min_support").val() + '_' + $("#min_confidence").val() + '_' + $("#model2").val();
             }

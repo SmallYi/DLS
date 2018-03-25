@@ -15,9 +15,23 @@
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
     <script>
+        // function run(){  
+        //     var bar = document.getElementById("prog-b");     
+        //     bar.style.width=parseInt(bar.style.width) + 1 + "%";  
+        //     if(bar.style.width == "100%"){  
+        //          window.clearTimeout(timeout); 
+        //           return; 
+        //     } 
+        //      var timeout=window.setTimeout("run()",100); 
+        //  } 
+        // window.onload = function(){  
+        //       run(); 
+        // }  
+
         var socket;
         function connect() {
             var host = "ws://222.20.72.244:3368/ws";
+            var i = 0;
             socket = new WebSocket(host);
             try {
 
@@ -28,7 +42,7 @@
                 };
                 socket.onmessage = function (msg) {
                     if (typeof msg.data == "string") {
-                        alert(msg.data);
+                        //alert(msg.data);
                         ReceiveProgressData(msg.data);
                         i++;
                     }
@@ -45,21 +59,26 @@
 
         }
 
+        
+
         //获取进度条数据
         function ReceiveProgressData(msg) {
-            a.push(msg);
-            b = a.pop();//取最新的一条消息
-            var obj = JSON.parse(b);
-            if (obj.type == 'progress') {
-                if (obj.data == '-1') {
+            // a.push(msg);alert("2");
+            // b = a.pop();//取最新的一条消息           
+            var obj = JSON.parse(msg);
+            alert(obj.data);
+            if (obj.type == 'progress') { 
+                // var bar = document.getElementById("prog-b");
+                // bar.style.width =50;          
+                if (obj.data == 0) {alert("3");
                     $("#prog-b").animate({
                         width: '0%'
                     });
                     $("#dcp").text(obj.description);
-                } else {
+                } else {alert("4");
                     $("#prog-b").animate({
                         width: obj.data + '%'
-                    });
+                    });alert("5");
                     $("#dcp").text(obj.description);
                 }
             }
@@ -114,7 +133,7 @@
         <div class="row">
             <div class="col-md-6 col-md-offset-3" style="height: 500px">
                 <div id="prog" class="col-md-12 progress" style="position: absolute; bottom: 0;">
-                    <div id="prog-b" class="progress-bar" role="progressbar" style="width: 0%;">
+                    <div id="prog-b" class="progress-bar" role="progressbar" style="width: 50%;">
 
                     </div>
                 </div>
