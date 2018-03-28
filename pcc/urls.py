@@ -29,6 +29,8 @@ urlpatterns = [
 	url(r'^recordnumber/$', appone_views.recordnumber, name='recordnumber'),
 	url(r'^addconfiguretodatabase/', appone_views.addconfiguretodatabase),
 	url(r'^addok/', appone_views.addok),
+	url(r'^addok2/', appone_views.addok2),
+	url(r'^addfail/', appone_views.addfail, name='addfail'),
 	url(r'^addconfigure/', appone_views.addconfigure),
 	url(r'^simulate/', appone_views.simulate, name='simulate'),
 

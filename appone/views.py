@@ -22,51 +22,34 @@ def thresold(request):
     a = center[0][0].split(",")
     max_thresold = a[3]
     min_thresold = a[0]
-    count_oo = appone.db.executeSQL("SELECT COUNT(*) FROM OO_RELATIONAPP")
-    relation_oo = appone.db.executeSQL("SELECT COUNT(*) FROM OO_RELATIONAPP WHERE FPITEMS_COUNT > 0")
-    e = count_oo[0][0]
-    f = relation_oo[0][0]
-    g = f/e
-    count_pp = appone.db.executeSQL("SELECT COUNT(*) FROM PP_RELATIONPEOPLE")
-    relation_pp = appone.db.executeSQL("SELECT COUNT(*) FROM PP_RELATIONPEOPLE WHERE FPITEMS_COUNT > 0")
-    h = count_pp[0][0]
-    i = relation_pp[0][0]
-    j =i/h
+    count_oo = appone.db.executeSQL('''select * from (
+        select appname, people_count/total as ratio from (
+            select * from oo_relationapp cross join (
+                select count(people_count) as total,act_date
+                 from oo_relationapp group by act_date))
+                  order by ratio)
+                   where rownum<=5''')
+    #print(count_oo)
+    count_pp = appone.db.executeSQL('''select * from (
+        select PEOPLENAME,count(*) from (
+            select PEOPLENAME, APP_COUNT, ACT_DATE, APP_TOTAL from pp_relationpeople
+             where app_count < app_total*0.1)  group by PEOPLENAME order by count(*) desc)
+              where rownum<=5''')
+   
 
     ret_list = []
     ret_list.append(max_thresold)
     ret_list.append(min_thresold)
-    ret_list.append(j)
-    ret_list.append(g)
+    ret_list.append(count_pp)
+    ret_list.append(count_oo)
     for k in range(5):
-        count = appone.db.executeSQL("SELECT COUNT(*) FROM %s" %('PO_'+agent[k]+'_RELATIONAPP'))
-        relation_app = appone.db.executeSQL("SELECT COUNT(*) FROM %s WHERE FPITEMS_COUNT > 0" %('PO_'+agent[k]+'_RELATIONAPP'))
+        count = appone.db.executeSQL("SELECT DISTINCT COUNT(*) FROM %s WHERE FPITEMS_COUNT >= 10*(SELECT MINSUPPORT FROM FPGROWTH_PARAMETER WHERE FPMODELNAME = '%s')" %('PO_'+agent[k]+'_RELATIONAPP','PO_'+agent[k]+'_20180314'))
+        relation_app = appone.db.executeSQL("SELECT DISTINCT COUNT(*) FROM %s WHERE FPITEMS_COUNT >= 0" %('PO_'+agent[k]+'_RELATIONAPP'))
         b = count[0][0]
         c = relation_app[0][0]
-        d =c/b
-        #print(d)
+        d = b/c
+        print(d)
         ret_list.append(d)
-
-    # count_Z4YAZWRB = appone.db.executeSQL("SELECT COUNT(*) FROM PO_Z4YAZWRB_RELATIONAPP")
-    # relation_app_Z4YAZWRB = appone.db.executeSQL("SELECT COUNT(*) FROM PO_Z4YAZWRB_RELATIONAPP WHERE FPITEMS_COUNT > 0")
-    # b = count_Z4YAZWRB[0][0]
-    # c = relation_app_Z4YAZWRB[0][0]
-    # d = c/b
-   
-    # count_537TT03OT = appone.db.executeSQL("SELECT COUNT(*) FROM PO_537TT03OT_RELATIONAPP")
-    # relation_app_537TT03OT = appone.db.executeSQL("SELECT COUNT(*) FROM PO_537TT03OT_RELATIONAPP WHERE FPITEMS_COUNT > 0")
-    # b1 = count_537TT03OT[0][0]
-    # c1 = relation_app_537TT03OT[0][0]
-    # d1 = c1/b1 
-    # count_5VM42727 = appone.db.executeSQL("SELECT COUNT(*) FROM PO_5VM42727_RELATIONAPP")
-    # relation_app_5VM42727 = appone.db.executeSQL("SELECT COUNT(*) FROM PO_5VM42727_RELATIONAPP WHERE FPITEMS_COUNT > 0")
-    # b2 = count_5VM42727[0][0]
-    # c2 = relation_app_5VM42727[0][0]
-    # d2 = c2/b2 
-    
-    # ret_list.append(d)
-    # ret_list.append(d1)
-    # ret_list.append(d2)
     return JsonResponse(ret_list, safe=False)
 
 def prediction(request):
@@ -174,7 +157,7 @@ def recordnumber(request):
 def addconfiguretodatabase(request):
     if request.method == "POST":
         base_line = request.POST["base"]
-        base_linevalue = request.POST["line"]
+        #base_linevalue = request.POST["line"]
         base_lineunit = request.POST["baseunit"]
         model_name = request.POST["model"]
         check_box_list = request.POST.getlist('check_box_list')
@@ -185,14 +168,20 @@ def addconfiguretodatabase(request):
         fields_study = ''
 
     if base_lineunit == 'single':
-        baseline_values = base_linevalue
+        base_linevalue = request.POST["line"]
+        table_name = 'agentid' + '_' + base_lineunit + '_' + base_linevalue + '_' + model_name
     else:
-        baseline_values = 'all'
-
-    table_name = 'agentid' + '_' + base_lineunit + '_' + baseline_values + '_' + model_name
-    table_name.replace('-', '')
-
+        base_linevalue = 'all'
+        table_name = 'agentid' + '_' + base_lineunit + '_' + model_name
+    table_name = table_name.replace('-', '')
     appone.db.connect()
+
+    if len(appone.db.executeSQL('''
+                        SELECT * FROM MODEL_PARAMETER WHERE MODEL_NAME = '%s'
+                        ''' % (table_name))) == 1:
+        #return JsonResponse('Model exists!', safe=False)
+        return HttpResponseRedirect('/addfail/')
+
     print('''
                             CREATE TABLE %s 
                             (	
@@ -203,7 +192,8 @@ def addconfiguretodatabase(request):
                                 ACT_TIME DATE
                             )
                         ''' % table_name)
-    appone.db.executeSQL2('''
+    try:
+        appone.db.executeSQL2('''
                             CREATE TABLE %s 
                             (	
                                 DATA VARCHAR2(1024 BYTE) PRIMARY KEY, 
@@ -212,7 +202,9 @@ def addconfiguretodatabase(request):
 	                            INSERT_TIME DATE, 
                                 ACT_TIME DATE
                             )
-                        ''' % table_name)
+                            ''' % table_name)
+    except cx_Oracle.DatabaseError as e:
+        print('Database except: ', e)
 
     print('''
                             INSERT INTO MODEL_PARAMETER 
@@ -225,7 +217,7 @@ def addconfiguretodatabase(request):
                                 RESULT_TABLENAME,
                                 INSERT_TIME,
                                 DETECT_FLAG
-                            ) VALUSES
+                            ) VALUES
                             (
                                 '%s',
                                 '%s',
@@ -237,8 +229,9 @@ def addconfiguretodatabase(request):
                                 0
                             )
                         ''' % (table_name, fields_study, base_line,
-                               baseline_values, base_lineunit, table_name))
-    appone.db.executeSQL2('''
+                               base_linevalue, base_lineunit, table_name))
+    try:
+        appone.db.executeSQL2('''
                             INSERT INTO MODEL_PARAMETER 
                             (	
                                 MODEL_NAME, 
@@ -249,7 +242,7 @@ def addconfiguretodatabase(request):
                                 RESULT_TABLENAME,
                                 INSERT_TIME,
                                 DETECT_FLAG
-                            ) VALUSES
+                            ) VALUES
                             (
                                 '%s',
                                 '%s',
@@ -257,11 +250,13 @@ def addconfiguretodatabase(request):
                                 '%s',
                                 '%s',
                                 '%s',
-                                sysdate,
+                                to_DATE('2017-03-03', 'YYYY-MM-DD'),
                                 0
                             )
-                        ''' % (table_name, fields_study, base_line,
-                               baseline_values, base_lineunit, table_name))
+                            ''' % (table_name, fields_study, base_line,
+                                    base_linevalue, base_lineunit, table_name))
+    except cx_Oracle.DatabaseError as e:
+        print('Database except: ', e)
 
     return HttpResponseRedirect('/addok/')
 
@@ -269,12 +264,13 @@ def addconfiguretodatabase(request):
 def addconfiguretodatabaseRelation(request):
     if request.method == "POST":
         operation_type = request.POST["relation_type"]
-        user_name = request.POST["user_name"]
+        #user_name = request.POST["user_name"]
         min_support = request.POST["min_support"]
         min_confidence = request.POST["min_confidence"]
         model_name = request.POST["model2"]
 
     if operation_type == 'PeopleOperation':
+        user_name = request.POST["user_name"]
         model_type = 'PO'
         agent_id = user_name
         table_name = 'PO' + '_' + user_name + '_' + model_name
@@ -286,8 +282,18 @@ def addconfiguretodatabaseRelation(request):
         model_type = 'PP'
         agent_id = ''
         table_name = 'PP' + '_' + model_name
-
+    table_name=table_name.replace('-', '')
     appone.db.connect()
+
+    print('''
+                            SELECT * FROM FPGROWTH_PARAMETER WHERE FPMODELNAME = '%s'
+                            ''' % (table_name))
+    if len(appone.db.executeSQL('''
+                            SELECT * FROM FPGROWTH_PARAMETER WHERE FPMODELNAME = '%s'
+                            ''' % (table_name))) == 1:
+        #return JsonResponse('Model exists!', safe=False)
+        return HttpResponseRedirect('/addfail/')
+
     print('''
                             CREATE TABLE %s 
                             (	
@@ -308,7 +314,7 @@ def addconfiguretodatabaseRelation(request):
                         ''' % table_name)
 
     print('''
-                            INSERT INTO MODEL_PARAMETER 
+                            INSERT INTO FPGROWTH_PARAMETER 
                             (	
                                 FPMODELNAME, 
 	                            MINSUPPORT, 
@@ -318,7 +324,7 @@ def addconfiguretodatabaseRelation(request):
                                 INSERT_TIME,
                                 MODEL_TYPE,
                                 AGENT_ID
-                            ) VALUSES
+                            ) VALUES
                             (
                                 '%s',
                                 %f,
@@ -350,7 +356,7 @@ def addconfiguretodatabaseRelation(request):
                                 %f,
                                 'fpgrowth/%s.csv',
                                 '%s',
-                                sysdate,
+                                to_DATE('2017-03-03', 'YYYY-MM-DD'),
                                 '%s',
                                 '%s'
                             )
@@ -365,6 +371,9 @@ def addok(request):
 
 def addok2(request):
     return render(request, 'addok2.html')
+
+def addfail(request):
+    return render(request, 'addfail.html')
 
 def addconfigure(request):
     return render(request, 'configureadd.html')

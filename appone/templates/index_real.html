@@ -23,8 +23,29 @@
 		$.getJSON('/thresold/', function (ret) {
 		var maxthresold = ret[0];
 		var minthresold = ret[1];
-		var relation_pp = ret[2];
-		var relationratio_OO = ret[3];
+		//var max_discrete = ret[2][0][0];
+		var relation_pp1_people = ret[2][0][0];
+		var relation_pp1_day = ret[2][0][1];
+		var relation_pp2_people = ret[2][1][0];
+		var relation_pp2_day = ret[2][1][1];
+		var relation_pp3_people = ret[2][2][0];
+		var relation_pp3_day = ret[2][2][1];
+		var relation_pp4_people = ret[2][3][0];
+		var relation_pp4_day = ret[2][3][1];
+		var relation_pp5_people = ret[2][4][0];
+		var relation_pp5_day = ret[2][4][1];
+
+		var relationratio_OO1_exe = ret[3][0][0];
+		var relationratio_OO1_ratio = ret[3][0][1];
+		var relationratio_OO2_exe = ret[3][1][0];
+		var relationratio_OO2_ratio = ret[3][1][1];
+		var relationratio_OO3_exe = ret[3][2][0];
+		var relationratio_OO3_ratio = ret[3][2][1];
+		var relationratio_OO4_exe = ret[3][3][0];
+		var relationratio_OO4_ratio = ret[3][3][1];
+		var relationratio_OO5_exe = ret[3][4][0];
+		var relationratio_OO5_ratio = ret[3][4][1];
+		//console.log(relationratio_OO1_exe,relationratio_OO1_ratio);
 		var relationratio_Z4YAZWRB = ret[4];
 		var relationratio_537TT03OT = ret[5];
 		var relationratio_5VM42727 = ret[6];
@@ -33,8 +54,28 @@
 
 		localStorage.setItem('max_thresold', maxthresold);
 		localStorage.setItem('min_thresold', minthresold);		
-		localStorage.setItem('operation_to_operation', relationratio_OO);
-		localStorage.setItem('people_to_people', relation_pp);
+		localStorage.setItem('operation_to_operation1_exe', relationratio_OO1_exe);
+		localStorage.setItem('operation_to_operation1_ratio', relationratio_OO1_ratio);
+		localStorage.setItem('operation_to_operation2_exe', relationratio_OO2_exe);
+		localStorage.setItem('operation_to_operation2_ratio', relationratio_OO2_ratio);
+		localStorage.setItem('operation_to_operation3_exe', relationratio_OO3_exe);
+		localStorage.setItem('operation_to_operation3_ratio', relationratio_OO3_ratio);
+		localStorage.setItem('operation_to_operation4_exe', relationratio_OO4_exe);
+		localStorage.setItem('operation_to_operation4_ratio', relationratio_OO4_ratio);
+		localStorage.setItem('operation_to_operation5_exe', relationratio_OO5_exe);
+		localStorage.setItem('operation_to_operation5_ratio', relationratio_OO5_ratio);
+
+		localStorage.setItem('people_to_people1_people', relation_pp1_people);
+		localStorage.setItem('people_to_people1_day', relation_pp1_day);
+		localStorage.setItem('people_to_people2_people', relation_pp2_people);
+		localStorage.setItem('people_to_people2_day', relation_pp2_day);
+		localStorage.setItem('people_to_people3_people', relation_pp3_people);
+		localStorage.setItem('people_to_people3_day', relation_pp3_day);
+		localStorage.setItem('people_to_people4_people', relation_pp4_people);
+		localStorage.setItem('people_to_people4_day', relation_pp4_day);
+		localStorage.setItem('people_to_people5_people', relation_pp5_people);
+		localStorage.setItem('people_to_people5_day', relation_pp5_day);
+
 		localStorage.setItem('person_to_operation_Z4YAZWRB', relationratio_Z4YAZWRB);
 		localStorage.setItem('person_to_operation_537TT03OT', relationratio_537TT03OT);
 		localStorage.setItem('person_to_operation_5VM42727', relationratio_5VM42727);

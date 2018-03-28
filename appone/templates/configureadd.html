@@ -284,6 +284,7 @@
             var algorithm = 'lstm';
             var type = $("#baseunit").val();
             var model_name = 'agentid' + '_' + $("#baseunit").val() + '_' + $("#line").val() + '_' + $("#model").val();
+            model_name = model_name.replace('-','');
 
             var obj = {
                 'algorithm': algorithm,
@@ -309,6 +310,8 @@
                 case 'PeopleOperation':
                     type = 'PO';
                     username = $("#user_name").val();
+                    //username = '537TT03OT';
+
                     break;
                 case 'OperationOperation':
                     type = 'OO';
@@ -319,11 +322,12 @@
                     username = '';
             }
             if(username){
-                var model_name = type + '_' + username + '_' + $("#min_support").val() + '_' + $("#min_confidence").val() + '_' + $("#model2").val();
+                var model_name = type + '_' + username + '_' + $("#model2").val();
             }else{
-                var model_name = type + '_' + $("#min_support").val() + '_' + $("#min_confidence").val() + '_' + $("#model2").val();
+                var model_name = type + '_' + $("#model2").val();
             }
-
+            model_name = model_name.replace('-','');
+''
             var obj = {
                 'algorithm': algorithm,
                 'type': type,
