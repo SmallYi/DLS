@@ -21,22 +21,26 @@ def thresold(request):
     a = center[0][0].split(",")
     max_thresold = a[3]
     min_thresold = a[0]
-    count_oo = appone.db.executeSQL("SELECT COUNT(*) FROM OO_RELATIONAPP")
-    relation_oo = appone.db.executeSQL("SELECT COUNT(*) FROM OO_RELATIONAPP WHERE FPITEMS_COUNT > 0")
-    e = count_oo[0][0]
-    f = relation_oo[0][0]
-    g = f/e
-    count_pp = appone.db.executeSQL("SELECT COUNT(*) FROM PP_RELATIONPEOPLE")
-    relation_pp = appone.db.executeSQL("SELECT COUNT(*) FROM PP_RELATIONPEOPLE WHERE FPITEMS_COUNT > 0")
-    h = count_pp[0][0]
-    i = relation_pp[0][0]
-    j =i/h
+    count_oo = appone.db.executeSQL('''select * from (
+        select appname, people_count/total as ratio from (
+            select * from oo_relationapp cross join (
+                select count(people_count) as total,act_date
+                 from oo_relationapp group by act_date))
+                  order by ratio)
+                   where rownum<=5''')
+    #print(count_oo)
+    count_pp = appone.db.executeSQL('''select * from (
+        select PEOPLENAME,count(*) from (
+            select PEOPLENAME, APP_COUNT, ACT_DATE, APP_TOTAL from pp_relationpeople
+             where app_count < app_total*0.1)  group by PEOPLENAME order by count(*) desc)
+              where rownum<=5''')
+   
 
     ret_list = []
     ret_list.append(max_thresold)
     ret_list.append(min_thresold)
-    ret_list.append(j)
-    ret_list.append(g)
+    ret_list.append(count_pp)
+    ret_list.append(count_oo)
     for k in range(5):
         count = appone.db.executeSQL("SELECT DISTINCT COUNT(*) FROM %s WHERE FPITEMS_COUNT >= 10*(SELECT MINSUPPORT FROM FPGROWTH_PARAMETER WHERE FPMODELNAME = '%s')" %('PO_'+agent[k]+'_RELATIONAPP','PO_'+agent[k]+'_20180314'))
         relation_app = appone.db.executeSQL("SELECT DISTINCT COUNT(*) FROM %s WHERE FPITEMS_COUNT >= 0" %('PO_'+agent[k]+'_RELATIONAPP'))
