@@ -2,6 +2,7 @@
 import os
 import cx_Oracle
 import time
+import math
 from datetime import datetime, timedelta
 from django.db import connection, transaction
 from django.shortcuts import render
@@ -286,7 +287,6 @@ def addconfiguretodatabaseRelation(request):
         agent_id = ''
         table_name = 'PP' + '_' + model_name
 
-    # same name?
     appone.db.connect()
     print('''
                             CREATE TABLE %s 
@@ -482,8 +482,7 @@ def analyse_lstm(request):
 
     ret_dict['total'] = -1
     ret_dict['head'] = appone.db.executeSQL(
-        "SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'" %
-        model.upper())
+        "SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'" % model.upper())
     ret_dict['body'] = appone.db.executeSQL('''
                                             SELECT * FROM
                                             (
@@ -543,6 +542,185 @@ def analyse_fp(request):
     size = int(request.GET['size'])
     appone.db.connect()
 
+    data_tbname = 'PO_' + model + '_RELATIONAPP'
+    ret_dict['total'] = -1
+    ret_dict['head'] = appone.db.executeSQL(
+        "SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'" %
+        data_tbname.upper())
+    ret_dict['body'] = appone.db.executeSQL('''
+                                            SELECT * FROM
+                                            (
+                                                SELECT A.*, ROWNUM RN
+                                                FROM (SELECT * FROM %s) A
+                                                WHERE ROWNUM <= %d
+                                            )   WHERE RN >= %d
+                                            ''' % (data_tbname, page * size,
+                                                   page * size - 14))
+    ret_dict['total'] = appone.db.executeSQL('''SELECT COUNT(*) FROM %s 
+                                            ''' % (data_tbname))
+    if chart == '0':
+        return JsonResponse(ret_dict)
+
+    bar1_xdata = [1,2,3,4,5,6,7,8,9,10]
+    bar1_ydata = []
+    bar1_tbname = 'PO_' + model + '_RELATIONAPP'
+    for x in bar1_xdata:
+        ret_sql = appone.db.executeSQL('''
+                                        SELECT DISTINCT COUNT(*) FROM %s
+                                            WHERE FPITEMS_COUNT = %d
+                                        ''' % (bar1_tbname, x))
+        bar1_ydata.append(ret_sql[0][0])   
+    ret_dict['bar1_xdata'] = bar1_xdata
+    ret_dict['bar1_ydata'] = bar1_ydata
+
+    bar2_xdata = []
+    bar2_ydata = []
+    date_list = []
+    bar2_tbname = 'PO_' + model + '_RELATIONAPP'
+    ret_sql = appone.db.executeSQL('''
+                                        SELECT MINSUPPORT FROM FPGROWTH_PARAMETER
+                                            WHERE FPMODELNAME LIKE '%%%s%%'
+                                        ''' % (model))
+    min_support = ret_sql[0][0]
+    min_support = math.ceil(min_support*10)
+    ret_sql = appone.db.executeSQL('''
+                                        SELECT DISTINCT ACT_DATE FROM %s
+                                        ''' % (bar2_tbname))
+    for x in ret_sql: 
+        date_list.append(x[0])
+    date_list.sort()
+    for d in date_list:
+        print('''
+                                        SELECT DISTINCT COUNT(*) FROM %s 
+                                            WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
+                                                AND FPITEMS_COUNT >= %d
+                                            ''' % (bar2_tbname, d.strftime('%Y-%m-%d'), min_support))
+        relation_count = appone.db.executeSQL('''
+                                        SELECT DISTINCT COUNT(*) FROM %s 
+                                            WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
+                                                AND FPITEMS_COUNT >= %d
+                                            ''' % (bar2_tbname, d.strftime('%Y-%m-%d'), min_support))
+        all_count = appone.db.executeSQL('''
+                                        SELECT DISTINCT COUNT(*) FROM %s 
+                                            WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
+                                            ''' % (bar2_tbname, d.strftime('%Y-%m-%d')))
+        bar2_xdata.append(d.strftime('%Y-%m-%d'))
+        bar2_ydata.append(relation_count[0][0]/all_count[0][0])
+    ret_dict['bar2_xdata'] = bar2_xdata
+    ret_dict['bar2_ydata'] = bar2_ydata
+
+    return JsonResponse(ret_dict)
+
+def analyse_OO(request):
+    model = request.GET['model']
+    chart = request.GET['chart']
+
+    if chart == '-1':
+        return render(request, 'analyse_OO.html', {'model': model})
+
+    ret_dict = {}
+    page = int(request.GET['page'])
+    size = int(request.GET['size'])
+    appone.db.connect()
+
+    # data table
+    data_tbname = 'OO_' + model + '_RELATION'
+    data_tbname = data_tbname.upper()
+    ret_dict['total'] = -1
+    ret_dict['head'] = appone.db.executeSQL(
+        "SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'" % data_tbname
+    ret_dict['body'] = appone.db.executeSQL('''
+                                            SELECT * FROM
+                                            (
+                                                SELECT A.*, ROWNUM RN
+                                                FROM (SELECT * FROM %s) A
+                                                WHERE ROWNUM <= %d
+                                            )   WHERE RN >= %d
+                                            ''' % (data_tbname, page * size,
+                                                   page * size - 14))
+    ret_dict['total'] = appone.db.executeSQL('''SELECT COUNT(*) FROM %s 
+                                            ''' % (data_tbname))
+    if chart == '0':
+        return JsonResponse(ret_dict)
+
+    bar1_xdata = [0]
+    bar1_ydata = []
+    bar1_tbname = 'OO_' + model + '_RELATION'
+    bar1_tbname = bar1_tbname.upper()
+
+    ret_sql = appone.db.executeSQL('''
+                                    SELECT MIN(PEOPLE_COUNT) FROM %s
+                                    ''' % (bar1_tbname))
+    min_count = ret_sql[0][0] 
+    ret_sql = appone.db.executeSQL('''
+                                    SELECT MAX(PEOPLE_COUNT) FROM %s
+                                    ''' % (bar1_tbname))
+    max_count = ret_sql[0][0] 
+    step = (max_count - min_count) / 10
+    for x in range(1,11):
+        bar1_xdata.append(min_count + math.ceil(step * x))
+
+    for x in range(1,11):
+        ret_sql = appone.db.executeSQL('''
+                                        SELECT COUNT(*) FROM %s
+                                            WHERE PEOPLE_COUNT > %d AND PEOPLE_COUNT <= %d
+                                        ''' % (bar1_tbname, bar1_xdata[x-1], bar1_xdata[x]))
+        bar1_ydata.append(ret_sql[0][0])   
+    bar1_xdata.pop(0)
+    ret_dict['bar1_xdata'] = bar1_xdata
+    ret_dict['bar1_ydata'] = bar1_ydata
+
+    bar2_xdata = []
+    bar2_ydata = []
+    date_list = []
+    bar2_tbname = 'OO_' + model + '_RELATION'
+    bar2_tbname = bar2_tbname.upper()
+    ret_sql = appone.db.executeSQL('''
+                                        SELECT MINSUPPORT FROM FPGROWTH_PARAMETER
+                                            WHERE FPMODELNAME = '%s'
+                                        ''' % (bar2_tbname))
+    min_support = ret_sql[0][0]
+    ret_sql = appone.db.executeSQL('''
+                                        SELECT COUNT(*) FROM CP_TERMINAL_INFO
+                                        ''')
+    people_count = ret_sql[0][0]
+    min_support = math.ceil(min_support * people_count)
+
+    ret_sql = appone.db.executeSQL('''
+                                        SELECT DISTINCT ACT_DATE FROM %s
+                                        ''' % (bar2_tbname))
+    for x in ret_sql: 
+        date_list.append(x[0])
+    date_list.sort()
+    for d in date_list:
+        relation_count = appone.db.executeSQL('''
+                                        SELECT DISTINCT COUNT(*) FROM %s 
+                                            WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
+                                                AND PEOPLE_COUNT >= %d
+                                            ''' % (bar2_tbname, d.strftime('%Y-%m-%d'), min_support))
+        all_count = appone.db.executeSQL('''
+                                        SELECT DISTINCT COUNT(*) FROM %s 
+                                            WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
+                                            ''' % (bar2_tbname, d.strftime('%Y-%m-%d')))
+        bar2_xdata.append(d.strftime('%Y-%m-%d'))
+        bar2_ydata.append(relation_count[0][0]/all_count[0][0])
+    ret_dict['bar2_xdata'] = bar2_xdata
+    ret_dict['bar2_ydata'] = bar2_ydata
+
+    return JsonResponse(ret_dict)
+
+def analyse_PP(request):
+    model = request.GET['model']
+    chart = request.GET['chart']
+
+    if chart == '-1':
+        return render(request, 'analyse_fp.html', {'model': model})
+
+    ret_dict = {}
+    page = int(request.GET['page'])
+    size = int(request.GET['size'])
+    appone.db.connect()
+
     data_tbname = 'PO_' + model + '_20180314'
     ret_dict['total'] = -1
     ret_dict['head'] = appone.db.executeSQL(
@@ -562,33 +740,15 @@ def analyse_fp(request):
     if chart == '0':
         return JsonResponse(ret_dict)
 
-    # bar_list = []
-    # for x in range(1, 11):
-    #     bar_tmp = appone.db.executeSQL('''
-    #                                         SELECT COUNT(*) FROM %s
-    #                                             WHERE VALUE = %d AND TYPE = 1
-    #                                         ''' % (data_tbname, x))
-    #     bar_list.append(bar_tmp[0][0])
-    # ret_dict['bar'] = bar_list
-
-    bar1_xdata = []
+    bar1_xdata = [1,2,3,4,5,6,7,8,9,10]
     bar1_ydata = []
     bar1_tbname = 'PO_' + model + '_RELATIONAPP'
-    ret_sql = appone.db.executeSQL('''
-                                    SELECT MAX(FPITEMS_COUNT), MIN(FPITEMS_COUNT) FROM %s
-                                    ''' % (bar1_tbname))
-    max_count = ret_sql[0][0]
-    min_count = ret_sql[0][1]
-    step_count = (max_count - min_count) / 10
-    for i in range(0,11):
-        bar1_xdata.append(min_count + step_count * i)
-        bar1_xdata[i] = round(bar1_xdata[i])
-    for i in range(10):
+    for x in bar1_xdata:
         ret_sql = appone.db.executeSQL('''
-                                        SELECT COUNT(*) FROM %s 
-                                            WHERE FPITEMS_COUNT BETWEEN %d AND %d
-                                        ''' % (bar1_tbname, bar1_xdata[i], bar1_xdata[i+1]))
-        bar1_ydata.append(ret_sql[0][0])    
+                                        SELECT DISTINCT COUNT(*) FROM %s
+                                            WHERE FPITEMS_COUNT = %d
+                                        ''' % (bar1_tbname, x))
+        bar1_ydata.append(ret_sql[0][0])   
     ret_dict['bar1_xdata'] = bar1_xdata
     ret_dict['bar1_ydata'] = bar1_ydata
 
@@ -597,46 +757,30 @@ def analyse_fp(request):
     date_list = []
     bar2_tbname = 'PO_' + model + '_RELATIONAPP'
     ret_sql = appone.db.executeSQL('''
+                                        SELECT MINSUPPORT FROM FPGROWTH_PARAMETER
+                                            WHERE FPMODELNAME LIKE '%%%s%%'
+                                        ''' % (model))
+    min_support = ret_sql[0][0]
+    min_support = math.ceil(min_support*10)
+    ret_sql = appone.db.executeSQL('''
                                         SELECT DISTINCT ACT_DATE FROM %s
                                         ''' % (bar2_tbname))
     for x in ret_sql: 
         date_list.append(x[0])
     date_list.sort()
     for d in date_list:
-        r_num = appone.db.executeSQL('''
-                                        SELECT COUNT(*) FROM %s 
+        relation_count = appone.db.executeSQL('''
+                                        SELECT DISTINCT COUNT(*) FROM %s 
                                             WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
-                                                AND FPITEMS_COUNT <> 0
-                                        ''' % (bar2_tbname, d.strftime('%Y-%m-%d')))
-        a_num = appone.db.executeSQL('''
-                                        SELECT COUNT(*) FROM %s 
+                                                AND FPITEMS_COUNT >= %d
+                                            ''' % (bar2_tbname, d.strftime('%Y-%m-%d'), min_support))
+        all_count = appone.db.executeSQL('''
+                                        SELECT DISTINCT COUNT(*) FROM %s 
                                             WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
-                                        ''' % (bar2_tbname, d.strftime('%Y-%m-%d')))
+                                            ''' % (bar2_tbname, d.strftime('%Y-%m-%d')))
         bar2_xdata.append(d.strftime('%Y-%m-%d'))
-        bar2_ydata.append(r_num[0][0]/a_num[0][0])
+        bar2_ydata.append(relation_count[0][0]/all_count[0][0])
     ret_dict['bar2_xdata'] = bar2_xdata
     ret_dict['bar2_ydata'] = bar2_ydata
 
     return JsonResponse(ret_dict)
-
-    # pie_list = []
-    # date_list = []
-    # pie_tbname = 'PO_' + model + '_RELATIONAPP'
-    # ret_sql = appone.db.executeSQL('''
-    #                                     SELECT DISTINCT ACT_DATE FROM %s
-    #                                     ''' % (pie_tbname))
-    # for x in ret_sql: 
-    #     date_list.append(x[0])
-    # date_list.sort()
-    # for d in date_list:
-    #     r_num = appone.db.executeSQL('''
-    #                                     SELECT COUNT(*) FROM %s 
-    #                                         WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
-    #                                             AND FPITEMS_COUNT <> 0
-    #                                     ''' % (pie_tbname, d.strftime('%Y-%m-%d')))
-    #     a_num = appone.db.executeSQL('''
-    #                                     SELECT COUNT(*) FROM %s 
-    #                                         WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
-    #                                     ''' % (pie_tbname, d.strftime('%Y-%m-%d')))
-    #     pie_list.append({'value': r_num[0][0]/a_num[0][0], 'name': d.strftime('%Y-%m-%d')})
-    # ret_dict['pie'] = pie_list

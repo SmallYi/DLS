@@ -138,7 +138,12 @@
 			},
 			series: [{
 				data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-				type: 'bar'
+				type: 'bar',
+				itemStyle: {
+                    normal: {
+                        color: '#91c7ae'
+                    }
+                }
 			}]
 		};
 		myChart1.setOption(option1);
@@ -186,7 +191,12 @@
 			series: [{
 				symbolSize: 4,
 				data: [],
-				type: 'scatter'
+				type: 'scatter',
+				itemStyle: {
+                    normal: {
+                        color: '#91c7ae'
+                    }
+                }
 			}]
 		};
 		myChart2.setOption(option2);

@@ -41,5 +41,7 @@ urlpatterns = [
 	url(r'taiyangxi_small$', appone_views.taiyangxi, name='taiyangxi_small'),
 	url(r'^analyse_lstm/', appone_views.analyse_lstm),
 	url(r'^analyse_fp/', appone_views.analyse_fp),
+	url(r'^analyse_OO/', appone_views.analyse_OO),
+	url(r'^analyse_PP/', appone_views.analyse_PP),
 ]
 

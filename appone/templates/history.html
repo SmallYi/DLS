@@ -153,14 +153,14 @@
 		function type_select() {
 			if ($('#model_type').val() == 'MODEL_PARAMETER') {
 				$('#baseline').empty();
-				$('#baseline').append('<option value="single">个体异常</option>');
 				$('#baseline').append('<option value="all">整体异常</option>');
+				$('#baseline').append('<option value="single">个体异常</option>');
 			}
 			if ($('#model_type').val() == 'FPGROWTH_PARAMETER') {
 				$('#baseline').empty();
-				$('#baseline').append('<option value="PO">人与操作</option>');
-				$('#baseline').append('<option value="OO">操作与操作</option>');
 				$('#baseline').append('<option value="PP">人与人</option>');
+				$('#baseline').append('<option value="OO">操作与操作</option>');
+				$('#baseline').append('<option value="PO">人与操作</option>');
 			}
 		};
 
