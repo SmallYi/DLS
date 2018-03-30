@@ -22,24 +22,37 @@ def disconnect():
     global connection
     global cursor
     if connection:
-        cursor.close()
-        connection.close()
-        connection = None
-        return 0
+        try:
+            cursor.close()
+            connection.close()
+            cursor = None
+            connection = None
+            return 0
+        except cx_Oracle.Error as e:
+            print(e)
+            return -1
     else:
         return 1
     
 def executeSQL(sql):
     if connection:
-        cursor.execute(sql)
-        return cursor.fetchall()
+        try:
+            cursor.execute(sql)
+            return cursor.fetchall()
+        except cx_Oracle.Error as e:
+            print(e)
+            return None
     else:
-        raise cx_Oracle.Error("Hey!Hava you connected to DB?")
+        return None
 
 def executeSQL2(sql):
     if connection:
-        cursor.execute(sql)
-        connection.commit()
-        return
+        try:
+            cursor.execute(sql)
+            connection.commit()
+            return 0
+        except cx_Oracle.Error as e:
+            print(e)
+            return -1
     else:
-        raise cx_Oracle.Error("Hey!Hava you connected to DB?")
+        return -1

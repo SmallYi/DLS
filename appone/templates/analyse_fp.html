@@ -56,6 +56,18 @@
 			<button id="hide_bt" class="btn btn-default navbar-btn" style="display: none;">
 				{{model}}
 			</button>
+			<div class="nav navbar-nav navbar-right">
+				<a href="/analyse_OO/?model=OO_20180314&chart=-1">
+					<button class="btn btn-default navbar-btn">
+						操作与操作
+					</button>
+				</a>
+				<a href="/analyse_PP/?model=PP_20180314&chart=-1">
+					<button class="btn btn-default navbar-btn">
+						人 与 人
+					</button>
+				</a>
+			</div>
 		</div>
 	</nav>
 	<div id="info_chart1" style="position: absolute; left: 20px; top: 120px; z-index: 1; height: 400px; width: 400px"></div>
@@ -130,10 +142,10 @@
 				data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 				type: 'bar',
 				itemStyle: {
-                    normal: {
-                        color: '#91c7ae'
-                    }
-                }
+					normal: {
+						color: '#91c7ae'
+					}
+				}
 			}]
 		};
 		myChart1.setOption(option1);
@@ -163,7 +175,7 @@
 						color: '#F0FFFF'
 					}
 				},
-				axisLabel:{
+				axisLabel: {
 					rotate: 45
 				},
 				data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'
@@ -189,10 +201,10 @@
 				data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 				type: 'bar',
 				itemStyle: {
-                    normal: {
-                        color: '#91c7ae'
-                    }
-                }
+					normal: {
+						color: '#91c7ae'
+					}
+				}
 			}]
 		};
 		myChart2.setOption(option2);
@@ -213,7 +225,7 @@
 				option1.title.text = model + "\n关联操作分布";
 				// option1.series[0].data = ret.bar;
 				option1.xAxis.data = ret.bar1_xdata;
-				option1.series[0].data = ret.bar1_ydata;				
+				option1.series[0].data = ret.bar1_ydata;
 				myChart1.setOption(option1);
 				option2.title.text = model + "\n关联操作占比";
 				// option2.series[0].data = ret.pie;

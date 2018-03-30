@@ -111,9 +111,6 @@
 					</div>
 				</form>
 				<div class="col-sm-offset-2 col-sm-4">
-					<!-- <button class="btn btn-success" onclick="connect();">
-						Detect
-					</button> -->
 				</div>
 				<div class="col-sm-6">
 					<button class="btn btn-primary" onclick="search();">
@@ -174,19 +171,6 @@
 				$('#model_selector').empty();
 				$('#result_table_head').empty();
 				$('#result_table_body').empty();
-				// $('#result_table_head').append('<tr>\
-				// 							<th>模型名</th>\
-				// 							<th>数据类型</th>\
-				// 							<th>历史数据源</th>\
-				// 							<th>数据源路径</th>\
-				// 							<th>学习字段</th>\
-				// 							<th>基线</th>\
-				// 							<th>基线值</th>\
-				// 							<th>基线单位</th>\
-				// 							<th>时间字段</th>\
-				// 							<th>编码方案</th>\
-				// 							<th>插入时间</th>\
-				// 							</tr>');
 				var thead_str = '<tr>';
 				for (var i = 0; i < ret.head.length; i++) {
 					thead_str += ('<th>' + ret.head[i] + '</th>');
@@ -211,7 +195,12 @@
 					currentPage: 1,
 					onPageChange: function (num, type) {
 						if (type == "change") {
-							$.getJSON("/load_model/", { 'model_type': model_type, 'baseline': baseline, 'page': num, 'size': 15 }, function (ret) {
+							$.getJSON("/load_model/", {
+								'model_type': model_type,
+								'baseline': baseline,
+								'page': num,
+								'size': 15
+							}, function (ret) {
 								if (ret.total == -1) {
 									return;
 								}
@@ -233,10 +222,18 @@
 		};
 
 		function search() {
+			var model_type = $('#model_type').val();
 			var model = $('#model_selector').val();
 			var start_date = $('#start_date').val();
 			var end_date = $('#end_date').val();
-			$.getJSON("/search/", { 'model': model, 'start_date': start_date, 'end_date': end_date, 'page': 1, 'size': 15 }, function (ret) {
+			$.getJSON("/search/", {
+				'model_type': model_type,
+				'model': model,
+				'start_date': start_date,
+				'end_date': end_date,
+				'page': 1,
+				'size': 15
+			}, function (ret) {
 				if (ret.total == -1) {
 					return;
 				}
@@ -266,7 +263,14 @@
 					onPageChange: function (num, type) {
 						if (type == "change") {
 							model = $('#model_selector').val();
-							$.getJSON("/search/", { 'model': model, 'start_date': start_date, 'end_date': end_date, 'page': num, 'size': 15 }, function (ret) {
+							$.getJSON("/search/", {
+								'model_type': model_type,
+								'model': model,
+								'start_date': start_date,
+								'end_date': end_date,
+								'page': num,
+								'size': 15
+							}, function (ret) {
 								if (ret.total == -1) {
 									return;
 								}
