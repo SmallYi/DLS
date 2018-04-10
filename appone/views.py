@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-import cx_Oracle
 import time
 import math
 from datetime import datetime, timedelta
@@ -9,28 +8,27 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-import appone.db
+from appone.db import oracle
 
 
 def thresold(request):
-    appone.db.connect()
+    db = oracle()
     agent = ['Z4YAZWRB', '537TT03OT', '5VM42727', '5VM452F4', '5VMTSDK5']
-    max = appone.db.executeSQL("SELECT MAX(PREDICTION) FROM LSTM_ALL")
-    min = appone.db.executeSQL("SELECT MIN(PREDICTION) FROM LSTM_ALL")
-    center = appone.db.executeSQL(
+    max = db.select("SELECT MAX(PREDICTION) FROM LSTM_ALL")
+    min = db.select("SELECT MIN(PREDICTION) FROM LSTM_ALL")
+    center = db.select(
         "SELECT CENTERS FROM MODEL_PARAMETER WHERE MODEL_NAME='LSTM_all' ")
     a = center[0][0].split(",")
     max_thresold = a[3]
     min_thresold = a[0]
-    count_oo = appone.db.executeSQL('''select * from (
+    count_oo = db.select('''select * from (
         select appname, people_count/total as ratio from (
             select * from oo_relationapp cross join (
                 select count(people_count) as total,act_date
                  from oo_relationapp group by act_date))
                   order by ratio)
                    where rownum<=5''')
-    #print(count_oo)
-    count_pp = appone.db.executeSQL('''select * from (
+    count_pp = db.select('''select * from (
         select PEOPLENAME,count(*) from (
             select PEOPLENAME, APP_COUNT, ACT_DATE, APP_TOTAL from pp_relationpeople
              where app_count < app_total*0.1)  group by PEOPLENAME order by count(*) desc)
@@ -42,11 +40,11 @@ def thresold(request):
     ret_list.append(count_pp)
     ret_list.append(count_oo)
     for k in range(5):
-        count = appone.db.executeSQL(
+        count = db.select(
             "SELECT DISTINCT COUNT(*) FROM %s WHERE FPITEMS_COUNT >= 10*(SELECT MINSUPPORT FROM FPGROWTH_PARAMETER WHERE FPMODELNAME = '%s')"
             % ('PO_' + agent[k] + '_RELATIONAPP',
                'PO_' + agent[k] + '_20180314'))
-        relation_app = appone.db.executeSQL(
+        relation_app = db.select(
             "SELECT DISTINCT COUNT(*) FROM %s WHERE FPITEMS_COUNT >= 0" %
             ('PO_' + agent[k] + '_RELATIONAPP'))
         b = count[0][0]
@@ -63,7 +61,7 @@ def prediction(request):
     # history_time.append(now)
     # for x in range(1,11):
     #     history_time.append((now - timedelta(days = x)).strftime('%Y-%m-%d'))
-
+    db = oracle()
     history_time = [
         '2018-03-20', '2017-02-16', '2017-02-15', '2017-02-14', '2017-02-13',
         '2017-02-12', '2017-02-11', '2017-02-10', '2017-02-09', '2017-02-08',
@@ -78,19 +76,18 @@ def prediction(request):
     length = 0
     maxtomin = 0
     min_prediction = 0
-    appone.db.connect()
     for y in range(10):
         normalization = []
         a = []
         b = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        length = appone.db.executeSQL("SELECT COUNT(*) FROM %s" %
+        length = db.select("SELECT COUNT(*) FROM %s" %
                                       ('LSTM_' + agent[y] + '_SINGLE'))
-        normalization = appone.db.executeSQL("SELECT PREDICTION FROM %s" %
+        normalization = db.select("SELECT PREDICTION FROM %s" %
                                              ('LSTM_' + agent[y] + '_SINGLE'))
-        maxtomin = appone.db.executeSQL(
+        maxtomin = db.select(
             "SELECT MAX(PREDICTION)-MIN(PREDICTION) FROM %s" %
             ('LSTM_' + agent[y] + '_SINGLE'))
-        min_prediction = appone.db.executeSQL(
+        min_prediction = db.select(
             "SELECT MIN(PREDICTION) FROM %s" %
             ('LSTM_' + agent[y] + '_SINGLE'))
         for i in range(length[0][0]):
@@ -106,7 +103,7 @@ def prediction(request):
 
         for x in range(10):
             ret_list1.append(
-                appone.db.executeSQL('''SELECT COUNT(*) from %s
+                db.select('''SELECT COUNT(*) from %s
                                             WHERE ACT_TIME BETWEEN
                                             to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')
                                             AND ABNORMAL=0
@@ -114,7 +111,7 @@ def prediction(request):
                                      ('LSTM_' + agent[y] + '_SINGLE',
                                       history_time[x + 1], history_time[x])))
             ret_list1.append(
-                appone.db.executeSQL('''SELECT COUNT(*) FROM %s
+                db.select('''SELECT COUNT(*) FROM %s
                                             WHERE ACT_TIME BETWEEN
                                             to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')
                                           ''' %
@@ -124,9 +121,9 @@ def prediction(request):
     ret_dict = {'abnormalratio': ret_list1, 'lstm': ret_list2}
     # for y in range(1):
     #     normalization = []
-    #     normalization = appone.db.executeSQL("select prediction from %s"%('LSTM_'+agent[y]+'_SINGLE'))
+    #     normalization = db.select("select prediction from %s"%('LSTM_'+agent[y]+'_SINGLE'))
     #     for x in range(10):
-    #         ret_list2.append(appone.db.executeSQL('''SELECT count(*) from %s
+    #         ret_list2.append(db.select('''SELECT count(*) from %s
     #                                         WHERE ACT_TIME BETWEEN
     #                                         to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')
     #                                         AND PREDICTION BETWEEN %f AND %f
@@ -141,6 +138,7 @@ def recordnumber(request):
     # for x in range(1,11):
     #     history_time.append((now - timedelta(days = x)).strftime('%Y-%m-%d'))
 
+    db = oracle()
     history_time = [
         '20170122', '20170123', '20170124', '20170206', '20170207', '20170208',
         '20170209', '20170210', '20170211', '20170212'
@@ -151,11 +149,10 @@ def recordnumber(request):
         'Z4YAZTEF', 'Z4YAZTKF'
     ]
     ret_list = []
-    appone.db.connect()
     for x in range(12):
         for y in range(10):
             ret_list.append(
-                appone.db.executeSQL(
+                db.select(
                     "SELECT COUNT(*) FROM %s WHERE AGENT_ID = '%s' " %
                     ('DL_TMSAPP_C0A80006_' + history_time[y], agent[x])))
     return JsonResponse(ret_list, safe=False)
@@ -182,13 +179,13 @@ def addconfiguretodatabase(request):
     table_name = table_name.replace('-', '')
     table_name = table_name.upper()
 
-    appone.db.connect()
+    db = oracle()
     if len(
-            appone.db.executeSQL('''
+            db.select('''
                         SELECT * FROM MODEL_PARAMETER WHERE BASELINE_UNIT = '%s' AND BASELINE_VALUES = '%s'
                         ''' % (base_lineunit, base_linevalue))) >= 1:
         return HttpResponseRedirect('/addfail/')
-    appone.db.executeSQL2('''
+    db.alter('''
                         CREATE TABLE %s 
                         (	
                             DATA VARCHAR2(1024 BYTE) PRIMARY KEY, 
@@ -199,7 +196,7 @@ def addconfiguretodatabase(request):
                         )
                         ''' % table_name)
 
-    appone.db.executeSQL2('''
+    db.alter('''
                         INSERT INTO MODEL_PARAMETER 
                         (	
                             MODEL_NAME, 
@@ -223,8 +220,6 @@ def addconfiguretodatabase(request):
                         )
                         ''' % (table_name, fields_study, base_line,
                                base_linevalue, base_lineunit, table_name))
-
-    appone.db.disconnect()
 
     return HttpResponseRedirect('/addok/')
 
@@ -252,14 +247,14 @@ def addconfiguretodatabaseRelation(request):
     table_name = table_name.replace('-', '')
     table_name = table_name.upper()
 
-    appone.db.connect()
+    db = oracle()
     if len(
-            appone.db.executeSQL('''
+            db.select('''
                             SELECT * FROM FPGROWTH_PARAMETER WHERE AGENT_ID = '%s' AND MINSUPPORT = %f AND MINCONFIDENCE = %f
                             ''' % (agent_id, float(min_support),
                                    float(min_confidence)))) >= 1:
         return HttpResponseRedirect('/addfail/')
-    appone.db.executeSQL2('''
+    db.alter('''
                             CREATE TABLE %s 
                             (	
                                 ITEMS VARCHAR2(1024 BYTE) PRIMARY KEY, 
@@ -268,7 +263,7 @@ def addconfiguretodatabaseRelation(request):
 	                            INSERT_TIME DATE
                             )
                         ''' % table_name)
-    appone.db.executeSQL2('''
+    db.alter('''
                             INSERT INTO FPGROWTH_PARAMETER 
                             (	
                                 FPMODELNAME, 
@@ -293,8 +288,6 @@ def addconfiguretodatabaseRelation(request):
                         ''' % (table_name, float(min_support),
                                float(min_confidence), table_name, table_name,
                                model_type, agent_id))
-
-    appone.db.disconnect()
 
     return HttpResponseRedirect('/addok2/')
 
@@ -359,14 +352,14 @@ def load_model(request):
     elif model_type == 'FPGROWTH_PARAMETER':
         unit = 'MODEL_TYPE'
 
-    appone.db.connect()
-    ret_dict['total'] = appone.db.executeSQL('''
+    db = oracle()
+    ret_dict['total'] = db.select('''
                                             SELECT COUNT(*) FROM %s WHERE %s = '%s'
                                             ''' % (model_type, unit, baseline))
-    ret_dict['head'] = appone.db.executeSQL('''
+    ret_dict['head'] = db.select('''
                                             SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'
                                             ''' % model_type)
-    ret_dict['body'] = appone.db.executeSQL('''
+    ret_dict['body'] = db.select('''
                                             SELECT * FROM
                                             (
                                                 SELECT A.*, ROWNUM RN
@@ -377,18 +370,15 @@ def load_model(request):
                                             (model_type, unit, baseline,
                                              page * size, page * size - 14))
 
-    appone.db.disconnect()
-
     return JsonResponse(ret_dict)
 
 
 def load_agent(request):
+    db = oracle()
     ret_dict = {}
-    appone.db.connect()
-    ret_dict['agent'] = appone.db.executeSQL('''
-                                            SELECT TERM_AGENT_ID FROM CP_TERMINAL_INFO
-                                            ''')
-    appone.db.disconnect()
+    ret_dict['agent'] = db.select('''
+                                    SELECT TERM_AGENT_ID FROM CP_TERMINAL_INFO
+                                    ''')
     return JsonResponse(ret_dict)
 
 
@@ -408,8 +398,8 @@ def search(request):
         mdname = 'FPMODELNAME'
         tbname = 'OUTPUTTABLE'
 
-    appone.db.connect()
-    table_name = appone.db.executeSQL('''
+    db = oracle()
+    table_name = db.select('''
                                         SELECT %s FROM %s WHERE %s = '%s'
                                         ''' % (tbname, model_type, mdname,
                                                model))
@@ -421,10 +411,10 @@ def search(request):
     if model_type == 'FPGROWTH_PARAMETER':
         table_name = table_name + '_R'
 
-    ret_dict['head'] = appone.db.executeSQL('''
+    ret_dict['head'] = db.select('''
                                             SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'
                                             ''' % table_name)
-    ret_dict['body'] = appone.db.executeSQL('''
+    ret_dict['body'] = db.select('''
                                             SELECT * FROM
                                             (
                                                 SELECT A.*, ROWNUM RN
@@ -434,13 +424,11 @@ def search(request):
                                         ''' %
                                             (table_name, start_date, end_date,
                                              page * size, page * size - 14))
-    ret_dict['total'] = appone.db.executeSQL('''
+    ret_dict['total'] = db.select('''
                                             SELECT COUNT(*) FROM %s WHERE INSERT_TIME BETWEEN 
                                             to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD') 
                                             ''' % (table_name, start_date,
                                                    end_date))
-
-    appone.db.disconnect()
 
     return JsonResponse(ret_dict)
 
@@ -463,11 +451,11 @@ def analyse_lstm(request):
     model = 'LSTM_' + model + '_SINGLE'
     model = model.upper()
 
-    appone.db.connect()
-    ret_dict['head'] = appone.db.executeSQL('''
+    db = oracle()
+    ret_dict['head'] = db.select('''
                                             SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'
                                             ''' % model)
-    ret_dict['body'] = appone.db.executeSQL('''
+    ret_dict['body'] = db.select('''
                                             SELECT * FROM
                                             (
                                                 SELECT A.*, ROWNUM RN
@@ -477,7 +465,7 @@ def analyse_lstm(request):
                                             ''' %
                                             (model, ab_select, page * size,
                                              page * size - 14))
-    ret_dict['total'] = appone.db.executeSQL('''
+    ret_dict['total'] = db.select('''
                                             SELECT COUNT(*) FROM %s %s
                                             ''' % (model, ab_select))
     if chart == '0':
@@ -485,7 +473,7 @@ def analyse_lstm(request):
 
     bar_list = []
     for x in range(20):
-        bar_tmp = appone.db.executeSQL('''
+        bar_tmp = db.select('''
                                         SELECT COUNT(*) FROM %s
                                             WHERE PREDICTION BETWEEN %f AND %f
                                         ''' % (model, 0.05 * x,
@@ -493,14 +481,14 @@ def analyse_lstm(request):
         bar_list.append(bar_tmp[0][0])
     ret_dict['bar'] = bar_list
 
-    code_list = appone.db.executeSQL('''
+    code_list = db.select('''
                                     SELECT KEY, CODE FROM SIGNALFIELD_CODE
                                         WHERE FIELD_NAME = 'APP_NAME'
                                     ''')
     code_dict = {}
     for e in code_list:
         code_dict[e[0]] = e[1]
-    ret_sql = appone.db.executeSQL('''
+    ret_sql = db.select('''
                                     SELECT ACT_TIME, DATA FROM %s
                                     ''' % (model))
 
@@ -512,8 +500,6 @@ def analyse_lstm(request):
         if y != -1:
             scatter_list.append((x, y))
     ret_dict['scatter'] = scatter_list
-
-    appone.db.disconnect()
 
     return JsonResponse(ret_dict)
 
@@ -530,17 +516,17 @@ def analyse_fp(request):
     size = int(request.GET['size'])
     model = 'PO_' + model + '_20180314'
 
-    appone.db.connect()
-    data_tbname = appone.db.executeSQL('''
+    db = oracle()
+    data_tbname = db.select('''
                                         SELECT OUTPUTTABLE FROM FPGROWTH_PARAMETER 
                                             WHERE FPMODELNAME = '%s'
                                         ''' % (model))
     data_tbname = data_tbname[0][0] + '_R'
     data_tbname = data_tbname.upper()
-    ret_dict['head'] = appone.db.executeSQL('''
+    ret_dict['head'] = db.select('''
                                             SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME = '%s'
                                             ''' % data_tbname)
-    ret_dict['body'] = appone.db.executeSQL('''
+    ret_dict['body'] = db.select('''
                                             SELECT * FROM
                                             (
                                                 SELECT A.*, ROWNUM RN
@@ -549,7 +535,7 @@ def analyse_fp(request):
                                             )   WHERE RN >= %d
                                             ''' % (data_tbname, page * size,
                                                    page * size - 14))
-    ret_dict['total'] = appone.db.executeSQL('''
+    ret_dict['total'] = db.select('''
                                             SELECT COUNT(*) FROM %s 
                                             ''' % (data_tbname))
     if chart == '0':
@@ -557,14 +543,14 @@ def analyse_fp(request):
 
     bar1_xdata = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     bar1_ydata = []
-    bar1_tbname = appone.db.executeSQL('''
+    bar1_tbname = db.select('''
                                         SELECT OUTPUTTABLE FROM FPGROWTH_PARAMETER 
                                             WHERE FPMODELNAME = '%s'
                                         ''' % (model))
     bar1_tbname = bar1_tbname[0][0] + '_R'
     bar1_tbname = bar1_tbname.upper()
     for x in bar1_xdata:
-        ret_sql = appone.db.executeSQL('''
+        ret_sql = db.select('''
                                         SELECT DISTINCT COUNT(*) FROM %s
                                             WHERE FPITEMS_COUNT = %d
                                         ''' % (bar1_tbname, x))
@@ -575,33 +561,33 @@ def analyse_fp(request):
     bar2_xdata = []
     bar2_ydata = []
     date_list = []
-    bar2_tbname = appone.db.executeSQL('''
+    bar2_tbname = db.select('''
                                         SELECT OUTPUTTABLE FROM FPGROWTH_PARAMETER 
                                             WHERE FPMODELNAME = '%s'
                                         ''' % (model))
     bar2_tbname = bar2_tbname[0][0] + '_R'
     bar2_tbname = bar2_tbname.upper()
-    ret_sql = appone.db.executeSQL('''
+    ret_sql = db.select('''
                                         SELECT MINSUPPORT FROM FPGROWTH_PARAMETER
                                             WHERE FPMODELNAME LIKE '%%%s%%'
                                         ''' % (model))
     min_support = ret_sql[0][0]
     min_support = math.ceil(min_support * 10)
-    ret_sql = appone.db.executeSQL('''
+    ret_sql = db.select('''
                                         SELECT DISTINCT ACT_DATE FROM %s
                                         ''' % (bar2_tbname))
     for x in ret_sql:
         date_list.append(x[0])
     date_list.sort()
     for d in date_list:
-        relation_count = appone.db.executeSQL('''
+        relation_count = db.select('''
                                         SELECT DISTINCT COUNT(*) FROM %s 
                                             WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
                                                 AND FPITEMS_COUNT >= %d
                                             ''' % (bar2_tbname,
                                                    d.strftime('%Y-%m-%d'),
                                                    min_support))
-        all_count = appone.db.executeSQL('''
+        all_count = db.select('''
                                         SELECT DISTINCT COUNT(*) FROM %s 
                                             WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
                                             ''' % (bar2_tbname,
@@ -610,8 +596,6 @@ def analyse_fp(request):
         bar2_ydata.append(relation_count[0][0] / all_count[0][0])
     ret_dict['bar2_xdata'] = bar2_xdata
     ret_dict['bar2_ydata'] = bar2_ydata
-
-    appone.db.disconnect()
 
     return JsonResponse(ret_dict)
 
@@ -627,18 +611,18 @@ def analyse_OO(request):
     page = int(request.GET['page'])
     size = int(request.GET['size'])
 
-    appone.db.connect()
-    data_tbname = appone.db.executeSQL('''
+    db = oracle()
+    data_tbname = db.select('''
                                         SELECT OUTPUTTABLE FROM FPGROWTH_PARAMETER 
                                             WHERE FPMODELNAME = '%s'
                                         ''' % (model))
     data_tbname = data_tbname[0][0] + '_R'
     data_tbname = data_tbname.upper()
     ret_dict['total'] = -1
-    ret_dict['head'] = appone.db.executeSQL('''
+    ret_dict['head'] = db.select('''
                                             SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'
                                             ''' % data_tbname)
-    ret_dict['body'] = appone.db.executeSQL('''
+    ret_dict['body'] = db.select('''
                                             SELECT * FROM
                                             (
                                                 SELECT A.*, ROWNUM RN
@@ -647,7 +631,7 @@ def analyse_OO(request):
                                             )   WHERE RN >= %d
                                             ''' % (data_tbname, page * size,
                                                    page * size - 14))
-    ret_dict['total'] = appone.db.executeSQL('''
+    ret_dict['total'] = db.select('''
                                             SELECT COUNT(*) FROM %s 
                                             ''' % (data_tbname))
     if chart == '0':
@@ -655,18 +639,18 @@ def analyse_OO(request):
 
     bar1_xdata = [0]
     bar1_ydata = []
-    bar1_tbname = appone.db.executeSQL('''
+    bar1_tbname = db.select('''
                                         SELECT OUTPUTTABLE FROM FPGROWTH_PARAMETER 
                                             WHERE FPMODELNAME = '%s'
                                         ''' % (model))
     bar1_tbname = bar1_tbname[0][0] + '_R'
     bar1_tbname = bar1_tbname.upper()
 
-    ret_sql = appone.db.executeSQL('''
+    ret_sql = db.select('''
                                     SELECT MIN(PEOPLE_COUNT) FROM %s
                                     ''' % (bar1_tbname))
     min_count = ret_sql[0][0]
-    ret_sql = appone.db.executeSQL('''
+    ret_sql = db.select('''
                                     SELECT MAX(PEOPLE_COUNT) FROM %s
                                     ''' % (bar1_tbname))
     max_count = ret_sql[0][0]
@@ -675,7 +659,7 @@ def analyse_OO(request):
         bar1_xdata.append(min_count + math.ceil(step * x))
 
     for x in range(1, 11):
-        ret_sql = appone.db.executeSQL('''
+        ret_sql = db.select('''
                                         SELECT COUNT(*) FROM %s
                                             WHERE PEOPLE_COUNT > %d AND PEOPLE_COUNT <= %d
                                         ''' % (bar1_tbname, bar1_xdata[x - 1],
@@ -688,38 +672,38 @@ def analyse_OO(request):
     bar2_xdata = []
     bar2_ydata = []
     date_list = []
-    bar2_tbname = appone.db.executeSQL('''
+    bar2_tbname = db.select('''
                                         SELECT OUTPUTTABLE FROM FPGROWTH_PARAMETER 
                                             WHERE FPMODELNAME = '%s'
                                         ''' % (model))
     bar2_tbname = bar2_tbname[0][0] + '_R'
     bar2_tbname = bar2_tbname.upper()
-    ret_sql = appone.db.executeSQL('''
+    ret_sql = db.select('''
                                         SELECT MINSUPPORT FROM FPGROWTH_PARAMETER
                                             WHERE FPMODELNAME = '%s'
                                         ''' % (model))
     min_support = ret_sql[0][0]
-    ret_sql = appone.db.executeSQL('''
+    ret_sql = db.select('''
                                         SELECT COUNT(*) FROM CP_TERMINAL_INFO
                                         ''')
     people_count = ret_sql[0][0]
     min_support = math.ceil(min_support * people_count)
 
-    ret_sql = appone.db.executeSQL('''
+    ret_sql = db.select('''
                                         SELECT DISTINCT ACT_DATE FROM %s
                                         ''' % (bar2_tbname))
     for x in ret_sql:
         date_list.append(x[0])
     date_list.sort()
     for d in date_list:
-        relation_count = appone.db.executeSQL('''
+        relation_count = db.select('''
                                         SELECT DISTINCT COUNT(*) FROM %s 
                                             WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
                                                 AND PEOPLE_COUNT >= %d
                                             ''' % (bar2_tbname,
                                                    d.strftime('%Y-%m-%d'),
                                                    min_support))
-        all_count = appone.db.executeSQL('''
+        all_count = db.select('''
                                         SELECT DISTINCT COUNT(*) FROM %s 
                                             WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
                                             ''' % (bar2_tbname,
@@ -728,7 +712,6 @@ def analyse_OO(request):
         bar2_ydata.append(relation_count[0][0] / all_count[0][0])
     ret_dict['bar2_xdata'] = bar2_xdata
     ret_dict['bar2_ydata'] = bar2_ydata
-    appone.db.disconnect()
 
     return JsonResponse(ret_dict)
 
@@ -743,19 +726,19 @@ def analyse_PP(request):
     ret_dict = {}
     page = int(request.GET['page'])
     size = int(request.GET['size'])
-    appone.db.connect()
+    db = oracle()
 
-    data_tbname = appone.db.executeSQL('''
+    data_tbname = db.select('''
                                         SELECT OUTPUTTABLE FROM FPGROWTH_PARAMETER 
                                             WHERE FPMODELNAME = '%s'
                                         ''' % (model))
     data_tbname = data_tbname[0][0] + '_R'
     data_tbname = data_tbname.upper()
     ret_dict['total'] = -1
-    ret_dict['head'] = appone.db.executeSQL(
+    ret_dict['head'] = db.select(
         "SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'" %
         data_tbname)
-    ret_dict['body'] = appone.db.executeSQL('''
+    ret_dict['body'] = db.select('''
                                             SELECT * FROM
                                             (
                                                 SELECT A.*, ROWNUM RN
@@ -764,25 +747,25 @@ def analyse_PP(request):
                                             )   WHERE RN >= %d
                                             ''' % (data_tbname, page * size,
                                                    page * size - 14))
-    ret_dict['total'] = appone.db.executeSQL('''SELECT COUNT(*) FROM %s 
+    ret_dict['total'] = db.select('''SELECT COUNT(*) FROM %s 
                                             ''' % (data_tbname))
     if chart == '0':
         return JsonResponse(ret_dict)
 
     bar1_xdata = [0]
     bar1_ydata = []
-    bar1_tbname = appone.db.executeSQL('''
+    bar1_tbname = db.select('''
                                         SELECT OUTPUTTABLE FROM FPGROWTH_PARAMETER 
                                             WHERE FPMODELNAME = '%s'
                                         ''' % (model))
     bar1_tbname = bar1_tbname[0][0] + '_R'
     bar1_tbname = bar1_tbname.upper()
 
-    ret_sql = appone.db.executeSQL('''
+    ret_sql = db.select('''
                                     SELECT MIN(APP_COUNT) FROM %s
                                     ''' % (bar1_tbname))
     min_count = ret_sql[0][0]
-    ret_sql = appone.db.executeSQL('''
+    ret_sql = db.select('''
                                     SELECT MAX(APP_COUNT) FROM %s
                                     ''' % (bar1_tbname))
     max_count = ret_sql[0][0]
@@ -791,7 +774,7 @@ def analyse_PP(request):
         bar1_xdata.append(min_count + math.ceil(step * x))
 
     for x in range(1, 11):
-        ret_sql = appone.db.executeSQL('''
+        ret_sql = db.select('''
                                         SELECT COUNT(*) FROM %s
                                             WHERE APP_COUNT > %d AND APP_COUNT <= %d
                                         ''' % (bar1_tbname, bar1_xdata[x - 1],
@@ -804,40 +787,40 @@ def analyse_PP(request):
     bar2_xdata = []
     bar2_ydata = []
     date_list = []
-    bar2_tbname = appone.db.executeSQL('''
+    bar2_tbname = db.select('''
                                         SELECT OUTPUTTABLE FROM FPGROWTH_PARAMETER 
                                             WHERE FPMODELNAME = '%s'
                                         ''' % (model))
     bar2_tbname = bar2_tbname[0][0] + '_R'
     bar2_tbname = bar2_tbname.upper()
-    ret_sql = appone.db.executeSQL('''
+    ret_sql = db.select('''
                                         SELECT MINSUPPORT FROM FPGROWTH_PARAMETER
                                             WHERE FPMODELNAME = '%s'
                                         ''' % (model))
     min_support = ret_sql[0][0]
 
-    ret_sql = appone.db.executeSQL('''
+    ret_sql = db.select('''
                                         SELECT DISTINCT ACT_DATE FROM %s
                                         ''' % (bar2_tbname))
     for x in ret_sql:
         date_list.append(x[0])
     date_list.sort()
     for d in date_list:
-        ret_sql = appone.db.executeSQL('''
+        ret_sql = db.select('''
                                             SELECT DISTINCT APP_TOTAL FROM %s
                                                 WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
                                             ''' % (bar2_tbname,
                                                    d.strftime('%Y-%m-%d')))
         people_count = ret_sql[0][0]
         min_threshold = math.ceil(min_support * people_count)
-        relation_count = appone.db.executeSQL('''
+        relation_count = db.select('''
                                         SELECT DISTINCT COUNT(*) FROM %s 
                                             WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
                                                 AND APP_COUNT >= %d
                                             ''' % (bar2_tbname,
                                                    d.strftime('%Y-%m-%d'),
                                                    min_threshold))
-        all_count = appone.db.executeSQL('''
+        all_count = db.select('''
                                         SELECT DISTINCT COUNT(*) FROM %s 
                                             WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
                                             ''' % (bar2_tbname,
@@ -846,7 +829,5 @@ def analyse_PP(request):
         bar2_ydata.append(relation_count[0][0] / all_count[0][0])
     ret_dict['bar2_xdata'] = bar2_xdata
     ret_dict['bar2_ydata'] = bar2_ydata
-
-    appone.db.disconnect()
 
     return JsonResponse(ret_dict)
