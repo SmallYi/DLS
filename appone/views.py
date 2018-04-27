@@ -14,25 +14,25 @@ from appone.db import oracle
 def thresold(request):
     db = oracle()
     agent = ['Z4YAZWRB', '537TT03OT', '5VM42727', '5VM452F4', '5VMTSDK5']
-    max = db.select("SELECT MAX(PREDICTION) FROM LSTM_ALL")
-    min = db.select("SELECT MIN(PREDICTION) FROM LSTM_ALL")
-    center = db.select(
-        "SELECT CENTERS FROM MODEL_PARAMETER WHERE MODEL_NAME='LSTM_all' ")
+    center = db.select("SELECT CENTERS FROM MODEL_PARAMETER WHERE MODEL_NAME='LSTM_all' ")
     a = center[0][0].split(",")
     max_thresold = a[3]
     min_thresold = a[0]
-    count_oo = db.select('''select * from (
-        select appname, people_count/total as ratio from (
-            select * from oo_relationapp cross join (
-                select count(people_count) as total,act_date
-                 from oo_relationapp group by act_date))
-                  order by ratio)
-                   where rownum<=5''')
-    count_pp = db.select('''select * from (
-        select PEOPLENAME,count(*) from (
-            select PEOPLENAME, APP_COUNT, ACT_DATE, APP_TOTAL from pp_relationpeople
-             where app_count < app_total*0.1)  group by PEOPLENAME order by count(*) desc)
-              where rownum<=5''')
+    count_oo = db.select('''
+        SELECT * FROM (
+            SELECT appname, people_count/total as ratio FROM (
+                SELECT * FROM OO_20180314_R cross join (
+                    SELECT count(people_count) as total,act_date
+                        FROM OO_20180314_R group by act_date))
+                    order by ratio)
+                where rownum<=5''')
+    count_pp = db.select('''
+        SELECT * FROM (
+            SELECT PEOPLENAME,count(*) FROM (
+                SELECT PEOPLENAME, APP_COUNT, ACT_DATE, APP_TOTAL FROM PP_20180314_R
+                    where app_count < app_total*0.1)  
+                group by PEOPLENAME order by count(*) desc)
+            where rownum<=5''')
 
     ret_list = []
     ret_list.append(max_thresold)
@@ -42,15 +42,13 @@ def thresold(request):
     for k in range(5):
         count = db.select(
             "SELECT DISTINCT COUNT(*) FROM %s WHERE FPITEMS_COUNT >= 10*(SELECT MINSUPPORT FROM FPGROWTH_PARAMETER WHERE FPMODELNAME = '%s')"
-            % ('PO_' + agent[k] + '_RELATIONAPP',
-               'PO_' + agent[k] + '_20180314'))
+            % ('PO_' + agent[k] + '_20180314_R', 'PO_' + agent[k] + '_20180314'))
         relation_app = db.select(
-            "SELECT DISTINCT COUNT(*) FROM %s WHERE FPITEMS_COUNT >= 0" %
-            ('PO_' + agent[k] + '_RELATIONAPP'))
+            "SELECT DISTINCT COUNT(*) FROM %s WHERE FPITEMS_COUNT >= 0" 
+            % ('PO_' + agent[k] + '_20180314_R'))
         b = count[0][0]
         c = relation_app[0][0]
         d = b / c
-        print(d)
         ret_list.append(d)
     return JsonResponse(ret_list, safe=False)
 
@@ -80,19 +78,12 @@ def prediction(request):
         normalization = []
         a = []
         b = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        length = db.select("SELECT COUNT(*) FROM %s" %
-                                      ('LSTM_' + agent[y] + '_SINGLE'))
-        normalization = db.select("SELECT PREDICTION FROM %s" %
-                                             ('LSTM_' + agent[y] + '_SINGLE'))
-        maxtomin = db.select(
-            "SELECT MAX(PREDICTION)-MIN(PREDICTION) FROM %s" %
-            ('LSTM_' + agent[y] + '_SINGLE'))
-        min_prediction = db.select(
-            "SELECT MIN(PREDICTION) FROM %s" %
-            ('LSTM_' + agent[y] + '_SINGLE'))
+        length = db.select("SELECT COUNT(*) FROM %s" % ('LSTM_' + agent[y] + '_SINGLE'))
+        normalization = db.select("SELECT PREDICTION FROM %s" % ('LSTM_' + agent[y] + '_SINGLE'))
+        maxtomin = db.select("SELECT MAX(PREDICTION)-MIN(PREDICTION) FROM %s" % ('LSTM_' + agent[y] + '_SINGLE'))
+        min_prediction = db.select("SELECT MIN(PREDICTION) FROM %s" % ('LSTM_' + agent[y] + '_SINGLE'))
         for i in range(length[0][0]):
-            a.append(
-                (normalization[i][0] - min_prediction[0][0]) / maxtomin[0][0])
+            a.append((normalization[i][0] - min_prediction[0][0]) / maxtomin[0][0])
         for j in range(length[0][0]):
             if (int(a[j] * 10) < 10):
                 b[int(a[j] * 10)] += 1
@@ -103,20 +94,16 @@ def prediction(request):
 
         for x in range(10):
             ret_list1.append(
-                db.select('''SELECT COUNT(*) from %s
-                                            WHERE ACT_TIME BETWEEN
-                                            to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')
-                                            AND ABNORMAL=0
-                                         ''' %
-                                     ('LSTM_' + agent[y] + '_SINGLE',
-                                      history_time[x + 1], history_time[x])))
+                db.select('''
+                    SELECT COUNT(*) from %s
+                        WHERE ACT_TIME BETWEEN to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')
+                            AND ABNORMAL=0''' %
+                                ('LSTM_' + agent[y] + '_SINGLE', history_time[x + 1], history_time[x])))
             ret_list1.append(
-                db.select('''SELECT COUNT(*) FROM %s
-                                            WHERE ACT_TIME BETWEEN
-                                            to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')
-                                          ''' %
-                                     ('LSTM_' + agent[y] + '_SINGLE',
-                                      history_time[x + 1], history_time[x])))
+                db.select('''
+                    SELECT COUNT(*) FROM %s 
+                        WHERE ACT_TIME BETWEEN to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')''' %
+                            ('LSTM_' + agent[y] + '_SINGLE', history_time[x + 1], history_time[x])))
 
     ret_dict = {'abnormalratio': ret_list1, 'lstm': ret_list2}
     # for y in range(1):
@@ -186,40 +173,40 @@ def addconfiguretodatabase(request):
                         ''' % (base_lineunit, base_linevalue))) >= 1:
         return HttpResponseRedirect('/addfail/')
     db.alter('''
-                        CREATE TABLE %s 
-                        (	
-                            DATA VARCHAR2(1024 BYTE) PRIMARY KEY, 
-                            PREDICTION NUMBER(10,5), 
-                            ABNORMAL NUMBER(1,0), 
-                            INSERT_TIME DATE, 
-                            ACT_TIME DATE
-                        )
-                        ''' % table_name)
+                CREATE TABLE %s 
+                (	
+                    DATA VARCHAR2(1024 BYTE) PRIMARY KEY, 
+                    PREDICTION NUMBER(10,5), 
+                    ABNORMAL NUMBER(1,0), 
+                    INSERT_TIME DATE, 
+                    ACT_TIME DATE
+                )
+                ''' % table_name)
 
     db.alter('''
-                        INSERT INTO MODEL_PARAMETER 
-                        (	
-                            MODEL_NAME, 
-                            FIELDS_STUDY, 
-                            FIELD_BASELINE, 
-                            BASELINE_VALUES, 
-                            BASELINE_UNIT,
-                            RESULT_TABLENAME,
-                            INSERT_TIME,
-                            DETECT_FLAG
-                        ) VALUES
-                        (
-                            '%s',
-                            '%s',
-                            '%s',
-                            '%s',
-                            '%s',
-                            '%s',
-                            to_DATE('2017-03-03', 'YYYY-MM-DD'),
-                            0
-                        )
-                        ''' % (table_name, fields_study, base_line,
-                               base_linevalue, base_lineunit, table_name))
+                INSERT INTO MODEL_PARAMETER 
+                (	
+                    MODEL_NAME, 
+                    FIELDS_STUDY, 
+                    FIELD_BASELINE, 
+                    BASELINE_VALUES, 
+                    BASELINE_UNIT,
+                    RESULT_TABLENAME,
+                    INSERT_TIME,
+                    DETECT_FLAG
+                ) VALUES
+                (
+                    '%s',
+                    '%s',
+                    '%s',
+                    '%s',
+                    '%s',
+                    '%s',
+                    to_DATE('2017-03-03', 'YYYY-MM-DD'),
+                    0
+                )
+                ''' % (table_name, fields_study, base_line,
+                        base_linevalue, base_lineunit, table_name))
 
     return HttpResponseRedirect('/addok/')
 
@@ -250,44 +237,44 @@ def addconfiguretodatabaseRelation(request):
     db = oracle()
     if len(
             db.select('''
-                            SELECT * FROM FPGROWTH_PARAMETER WHERE AGENT_ID = '%s' AND MINSUPPORT = %f AND MINCONFIDENCE = %f
-                            ''' % (agent_id, float(min_support),
-                                   float(min_confidence)))) >= 1:
+                        SELECT * FROM FPGROWTH_PARAMETER WHERE AGENT_ID = '%s' AND MINSUPPORT = %f AND MINCONFIDENCE = %f
+                        ''' % (agent_id, float(min_support),
+                                float(min_confidence)))) >= 1:
         return HttpResponseRedirect('/addfail/')
     db.alter('''
-                            CREATE TABLE %s 
-                            (	
-                                ITEMS VARCHAR2(1024 BYTE) PRIMARY KEY, 
-	                            VALUE NUMBER(10,2), 
-	                            TYPE NUMBER(1,0), 
-	                            INSERT_TIME DATE
-                            )
-                        ''' % table_name)
+                CREATE TABLE %s 
+                (	
+                    ITEMS VARCHAR2(1024 BYTE) PRIMARY KEY, 
+                    VALUE NUMBER(10,2), 
+                    TYPE NUMBER(1,0), 
+                    INSERT_TIME DATE
+                )
+            ''' % table_name)
     db.alter('''
-                            INSERT INTO FPGROWTH_PARAMETER 
-                            (	
-                                FPMODELNAME, 
-	                            MINSUPPORT, 
-	                            MINCONFIDENCE, 
-	                            INPUTFILE, 
-                                OUTPUTTABLE,
-                                INSERT_TIME,
-                                MODEL_TYPE,
-                                AGENT_ID
-                            ) VALUES
-                            (
-                                '%s',
-                                %f,
-                                %f,
-                                'fpgrowth/%s.csv',
-                                '%s',
-                                to_DATE('2017-03-03', 'YYYY-MM-DD'),
-                                '%s',
-                                '%s'
-                            )
-                        ''' % (table_name, float(min_support),
-                               float(min_confidence), table_name, table_name,
-                               model_type, agent_id))
+                INSERT INTO FPGROWTH_PARAMETER 
+                (	
+                    FPMODELNAME, 
+                    MINSUPPORT, 
+                    MINCONFIDENCE, 
+                    INPUTFILE, 
+                    OUTPUTTABLE,
+                    INSERT_TIME,
+                    MODEL_TYPE,
+                    AGENT_ID
+                ) VALUES
+                (
+                    '%s',
+                    %f,
+                    %f,
+                    'fpgrowth/%s.csv',
+                    '%s',
+                    to_DATE('2017-03-03', 'YYYY-MM-DD'),
+                    '%s',
+                    '%s'
+                )
+            ''' % (table_name, float(min_support),
+                    float(min_confidence), table_name, table_name,
+                    model_type, agent_id))
 
     return HttpResponseRedirect('/addok2/')
 
@@ -354,21 +341,21 @@ def load_model(request):
 
     db = oracle()
     ret_dict['total'] = db.select('''
-                                            SELECT COUNT(*) FROM %s WHERE %s = '%s'
-                                            ''' % (model_type, unit, baseline))
+                                    SELECT COUNT(*) FROM %s WHERE %s = '%s'
+                                    ''' % (model_type, unit, baseline))
     ret_dict['head'] = db.select('''
-                                            SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'
-                                            ''' % model_type)
+                                    SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'
+                                    ''' % model_type)
     ret_dict['body'] = db.select('''
-                                            SELECT * FROM
-                                            (
-                                                SELECT A.*, ROWNUM RN
-                                                FROM (SELECT * FROM %s WHERE %s = '%s') A
-                                                WHERE ROWNUM <= %d
-                                            )   WHERE RN >= %d
-                                            ''' %
-                                            (model_type, unit, baseline,
-                                             page * size, page * size - 14))
+                                    SELECT * FROM
+                                    (
+                                        SELECT A.*, ROWNUM RN
+                                        FROM (SELECT * FROM %s WHERE %s = '%s') A
+                                        WHERE ROWNUM <= %d
+                                    )   WHERE RN >= %d
+                                    ''' %
+                                    (model_type, unit, baseline,
+                                        page * size, page * size - 14))
 
     return JsonResponse(ret_dict)
 
@@ -400,9 +387,9 @@ def search(request):
 
     db = oracle()
     table_name = db.select('''
-                                        SELECT %s FROM %s WHERE %s = '%s'
-                                        ''' % (tbname, model_type, mdname,
-                                               model))
+                            SELECT %s FROM %s WHERE %s = '%s'
+                            ''' % (tbname, model_type, mdname,
+                                    model))
     if (table_name == None):
         ret_dict['total'] = -1
         return JsonResponse(ret_dict)
@@ -412,23 +399,23 @@ def search(request):
         table_name = table_name + '_R'
 
     ret_dict['head'] = db.select('''
-                                            SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'
-                                            ''' % table_name)
+                                    SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'
+                                    ''' % table_name)
     ret_dict['body'] = db.select('''
-                                            SELECT * FROM
-                                            (
-                                                SELECT A.*, ROWNUM RN
-                                                FROM (SELECT * FROM %s WHERE INSERT_TIME BETWEEN to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')) A
-                                                WHERE ROWNUM <= %d
-                                            )   WHERE RN >= %d
-                                        ''' %
-                                            (table_name, start_date, end_date,
-                                             page * size, page * size - 14))
+                                    SELECT * FROM
+                                    (
+                                        SELECT A.*, ROWNUM RN
+                                        FROM (SELECT * FROM %s WHERE INSERT_TIME BETWEEN to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')) A
+                                        WHERE ROWNUM <= %d
+                                    )   WHERE RN >= %d
+                                ''' %
+                                    (table_name, start_date, end_date,
+                                        page * size, page * size - 14))
     ret_dict['total'] = db.select('''
-                                            SELECT COUNT(*) FROM %s WHERE INSERT_TIME BETWEEN 
-                                            to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD') 
-                                            ''' % (table_name, start_date,
-                                                   end_date))
+                                    SELECT COUNT(*) FROM %s WHERE INSERT_TIME BETWEEN 
+                                    to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD') 
+                                    ''' % (table_name, start_date,
+                                            end_date))
 
     return JsonResponse(ret_dict)
 
@@ -453,44 +440,44 @@ def analyse_lstm(request):
 
     db = oracle()
     ret_dict['head'] = db.select('''
-                                            SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'
-                                            ''' % model)
+                                    SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'
+                                    ''' % model)
     ret_dict['body'] = db.select('''
-                                            SELECT * FROM
-                                            (
-                                                SELECT A.*, ROWNUM RN
-                                                FROM (SELECT * FROM %s %s) A
-                                                WHERE ROWNUM <= %d
-                                            )   WHERE RN >= %d
-                                            ''' %
-                                            (model, ab_select, page * size,
-                                             page * size - 14))
+                                    SELECT * FROM
+                                    (
+                                        SELECT A.*, ROWNUM RN
+                                        FROM (SELECT * FROM %s %s) A
+                                        WHERE ROWNUM <= %d
+                                    )   WHERE RN >= %d
+                                    ''' %
+                                    (model, ab_select, page * size,
+                                        page * size - 14))
     ret_dict['total'] = db.select('''
-                                            SELECT COUNT(*) FROM %s %s
-                                            ''' % (model, ab_select))
+                                    SELECT COUNT(*) FROM %s %s
+                                    ''' % (model, ab_select))
     if chart == '0':
         return JsonResponse(ret_dict)
 
     bar_list = []
     for x in range(20):
         bar_tmp = db.select('''
-                                        SELECT COUNT(*) FROM %s
-                                            WHERE PREDICTION BETWEEN %f AND %f
-                                        ''' % (model, 0.05 * x,
-                                               0.05 * x + 0.05))
+                                SELECT COUNT(*) FROM %s
+                                    WHERE PREDICTION BETWEEN %f AND %f
+                                ''' % (model, 0.05 * x,
+                                        0.05 * x + 0.05))
         bar_list.append(bar_tmp[0][0])
     ret_dict['bar'] = bar_list
 
     code_list = db.select('''
-                                    SELECT KEY, CODE FROM SIGNALFIELD_CODE
-                                        WHERE FIELD_NAME = 'APP_NAME'
-                                    ''')
+                            SELECT KEY, CODE FROM SIGNALFIELD_CODE
+                                WHERE FIELD_NAME = 'APP_NAME'
+                            ''')
     code_dict = {}
     for e in code_list:
         code_dict[e[0]] = e[1]
     ret_sql = db.select('''
-                                    SELECT ACT_TIME, DATA FROM %s
-                                    ''' % (model))
+                            SELECT ACT_TIME, DATA FROM %s
+                            ''' % (model))
 
     scatter_list = []
     for record in ret_sql:
@@ -518,42 +505,42 @@ def analyse_fp(request):
 
     db = oracle()
     data_tbname = db.select('''
-                                        SELECT OUTPUTTABLE FROM FPGROWTH_PARAMETER 
-                                            WHERE FPMODELNAME = '%s'
-                                        ''' % (model))
+                                SELECT OUTPUTTABLE FROM FPGROWTH_PARAMETER 
+                                    WHERE FPMODELNAME = '%s'
+                                ''' % (model))
     data_tbname = data_tbname[0][0] + '_R'
     data_tbname = data_tbname.upper()
     ret_dict['head'] = db.select('''
-                                            SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME = '%s'
-                                            ''' % data_tbname)
+                                    SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME = '%s'
+                                    ''' % data_tbname)
     ret_dict['body'] = db.select('''
-                                            SELECT * FROM
-                                            (
-                                                SELECT A.*, ROWNUM RN
-                                                FROM (SELECT * FROM %s) A
-                                                WHERE ROWNUM <= %d
-                                            )   WHERE RN >= %d
-                                            ''' % (data_tbname, page * size,
-                                                   page * size - 14))
+                                    SELECT * FROM
+                                    (
+                                        SELECT A.*, ROWNUM RN
+                                        FROM (SELECT * FROM %s) A
+                                        WHERE ROWNUM <= %d
+                                    )   WHERE RN >= %d
+                                    ''' % (data_tbname, page * size,
+                                            page * size - 14))
     ret_dict['total'] = db.select('''
-                                            SELECT COUNT(*) FROM %s 
-                                            ''' % (data_tbname))
+                                    SELECT COUNT(*) FROM %s 
+                                    ''' % (data_tbname))
     if chart == '0':
         return JsonResponse(ret_dict)
 
     bar1_xdata = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     bar1_ydata = []
     bar1_tbname = db.select('''
-                                        SELECT OUTPUTTABLE FROM FPGROWTH_PARAMETER 
-                                            WHERE FPMODELNAME = '%s'
-                                        ''' % (model))
+                                SELECT OUTPUTTABLE FROM FPGROWTH_PARAMETER 
+                                    WHERE FPMODELNAME = '%s'
+                                ''' % (model))
     bar1_tbname = bar1_tbname[0][0] + '_R'
     bar1_tbname = bar1_tbname.upper()
     for x in bar1_xdata:
         ret_sql = db.select('''
-                                        SELECT DISTINCT COUNT(*) FROM %s
-                                            WHERE FPITEMS_COUNT = %d
-                                        ''' % (bar1_tbname, x))
+                                SELECT DISTINCT COUNT(*) FROM %s
+                                    WHERE FPITEMS_COUNT = %d
+                                ''' % (bar1_tbname, x))
         bar1_ydata.append(ret_sql[0][0])
     ret_dict['bar1_xdata'] = bar1_xdata
     ret_dict['bar1_ydata'] = bar1_ydata
@@ -562,36 +549,36 @@ def analyse_fp(request):
     bar2_ydata = []
     date_list = []
     bar2_tbname = db.select('''
-                                        SELECT OUTPUTTABLE FROM FPGROWTH_PARAMETER 
-                                            WHERE FPMODELNAME = '%s'
-                                        ''' % (model))
+                                SELECT OUTPUTTABLE FROM FPGROWTH_PARAMETER 
+                                    WHERE FPMODELNAME = '%s'
+                                ''' % (model))
     bar2_tbname = bar2_tbname[0][0] + '_R'
     bar2_tbname = bar2_tbname.upper()
     ret_sql = db.select('''
-                                        SELECT MINSUPPORT FROM FPGROWTH_PARAMETER
-                                            WHERE FPMODELNAME LIKE '%%%s%%'
-                                        ''' % (model))
+                            SELECT MINSUPPORT FROM FPGROWTH_PARAMETER
+                                WHERE FPMODELNAME LIKE '%%%s%%'
+                            ''' % (model))
     min_support = ret_sql[0][0]
     min_support = math.ceil(min_support * 10)
     ret_sql = db.select('''
-                                        SELECT DISTINCT ACT_DATE FROM %s
-                                        ''' % (bar2_tbname))
+                            SELECT DISTINCT ACT_DATE FROM %s
+                            ''' % (bar2_tbname))
     for x in ret_sql:
         date_list.append(x[0])
     date_list.sort()
     for d in date_list:
         relation_count = db.select('''
-                                        SELECT DISTINCT COUNT(*) FROM %s 
-                                            WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
-                                                AND FPITEMS_COUNT >= %d
-                                            ''' % (bar2_tbname,
-                                                   d.strftime('%Y-%m-%d'),
-                                                   min_support))
+                                    SELECT DISTINCT COUNT(*) FROM %s 
+                                        WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
+                                            AND FPITEMS_COUNT >= %d
+                                        ''' % (bar2_tbname,
+                                                d.strftime('%Y-%m-%d'),
+                                                min_support))
         all_count = db.select('''
-                                        SELECT DISTINCT COUNT(*) FROM %s 
-                                            WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
-                                            ''' % (bar2_tbname,
-                                                   d.strftime('%Y-%m-%d')))
+                                SELECT DISTINCT COUNT(*) FROM %s 
+                                    WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
+                                    ''' % (bar2_tbname,
+                                            d.strftime('%Y-%m-%d')))
         bar2_xdata.append(d.strftime('%Y-%m-%d'))
         bar2_ydata.append(relation_count[0][0] / all_count[0][0])
     ret_dict['bar2_xdata'] = bar2_xdata
@@ -613,46 +600,46 @@ def analyse_OO(request):
 
     db = oracle()
     data_tbname = db.select('''
-                                        SELECT OUTPUTTABLE FROM FPGROWTH_PARAMETER 
-                                            WHERE FPMODELNAME = '%s'
-                                        ''' % (model))
+                                SELECT OUTPUTTABLE FROM FPGROWTH_PARAMETER 
+                                    WHERE FPMODELNAME = '%s'
+                                ''' % (model))
     data_tbname = data_tbname[0][0] + '_R'
     data_tbname = data_tbname.upper()
     ret_dict['total'] = -1
     ret_dict['head'] = db.select('''
-                                            SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'
-                                            ''' % data_tbname)
+                                    SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'
+                                    ''' % data_tbname)
     ret_dict['body'] = db.select('''
-                                            SELECT * FROM
-                                            (
-                                                SELECT A.*, ROWNUM RN
-                                                FROM (SELECT * FROM %s) A
-                                                WHERE ROWNUM <= %d
-                                            )   WHERE RN >= %d
-                                            ''' % (data_tbname, page * size,
-                                                   page * size - 14))
+                                    SELECT * FROM
+                                    (
+                                        SELECT A.*, ROWNUM RN
+                                        FROM (SELECT * FROM %s) A
+                                        WHERE ROWNUM <= %d
+                                    )   WHERE RN >= %d
+                                    ''' % (data_tbname, page * size,
+                                            page * size - 14))
     ret_dict['total'] = db.select('''
-                                            SELECT COUNT(*) FROM %s 
-                                            ''' % (data_tbname))
+                                    SELECT COUNT(*) FROM %s 
+                                    ''' % (data_tbname))
     if chart == '0':
         return JsonResponse(ret_dict)
 
     bar1_xdata = [0]
     bar1_ydata = []
     bar1_tbname = db.select('''
-                                        SELECT OUTPUTTABLE FROM FPGROWTH_PARAMETER 
-                                            WHERE FPMODELNAME = '%s'
-                                        ''' % (model))
+                                SELECT OUTPUTTABLE FROM FPGROWTH_PARAMETER 
+                                    WHERE FPMODELNAME = '%s'
+                                ''' % (model))
     bar1_tbname = bar1_tbname[0][0] + '_R'
     bar1_tbname = bar1_tbname.upper()
 
     ret_sql = db.select('''
-                                    SELECT MIN(PEOPLE_COUNT) FROM %s
-                                    ''' % (bar1_tbname))
+                            SELECT MIN(PEOPLE_COUNT) FROM %s
+                            ''' % (bar1_tbname))
     min_count = ret_sql[0][0]
     ret_sql = db.select('''
-                                    SELECT MAX(PEOPLE_COUNT) FROM %s
-                                    ''' % (bar1_tbname))
+                            SELECT MAX(PEOPLE_COUNT) FROM %s
+                            ''' % (bar1_tbname))
     max_count = ret_sql[0][0]
     step = (max_count - min_count) / 10
     for x in range(1, 11):
@@ -660,10 +647,10 @@ def analyse_OO(request):
 
     for x in range(1, 11):
         ret_sql = db.select('''
-                                        SELECT COUNT(*) FROM %s
-                                            WHERE PEOPLE_COUNT > %d AND PEOPLE_COUNT <= %d
-                                        ''' % (bar1_tbname, bar1_xdata[x - 1],
-                                               bar1_xdata[x]))
+                                SELECT COUNT(*) FROM %s
+                                    WHERE PEOPLE_COUNT > %d AND PEOPLE_COUNT <= %d
+                                ''' % (bar1_tbname, bar1_xdata[x - 1],
+                                        bar1_xdata[x]))
         bar1_ydata.append(ret_sql[0][0])
     bar1_xdata.pop(0)
     ret_dict['bar1_xdata'] = bar1_xdata
@@ -673,25 +660,25 @@ def analyse_OO(request):
     bar2_ydata = []
     date_list = []
     bar2_tbname = db.select('''
-                                        SELECT OUTPUTTABLE FROM FPGROWTH_PARAMETER 
-                                            WHERE FPMODELNAME = '%s'
-                                        ''' % (model))
+                                SELECT OUTPUTTABLE FROM FPGROWTH_PARAMETER 
+                                    WHERE FPMODELNAME = '%s'
+                                ''' % (model))
     bar2_tbname = bar2_tbname[0][0] + '_R'
     bar2_tbname = bar2_tbname.upper()
     ret_sql = db.select('''
-                                        SELECT MINSUPPORT FROM FPGROWTH_PARAMETER
-                                            WHERE FPMODELNAME = '%s'
-                                        ''' % (model))
+                            SELECT MINSUPPORT FROM FPGROWTH_PARAMETER
+                                WHERE FPMODELNAME = '%s'
+                            ''' % (model))
     min_support = ret_sql[0][0]
     ret_sql = db.select('''
-                                        SELECT COUNT(*) FROM CP_TERMINAL_INFO
-                                        ''')
+                            SELECT COUNT(*) FROM CP_TERMINAL_INFO
+                            ''')
     people_count = ret_sql[0][0]
     min_support = math.ceil(min_support * people_count)
 
     ret_sql = db.select('''
-                                        SELECT DISTINCT ACT_DATE FROM %s
-                                        ''' % (bar2_tbname))
+                            SELECT DISTINCT ACT_DATE FROM %s
+                            ''' % (bar2_tbname))
     for x in ret_sql:
         date_list.append(x[0])
     date_list.sort()
@@ -704,10 +691,10 @@ def analyse_OO(request):
                                                    d.strftime('%Y-%m-%d'),
                                                    min_support))
         all_count = db.select('''
-                                        SELECT DISTINCT COUNT(*) FROM %s 
-                                            WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
-                                            ''' % (bar2_tbname,
-                                                   d.strftime('%Y-%m-%d')))
+                                SELECT DISTINCT COUNT(*) FROM %s 
+                                    WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
+                                    ''' % (bar2_tbname,
+                                            d.strftime('%Y-%m-%d')))
         bar2_xdata.append(d.strftime('%Y-%m-%d'))
         bar2_ydata.append(relation_count[0][0] / all_count[0][0])
     ret_dict['bar2_xdata'] = bar2_xdata
@@ -729,9 +716,9 @@ def analyse_PP(request):
     db = oracle()
 
     data_tbname = db.select('''
-                                        SELECT OUTPUTTABLE FROM FPGROWTH_PARAMETER 
-                                            WHERE FPMODELNAME = '%s'
-                                        ''' % (model))
+                                SELECT OUTPUTTABLE FROM FPGROWTH_PARAMETER 
+                                    WHERE FPMODELNAME = '%s'
+                                ''' % (model))
     data_tbname = data_tbname[0][0] + '_R'
     data_tbname = data_tbname.upper()
     ret_dict['total'] = -1
@@ -739,14 +726,14 @@ def analyse_PP(request):
         "SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'" %
         data_tbname)
     ret_dict['body'] = db.select('''
-                                            SELECT * FROM
-                                            (
-                                                SELECT A.*, ROWNUM RN
-                                                FROM (SELECT * FROM %s) A
-                                                WHERE ROWNUM <= %d
-                                            )   WHERE RN >= %d
-                                            ''' % (data_tbname, page * size,
-                                                   page * size - 14))
+                                    SELECT * FROM
+                                    (
+                                        SELECT A.*, ROWNUM RN
+                                        FROM (SELECT * FROM %s) A
+                                        WHERE ROWNUM <= %d
+                                    )   WHERE RN >= %d
+                                    ''' % (data_tbname, page * size,
+                                            page * size - 14))
     ret_dict['total'] = db.select('''SELECT COUNT(*) FROM %s 
                                             ''' % (data_tbname))
     if chart == '0':
@@ -755,19 +742,19 @@ def analyse_PP(request):
     bar1_xdata = [0]
     bar1_ydata = []
     bar1_tbname = db.select('''
-                                        SELECT OUTPUTTABLE FROM FPGROWTH_PARAMETER 
-                                            WHERE FPMODELNAME = '%s'
-                                        ''' % (model))
+                                SELECT OUTPUTTABLE FROM FPGROWTH_PARAMETER 
+                                    WHERE FPMODELNAME = '%s'
+                                ''' % (model))
     bar1_tbname = bar1_tbname[0][0] + '_R'
     bar1_tbname = bar1_tbname.upper()
 
     ret_sql = db.select('''
-                                    SELECT MIN(APP_COUNT) FROM %s
-                                    ''' % (bar1_tbname))
+                            SELECT MIN(APP_COUNT) FROM %s
+                            ''' % (bar1_tbname))
     min_count = ret_sql[0][0]
     ret_sql = db.select('''
-                                    SELECT MAX(APP_COUNT) FROM %s
-                                    ''' % (bar1_tbname))
+                            SELECT MAX(APP_COUNT) FROM %s
+                            ''' % (bar1_tbname))
     max_count = ret_sql[0][0]
     step = (max_count - min_count) / 10
     for x in range(1, 11):
@@ -775,10 +762,10 @@ def analyse_PP(request):
 
     for x in range(1, 11):
         ret_sql = db.select('''
-                                        SELECT COUNT(*) FROM %s
-                                            WHERE APP_COUNT > %d AND APP_COUNT <= %d
-                                        ''' % (bar1_tbname, bar1_xdata[x - 1],
-                                               bar1_xdata[x]))
+                                SELECT COUNT(*) FROM %s
+                                    WHERE APP_COUNT > %d AND APP_COUNT <= %d
+                                ''' % (bar1_tbname, bar1_xdata[x - 1],
+                                        bar1_xdata[x]))
         bar1_ydata.append(ret_sql[0][0])
     bar1_xdata.pop(0)
     ret_dict['bar1_xdata'] = bar1_xdata
@@ -788,29 +775,29 @@ def analyse_PP(request):
     bar2_ydata = []
     date_list = []
     bar2_tbname = db.select('''
-                                        SELECT OUTPUTTABLE FROM FPGROWTH_PARAMETER 
-                                            WHERE FPMODELNAME = '%s'
-                                        ''' % (model))
+                                SELECT OUTPUTTABLE FROM FPGROWTH_PARAMETER 
+                                    WHERE FPMODELNAME = '%s'
+                                ''' % (model))
     bar2_tbname = bar2_tbname[0][0] + '_R'
     bar2_tbname = bar2_tbname.upper()
     ret_sql = db.select('''
-                                        SELECT MINSUPPORT FROM FPGROWTH_PARAMETER
-                                            WHERE FPMODELNAME = '%s'
-                                        ''' % (model))
+                            SELECT MINSUPPORT FROM FPGROWTH_PARAMETER
+                                WHERE FPMODELNAME = '%s'
+                            ''' % (model))
     min_support = ret_sql[0][0]
 
     ret_sql = db.select('''
-                                        SELECT DISTINCT ACT_DATE FROM %s
-                                        ''' % (bar2_tbname))
+                            SELECT DISTINCT ACT_DATE FROM %s
+                            ''' % (bar2_tbname))
     for x in ret_sql:
         date_list.append(x[0])
     date_list.sort()
     for d in date_list:
         ret_sql = db.select('''
-                                            SELECT DISTINCT APP_TOTAL FROM %s
-                                                WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
-                                            ''' % (bar2_tbname,
-                                                   d.strftime('%Y-%m-%d')))
+                                SELECT DISTINCT APP_TOTAL FROM %s
+                                    WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
+                                ''' % (bar2_tbname,
+                                        d.strftime('%Y-%m-%d')))
         people_count = ret_sql[0][0]
         min_threshold = math.ceil(min_support * people_count)
         relation_count = db.select('''
@@ -821,10 +808,10 @@ def analyse_PP(request):
                                                    d.strftime('%Y-%m-%d'),
                                                    min_threshold))
         all_count = db.select('''
-                                        SELECT DISTINCT COUNT(*) FROM %s 
-                                            WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
-                                            ''' % (bar2_tbname,
-                                                   d.strftime('%Y-%m-%d')))
+                                SELECT DISTINCT COUNT(*) FROM %s 
+                                    WHERE ACT_DATE = to_DATE('%s', 'YYYY-MM-DD')
+                                    ''' % (bar2_tbname,
+                                            d.strftime('%Y-%m-%d')))
         bar2_xdata.append(d.strftime('%Y-%m-%d'))
         bar2_ydata.append(relation_count[0][0] / all_count[0][0])
     ret_dict['bar2_xdata'] = bar2_xdata
