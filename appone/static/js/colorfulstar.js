@@ -379,131 +379,133 @@ for (i = 0; i < totalObjects / 2; i++) {
 var material = new THREE.ParticleBasicMaterial({ size: 200 });
 var particles = new THREE.ParticleSystem(geometry, material);
 scene.add(particles);
-//画球体
-for (i = 0; i < 100; i++) {
-    var dian_geometry = new THREE.SphereGeometry(1000, 10, 10);
-    var dian_material = new THREE.MeshLambertMaterial({ color: 0xffff00 });
-    var star = new THREE.Mesh(dian_geometry, dian_material);
-    scene.add(star);
-    star.position.x = Math.random() * planeSize - (planeSize * .5);
-    star.position.y = Math.random() * 40000 + 40000;
-    star.position.z = Math.random() * planeSize - (planeSize * .5);
-}
-for (i = 0; i < 100; i++) {
-    var dian_geometry = new THREE.SphereGeometry(1000, 10, 10);
-    var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0033 });
-    var star = new THREE.Mesh(dian_geometry, dian_material);
-    scene.add(star);
-    star.position.x = Math.random() * planeSize - (planeSize * .5);
-    star.position.y = Math.random() * 40000 + 40000;
-    star.position.z = Math.random() * planeSize - (planeSize * .5);
-}
-for (i = 0; i < 100; i++) {
-    var dian_geometry = new THREE.SphereGeometry(1000, 10, 10);
-    var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0000 });
-    var star = new THREE.Mesh(dian_geometry, dian_material);
-    scene.add(star);
-    star.position.x = Math.random() * planeSize - (planeSize * .5);
-    star.position.y = Math.random() * 40000 + 40000;
-    star.position.z = Math.random() * planeSize - (planeSize * .5);
-}
-for (i = 0; i < 100; i++) {
-    var dian_geometry = new THREE.SphereGeometry(1000, 10, 10);
-    var dian_material = new THREE.MeshLambertMaterial({ color: 0x0099ff });
-    var star = new THREE.Mesh(dian_geometry, dian_material);
-    scene.add(star);
-    star.position.x = Math.random() * planeSize - (planeSize * .5);
-    star.position.y = Math.random() * 40000 + 40000;;
-    star.position.z = Math.random() * planeSize - (planeSize * .5);
-}
-for (i = 0; i < 100; i++) {
-    var dian_geometry = new THREE.SphereGeometry(1000, 10, 10);
-    var dian_material = new THREE.MeshLambertMaterial({ color: 0x00ff66 });
-    var star = new THREE.Mesh(dian_geometry, dian_material);
-    scene.add(star);
-    star.position.x = Math.random() * planeSize - (planeSize * .5);
-    star.position.y = Math.random() * 40000 + 40000;;
-    star.position.z = Math.random() * planeSize - (planeSize * .5);
-}
 
-//画网格 
-function drawGridRight(x1, x2, y1, y2, ystart, xstart, z, interval, linenum) {
-    var material_r2 = new THREE.LineBasicMaterial({ color: 0xffffff });
-    var geometry_r2 = new THREE.Geometry();
-    geometry_r2.vertices.push(new THREE.Vector3(x1, 0, z));
-    geometry_r2.vertices.push(new THREE.Vector3(x2, 0, z));
-    for (var i = 0; i <= linenum; i++) {
-        var line_r2 = new THREE.Line(geometry_r2, material_r2);
-        line_r2.position.y = (i * interval) + ystart;
-        scene.add(line_r2);
+////////////////////////////////////////////////////// need font begin ///////////////////////////////////////////////////////////////////
+var loader = new THREE.FontLoader();
+loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) {
+    //画球体
+    for (i = 0; i < 100; i++) {
+        var dian_geometry = new THREE.SphereGeometry(1000, 10, 10);
+        var dian_material = new THREE.MeshLambertMaterial({ color: 0xffff00 });
+        var star = new THREE.Mesh(dian_geometry, dian_material);
+        scene.add(star);
+        star.position.x = Math.random() * planeSize - (planeSize * .5);
+        star.position.y = Math.random() * 40000 + 40000;
+        star.position.z = Math.random() * planeSize - (planeSize * .5);
     }
-    var material_r2 = new THREE.LineBasicMaterial({ color: 0xffffff });
-    var geometry_r2 = new THREE.Geometry();
-    geometry_r2.vertices.push(new THREE.Vector3(0, y1, z));
-    geometry_r2.vertices.push(new THREE.Vector3(0, y2, z));
-    for (var i = 0; i <= linenum; i++) {
-        var line_r2 = new THREE.Line(geometry_r2, material_r2);
-        line_r2.position.x = (i * interval) + xstart;
-        scene.add(line_r2);
+    for (i = 0; i < 100; i++) {
+        var dian_geometry = new THREE.SphereGeometry(1000, 10, 10);
+        var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0033 });
+        var star = new THREE.Mesh(dian_geometry, dian_material);
+        scene.add(star);
+        star.position.x = Math.random() * planeSize - (planeSize * .5);
+        star.position.y = Math.random() * 40000 + 40000;
+        star.position.z = Math.random() * planeSize - (planeSize * .5);
     }
-}
-function drawGridLeft(x1, x2, y1, y2, ystart, xstart, z, interval, linenum) {
-    var material_r2 = new THREE.LineBasicMaterial({ color: 0xffffff });
-    var geometry_r2 = new THREE.Geometry();
-    geometry_r2.vertices.push(new THREE.Vector3(x1, 0, z));
-    geometry_r2.vertices.push(new THREE.Vector3(x2, 0, z));
-    for (var i = 0; i <= linenum; i++) {
-        var line_r2 = new THREE.Line(geometry_r2, material_r2);
-        line_r2.position.y = (i * interval) + ystart;
-        scene.add(line_r2);
+    for (i = 0; i < 100; i++) {
+        var dian_geometry = new THREE.SphereGeometry(1000, 10, 10);
+        var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0000 });
+        var star = new THREE.Mesh(dian_geometry, dian_material);
+        scene.add(star);
+        star.position.x = Math.random() * planeSize - (planeSize * .5);
+        star.position.y = Math.random() * 40000 + 40000;
+        star.position.z = Math.random() * planeSize - (planeSize * .5);
     }
-    var material_r2 = new THREE.LineBasicMaterial({ color: 0xffffff });
-    var geometry_r2 = new THREE.Geometry();
-    geometry_r2.vertices.push(new THREE.Vector3(0, y1, z));
-    geometry_r2.vertices.push(new THREE.Vector3(0, y2, z));
-    for (var i = 0; i <= linenum; i++) {
-        var line_r2 = new THREE.Line(geometry_r2, material_r2);
-        line_r2.position.x = -(i * interval) + xstart;
-        scene.add(line_r2);
+    for (i = 0; i < 100; i++) {
+        var dian_geometry = new THREE.SphereGeometry(1000, 10, 10);
+        var dian_material = new THREE.MeshLambertMaterial({ color: 0x0099ff });
+        var star = new THREE.Mesh(dian_geometry, dian_material);
+        scene.add(star);
+        star.position.x = Math.random() * planeSize - (planeSize * .5);
+        star.position.y = Math.random() * 40000 + 40000;;
+        star.position.z = Math.random() * planeSize - (planeSize * .5);
     }
-}
-drawGridRight(10000, 30000, 10000, 30000, 10000, 10000, 450000, 2000, 10);
-drawGridRight(10000, 30000, 10000, 30000, 10000, 10000, 350000, 2000, 10);
-drawGridLeft(-10000, -30000, 10000, 30000, 10000, -10000, 400000, 2000, 10);
-drawGridLeft(-10000, -30000, 10000, 30000, 10000, -10000, 500000, 2000, 10);
+    for (i = 0; i < 100; i++) {
+        var dian_geometry = new THREE.SphereGeometry(1000, 10, 10);
+        var dian_material = new THREE.MeshLambertMaterial({ color: 0x00ff66 });
+        var star = new THREE.Mesh(dian_geometry, dian_material);
+        scene.add(star);
+        star.position.x = Math.random() * planeSize - (planeSize * .5);
+        star.position.y = Math.random() * 40000 + 40000;;
+        star.position.z = Math.random() * planeSize - (planeSize * .5);
+    }
 
-drawGridRight(10000, 30000, 10000, 30000, 10000, 10000, 250000, 2000, 10);
-drawGridRight(10000, 30000, 10000, 30000, 10000, 10000, 150000, 2000, 10);
-drawGridLeft(-10000, -30000, 10000, 30000, 10000, -10000, 200000, 2000, 10);
-drawGridLeft(-10000, -30000, 10000, 30000, 10000, -10000, 300000, 2000, 10);
-drawGridRight(10000, 30000, 10000, 30000, 10000, 10000, 50000, 2000, 10);
-drawGridRight(10000, 30000, 10000, 30000, 10000, 10000, -50000, 2000, 10);
-drawGridLeft(-10000, -30000, 10000, 30000, 10000, -10000, 0, 2000, 10);
-drawGridLeft(-10000, -30000, 10000, 30000, 10000, -10000, 100000, 2000, 10);
+    //画网格 
+    function drawGridRight(x1, x2, y1, y2, ystart, xstart, z, interval, linenum) {
+        var material_r2 = new THREE.LineBasicMaterial({ color: 0xffffff });
+        var geometry_r2 = new THREE.Geometry();
+        geometry_r2.vertices.push(new THREE.Vector3(x1, 0, z));
+        geometry_r2.vertices.push(new THREE.Vector3(x2, 0, z));
+        for (var i = 0; i <= linenum; i++) {
+            var line_r2 = new THREE.Line(geometry_r2, material_r2);
+            line_r2.position.y = (i * interval) + ystart;
+            scene.add(line_r2);
+        }
+        var material_r2 = new THREE.LineBasicMaterial({ color: 0xffffff });
+        var geometry_r2 = new THREE.Geometry();
+        geometry_r2.vertices.push(new THREE.Vector3(0, y1, z));
+        geometry_r2.vertices.push(new THREE.Vector3(0, y2, z));
+        for (var i = 0; i <= linenum; i++) {
+            var line_r2 = new THREE.Line(geometry_r2, material_r2);
+            line_r2.position.x = (i * interval) + xstart;
+            scene.add(line_r2);
+        }
+    }
+    function drawGridLeft(x1, x2, y1, y2, ystart, xstart, z, interval, linenum) {
+        var material_r2 = new THREE.LineBasicMaterial({ color: 0xffffff });
+        var geometry_r2 = new THREE.Geometry();
+        geometry_r2.vertices.push(new THREE.Vector3(x1, 0, z));
+        geometry_r2.vertices.push(new THREE.Vector3(x2, 0, z));
+        for (var i = 0; i <= linenum; i++) {
+            var line_r2 = new THREE.Line(geometry_r2, material_r2);
+            line_r2.position.y = (i * interval) + ystart;
+            scene.add(line_r2);
+        }
+        var material_r2 = new THREE.LineBasicMaterial({ color: 0xffffff });
+        var geometry_r2 = new THREE.Geometry();
+        geometry_r2.vertices.push(new THREE.Vector3(0, y1, z));
+        geometry_r2.vertices.push(new THREE.Vector3(0, y2, z));
+        for (var i = 0; i <= linenum; i++) {
+            var line_r2 = new THREE.Line(geometry_r2, material_r2);
+            line_r2.position.x = -(i * interval) + xstart;
+            scene.add(line_r2);
+        }
+    }
+    drawGridRight(10000, 30000, 10000, 30000, 10000, 10000, 450000, 2000, 10);
+    drawGridRight(10000, 30000, 10000, 30000, 10000, 10000, 350000, 2000, 10);
+    drawGridLeft(-10000, -30000, 10000, 30000, 10000, -10000, 400000, 2000, 10);
+    drawGridLeft(-10000, -30000, 10000, 30000, 10000, -10000, 500000, 2000, 10);
 
-var tR1 = new Object();
-var tR2 = new Object();
-var tR3 = new Object();
-var tR4 = new Object();
-var tR5 = new Object();
-var tR6 = new Object();
+    drawGridRight(10000, 30000, 10000, 30000, 10000, 10000, 250000, 2000, 10);
+    drawGridRight(10000, 30000, 10000, 30000, 10000, 10000, 150000, 2000, 10);
+    drawGridLeft(-10000, -30000, 10000, 30000, 10000, -10000, 200000, 2000, 10);
+    drawGridLeft(-10000, -30000, 10000, 30000, 10000, -10000, 300000, 2000, 10);
+    drawGridRight(10000, 30000, 10000, 30000, 10000, 10000, 50000, 2000, 10);
+    drawGridRight(10000, 30000, 10000, 30000, 10000, 10000, -50000, 2000, 10);
+    drawGridLeft(-10000, -30000, 10000, 30000, 10000, -10000, 0, 2000, 10);
+    drawGridLeft(-10000, -30000, 10000, 30000, 10000, -10000, 100000, 2000, 10);
 
-var tL1 = new Object();
-var tL2 = new Object();
-var tL3 = new Object();
-var tL4 = new Object();
-var tL5 = new Object();
-var tL6 = new Object();
+    var tR1 = new Object();
+    var tR2 = new Object();
+    var tR3 = new Object();
+    var tR4 = new Object();
+    var tR5 = new Object();
+    var tR6 = new Object();
 
-//添加标题
-function titleRight(username, z, mesh) {
-    var material = new THREE.MeshPhongMaterial({
-        color: 0x66ccff,
-        specular: 0x66ccff,
-        shininess: 0
-    });
-    var loader = new THREE.FontLoader();
-    loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) {
+    var tL1 = new Object();
+    var tL2 = new Object();
+    var tL3 = new Object();
+    var tL4 = new Object();
+    var tL5 = new Object();
+    var tL6 = new Object();
+
+    //添加标题
+    function titleRight(username, z, mesh) {
+        var material = new THREE.MeshPhongMaterial({
+            color: 0x66ccff,
+            specular: 0x66ccff,
+            shininess: 0
+        });
         var mesh = new THREE.Mesh(new THREE.TextGeometry(username, {
             font: font,
             size: 1000,
@@ -512,16 +514,13 @@ function titleRight(username, z, mesh) {
         mesh.name = username;
         mesh.position.set(16000, 32000, z);
         scene.add(mesh);
-    });
-}
-function titleLeft(username, z, mesh) {
-    var material = new THREE.MeshPhongMaterial({
-        color: 0x66ccff,
-        specular: 0x66ccff,
-        shininess: 0
-    });
-    var loader = new THREE.FontLoader();
-    loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) {
+    }
+    function titleLeft(username, z, mesh) {
+        var material = new THREE.MeshPhongMaterial({
+            color: 0x66ccff,
+            specular: 0x66ccff,
+            shininess: 0
+        });
         var mesh = new THREE.Mesh(new THREE.TextGeometry(username, {
             font: font,
             size: 1000,
@@ -530,30 +529,27 @@ function titleLeft(username, z, mesh) {
         mesh.name = username;
         mesh.position.set(-24000, 32000, z);
         scene.add(mesh);
-    });
-}
-titleLeft('WDWCASZ0627345', 500000, tL1);   //0
-titleRight('S2A58BGQ', 450000, tR1);    //0
-titleLeft('5VM45975', 400000, tL2);     //0
-titleRight('Z1D3XB0A', 350000, tR2);    //0
-titleLeft('Z4YAZWRB', 300000, tL3);     //1
-titleRight('Z4YAZVXM', 250000, tR3);    //1
-titleLeft('Z4YAZW4W', 200000, tL4);     //0
-titleRight('Z4YAZVV4', 150000, tR4);    //0
-titleLeft('537TT03OT', 100000, tL5);    //1
-titleRight('6VY152TL', 50000, tR5);     //0
-titleLeft('Z4YAZTEF', 0, tL6);      //0
-titleRight('Z4YAZTKF', -50000, tR6);    //0
+    }
+    titleLeft('WDWCASZ0627345', 500000, tL1);   //0
+    titleRight('S2A58BGQ', 450000, tR1);    //0
+    titleLeft('5VM45975', 400000, tL2);     //0
+    titleRight('Z1D3XB0A', 350000, tR2);    //0
+    titleLeft('Z4YAZWRB', 300000, tL3);     //1
+    titleRight('Z4YAZVXM', 250000, tR3);    //1
+    titleLeft('Z4YAZW4W', 200000, tL4);     //0
+    titleRight('Z4YAZVV4', 150000, tR4);    //0
+    titleLeft('537TT03OT', 100000, tL5);    //1
+    titleRight('6VY152TL', 50000, tR5);     //0
+    titleLeft('Z4YAZTEF', 0, tL6);      //0
+    titleRight('Z4YAZTKF', -50000, tR6);    //0
 
-//添加坐标变量
-function axisflag(x1, y1, x2, y2, z) {
-    var material = new THREE.MeshPhongMaterial({
-        color: 0x66ccff,
-        specular: 0x66ccff,
-        shininess: 0
-    });
-    var loader = new THREE.FontLoader();
-    loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) {
+    //添加坐标变量
+    function axisflag(x1, y1, x2, y2, z) {
+        var material = new THREE.MeshPhongMaterial({
+            color: 0x66ccff,
+            specular: 0x66ccff,
+            shininess: 0
+        });
         var mesh = new THREE.Mesh(new THREE.TextGeometry('date', {
             font: font,
             size: 800,
@@ -568,34 +564,31 @@ function axisflag(x1, y1, x2, y2, z) {
         }), material);
         mesh.position.set(x2, y2, z);
         scene.add(mesh);
-    });
-}
-axisflag(32000, 8000, 1000, 32000, 450000);
-axisflag(32000, 8000, 1000, 32000, 350000);
-axisflag(-32000, 8000, -8000, 32000, 500000);
-axisflag(-32000, 8000, -8000, 32000, 400000);
-axisflag(32000, 8000, 1000, 32000, 250000);
-axisflag(32000, 8000, 1000, 32000, 150000);
-axisflag(-32000, 8000, -8000, 32000, 300000);
-axisflag(-32000, 8000, -8000, 32000, 200000);
-axisflag(32000, 8000, 1000, 32000, 50000);
-axisflag(32000, 8000, 1000, 32000, -50000);
-axisflag(-32000, 8000, -8000, 32000, 100000);
-axisflag(-32000, 8000, -8000, 32000, 0);
+    }
+    axisflag(32000, 8000, 1000, 32000, 450000);
+    axisflag(32000, 8000, 1000, 32000, 350000);
+    axisflag(-32000, 8000, -8000, 32000, 500000);
+    axisflag(-32000, 8000, -8000, 32000, 400000);
+    axisflag(32000, 8000, 1000, 32000, 250000);
+    axisflag(32000, 8000, 1000, 32000, 150000);
+    axisflag(-32000, 8000, -8000, 32000, 300000);
+    axisflag(-32000, 8000, -8000, 32000, 200000);
+    axisflag(32000, 8000, 1000, 32000, 50000);
+    axisflag(32000, 8000, 1000, 32000, -50000);
+    axisflag(-32000, 8000, -8000, 32000, 100000);
+    axisflag(-32000, 8000, -8000, 32000, 0);
 
-//添加坐标刻度
-//ystart,xstart画平行y,z轴的刻度时的起始y,x坐标
-//interval每隔多远画一个刻度
-//a y轴刻度的x坐标,b x轴刻度的y坐标,c层次
-function axisvalueRight(xstart, ystart, interval, a, b, c) {
-    var materialtext = new THREE.MeshPhongMaterial({
-        color: 0xffffff,
-        specular: 0xffffff,
-        shininess: 0
-    });
-    var loader = new THREE.FontLoader();
-    //right 1
-    loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) {
+    //添加坐标刻度
+    //ystart,xstart画平行y,z轴的刻度时的起始y,x坐标
+    //interval每隔多远画一个刻度
+    //a y轴刻度的x坐标,b x轴刻度的y坐标,c层次
+    function axisvalueRight(xstart, ystart, interval, a, b, c) {
+        var materialtext = new THREE.MeshPhongMaterial({
+            color: 0xffffff,
+            specular: 0xffffff,
+            shininess: 0
+        });
+        //right 1
         for (i = 0; i < 10; i++) {
             var x = xstart + interval * i;
             var value = i;
@@ -607,8 +600,6 @@ function axisvalueRight(xstart, ystart, interval, a, b, c) {
             meshtextx.position.set(x, b, c);
             scene.add(meshtextx);
         }
-    });
-    loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) {
         for (i = 0; i < 10; i++) {
             var y = ystart + interval * i;
             var value = i / 10;
@@ -620,17 +611,14 @@ function axisvalueRight(xstart, ystart, interval, a, b, c) {
             meshtextx.position.set(a, y, c);
             scene.add(meshtextx);
         }
-    });
-}
-function axisvalueLeft(xstart, ystart, interval, a, b, c) {
-    var materialtext = new THREE.MeshPhongMaterial({
-        color: 0xffffff,
-        specular: 0xffffff,
-        shininess: 0
-    });
-    var loader = new THREE.FontLoader();
-    //right 1
-    loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) {
+    }
+    function axisvalueLeft(xstart, ystart, interval, a, b, c) {
+        var materialtext = new THREE.MeshPhongMaterial({
+            color: 0xffffff,
+            specular: 0xffffff,
+            shininess: 0
+        });
+        //right 1
         for (i = 0; i < 10; i++) {
             var x = -xstart - interval * i;
             var value = i;
@@ -642,8 +630,6 @@ function axisvalueLeft(xstart, ystart, interval, a, b, c) {
             meshtextx.position.set(x, b, c);
             scene.add(meshtextx);
         }
-    });
-    loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) {
         for (i = 0; i < 10; i++) {
             var y = ystart + interval * i;
             var value = i / 10;
@@ -655,48 +641,48 @@ function axisvalueLeft(xstart, ystart, interval, a, b, c) {
             meshtextx.position.set(a, y, c);
             scene.add(meshtextx);
         }
-    });
-}
-axisvalueRight(10000, 10000, 2000, 8000, 8000, 450000);
-axisvalueRight(10000, 10000, 2000, 8000, 8000, 350000);
-axisvalueLeft(10000, 10000, 2000, -8000, 8000, 400000);
-axisvalueLeft(10000, 10000, 2000, -8000, 8000, 500000);
-axisvalueRight(10000, 10000, 2000, 8000, 8000, 250000);
-axisvalueRight(10000, 10000, 2000, 8000, 8000, 150000);
-axisvalueLeft(10000, 10000, 2000, -8000, 8000, 200000);
-axisvalueLeft(10000, 10000, 2000, -8000, 8000, 300000);
-axisvalueRight(10000, 10000, 2000, 8000, 8000, 50000);
-axisvalueRight(10000, 10000, 2000, 8000, 8000, -50000);
-axisvalueLeft(10000, 10000, 2000, -8000, 8000, 100000);
-axisvalueLeft(10000, 10000, 2000, -8000, 8000, 0);
+    }
+    axisvalueRight(10000, 10000, 2000, 8000, 8000, 450000);
+    axisvalueRight(10000, 10000, 2000, 8000, 8000, 350000);
+    axisvalueLeft(10000, 10000, 2000, -8000, 8000, 400000);
+    axisvalueLeft(10000, 10000, 2000, -8000, 8000, 500000);
+    axisvalueRight(10000, 10000, 2000, 8000, 8000, 250000);
+    axisvalueRight(10000, 10000, 2000, 8000, 8000, 150000);
+    axisvalueLeft(10000, 10000, 2000, -8000, 8000, 200000);
+    axisvalueLeft(10000, 10000, 2000, -8000, 8000, 300000);
+    axisvalueRight(10000, 10000, 2000, 8000, 8000, 50000);
+    axisvalueRight(10000, 10000, 2000, 8000, 8000, -50000);
+    axisvalueLeft(10000, 10000, 2000, -8000, 8000, 100000);
+    axisvalueLeft(10000, 10000, 2000, -8000, 8000, 0);
 
-//画坐标方向
-function arrow(x1, y1, x2, y2, x3, y3, z, length) {
-    var originx = new THREE.Vector3(x1, y1, z);//箭头始点坐标
-    var terminusx = new THREE.Vector3(x2, y2, z);//箭头终点坐标
-    var directionx = new THREE.Vector3().subVectors(terminusx, originx).normalize();//箭头方向
-    var arrowx = new THREE.ArrowHelper(directionx, originx, length, 0xffffff);//箭头长度2500是指整个箭头长度
-    scene.add(arrowx);//将箭头加入场景
-    var originy = new THREE.Vector3(x1, y1, z);
-    var terminusy = new THREE.Vector3(x3, y3, z);
-    var directiony = new THREE.Vector3().subVectors(terminusy, originy).normalize();
-    var arrowy = new THREE.ArrowHelper(directiony, originy, length, 0xffffff);
-    scene.add(arrowy);
-}
-arrow(10000, 10000, 30000, 10000, 10000, 30000, 450000, 25000);
-arrow(10000, 10000, 30000, 10000, 10000, 30000, 350000, 25000);
-arrow(-10000, 10000, -30000, 10000, -10000, 30000, 500000, 25000);
-arrow(-10000, 10000, -30000, 10000, -10000, 30000, 400000, 25000);
+    //画坐标方向
+    function arrow(x1, y1, x2, y2, x3, y3, z, length) {
+        var originx = new THREE.Vector3(x1, y1, z);//箭头始点坐标
+        var terminusx = new THREE.Vector3(x2, y2, z);//箭头终点坐标
+        var directionx = new THREE.Vector3().subVectors(terminusx, originx).normalize();//箭头方向
+        var arrowx = new THREE.ArrowHelper(directionx, originx, length, 0xffffff);//箭头长度2500是指整个箭头长度
+        scene.add(arrowx);//将箭头加入场景
+        var originy = new THREE.Vector3(x1, y1, z);
+        var terminusy = new THREE.Vector3(x3, y3, z);
+        var directiony = new THREE.Vector3().subVectors(terminusy, originy).normalize();
+        var arrowy = new THREE.ArrowHelper(directiony, originy, length, 0xffffff);
+        scene.add(arrowy);
+    }
+    arrow(10000, 10000, 30000, 10000, 10000, 30000, 450000, 25000);
+    arrow(10000, 10000, 30000, 10000, 10000, 30000, 350000, 25000);
+    arrow(-10000, 10000, -30000, 10000, -10000, 30000, 500000, 25000);
+    arrow(-10000, 10000, -30000, 10000, -10000, 30000, 400000, 25000);
 
-arrow(10000, 10000, 30000, 10000, 10000, 30000, 250000, 25000);
-arrow(10000, 10000, 30000, 10000, 10000, 30000, 150000, 25000);
-arrow(-10000, 10000, -30000, 10000, -10000, 30000, 300000, 25000);
-arrow(-10000, 10000, -30000, 10000, -10000, 30000, 200000, 25000);
-arrow(10000, 10000, 30000, 10000, 10000, 30000, 50000, 25000);
-arrow(10000, 10000, 30000, 10000, 10000, 30000, -50000, 25000);
-arrow(-10000, 10000, -30000, 10000, -10000, 30000, 100000, 25000);
-arrow(-10000, 10000, -30000, 10000, -10000, 30000, 0, 25000);
-
+    arrow(10000, 10000, 30000, 10000, 10000, 30000, 250000, 25000);
+    arrow(10000, 10000, 30000, 10000, 10000, 30000, 150000, 25000);
+    arrow(-10000, 10000, -30000, 10000, -10000, 30000, 300000, 25000);
+    arrow(-10000, 10000, -30000, 10000, -10000, 30000, 200000, 25000);
+    arrow(10000, 10000, 30000, 10000, 10000, 30000, 50000, 25000);
+    arrow(10000, 10000, 30000, 10000, 10000, 30000, -50000, 25000);
+    arrow(-10000, 10000, -30000, 10000, -10000, 30000, 100000, 25000);
+    arrow(-10000, 10000, -30000, 10000, -10000, 30000, 0, 25000);
+});
+////////////////////////////////////////// need font end ////////////////////////////////////////////////////////
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 container.appendChild(renderer.domElement);
