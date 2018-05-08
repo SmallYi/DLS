@@ -10,10 +10,10 @@
     var thresold_low = localStorage.getItem('min_thresold');
     normal1=parseFloat(thresold_low);
     normal2=parseFloat(thresold_high);
-    var myChart = echarts.init(document.getElementById('realtime'));
+    var myChart = echarts.init(document.getElementById('realtime_lstm_guard'));
     option = {
         title: {
-            text: '无监督实时检测结果',
+            text: '有监督实时检测结果',
             x: 'center',
             textStyle: {
                 color: '#ffffff'
@@ -77,7 +77,7 @@
             minInterval:0.01,
             splitLine: { show: false },//去除网格线
             scale: true,
-            name: '预测值',
+            name: '用户名',
             nameTextStyle: {
                 color: '#fff',
                 fontSize: 12

@@ -1,44 +1,44 @@
 var vertexHeight = 15000;
 var planeDefinition = 100;
 var planeSize = 1245000;
-var totalObjects = 20000;
+var totalObjects = 50000;
 var frame = 0;
 var i, j, particles = [];
 
 //画散点图
-$(document).ready(function () {
-    $.getJSON('/prediction/', function (ret) {
-        for (var j = 0; j < 200; j += 2) {
-            var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
-            if (ret.abnormalratio[j] / ret.abnormalratio[j + 1] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
-            else if (ret.abnormalratio[j] / ret.abnormalratio[j + 1] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
-            else if (ret.abnormalratio[j] / ret.abnormalratio[j + 1] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
-            else if (ret.abnormalratio[j] / ret.abnormalratio[j + 1] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
-            else if (ret.abnormalratio[j] / ret.abnormalratio[j + 1] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
-            else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
-            var star = new THREE.Mesh(dian_geometry, dian_material);
-            scene.add(star);
-            star.position.x = 12000 + 2000 * (j / 2) - 20000 * parseInt(j / 20);
-            if (ret.abnormalratio[j + 1] == 0) star.position.y = 10000;
-            else star.position.y = (ret.abnormalratio[j] / ret.abnormalratio[j + 1]) * 20000 + 10000;//console.log(ret.abnormalratio[j] / ret.abnormalratio[j+1]);
-            star.position.z = 450000 - 50000 * parseInt(j / 20);
-        }
-        for (var i = 0; i < 100; i++) {
-            var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
-            if (ret.lstm[i] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
-            else if (ret.lstm[i] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
-            else if (ret.lstm[i] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
-            else if (ret.lstm[i] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
-            else if (ret.lstm[i] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
-            else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
-            var star = new THREE.Mesh(dian_geometry, dian_material);
-            scene.add(star);
-            star.position.x = -(12000 + 2000 * (i % 10));
-            star.position.y = (ret.lstm[i]) * 20000 + 10000;//console.log(ret.lstm[i]);
-            star.position.z = 450000 - 50000 * parseInt(i / 10);
-        }
-    })
-});
+// $(document).ready(function () {
+//     $.getJSON('/prediction/', function (ret) {
+//         for (var j = 0; j < 200; j += 2) {
+//             var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
+//             if (ret.abnormalratio[j] / ret.abnormalratio[j + 1] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
+//             else if (ret.abnormalratio[j] / ret.abnormalratio[j + 1] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
+//             else if (ret.abnormalratio[j] / ret.abnormalratio[j + 1] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
+//             else if (ret.abnormalratio[j] / ret.abnormalratio[j + 1] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
+//             else if (ret.abnormalratio[j] / ret.abnormalratio[j + 1] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
+//             else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
+//             var star = new THREE.Mesh(dian_geometry, dian_material);
+//             scene.add(star);
+//             star.position.x = 12000 + 2000 * (j / 2) - 20000 * parseInt(j / 20);
+//             if (ret.abnormalratio[j + 1] == 0) star.position.y = 10000;
+//             else star.position.y = (ret.abnormalratio[j] / ret.abnormalratio[j + 1]) * 20000 + 10000;//console.log(ret.abnormalratio[j] / ret.abnormalratio[j+1]);
+//             star.position.z = 450000 - 50000 * parseInt(j / 20);
+//         }
+//         for (var i = 0; i < 100; i++) {
+//             var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
+//             if (ret.lstm[i] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
+//             else if (ret.lstm[i] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
+//             else if (ret.lstm[i] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
+//             else if (ret.lstm[i] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
+//             else if (ret.lstm[i] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
+//             else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
+//             var star = new THREE.Mesh(dian_geometry, dian_material);
+//             scene.add(star);
+//             star.position.x = -(12000 + 2000 * (i % 10));
+//             star.position.y = (ret.lstm[i]) * 20000 + 10000;//console.log(ret.lstm[i]);
+//             star.position.z = 450000 - 50000 * parseInt(i / 10);
+//         }
+//     })
+// });
 
 var container = document.createElement('div');
 document.body.appendChild(container);
@@ -54,6 +54,10 @@ scene.fog = new THREE.Fog(0x23233f, 1, 300000);
 var light = new THREE.DirectionalLight(0xffffff);
 light.position.set(0, 10000, 550000);
 scene.add(light);
+var light2 = new THREE.DirectionalLight(0xffffff);
+light2.position.set(0, 10000, 300000);
+light2.density = 5000000;
+scene.add(light2);
 var uniforms =
     {
         time: { type: "f", value: 0.0 }// uniforms通过这个属性可以向你的着色器发信息。同样的信息会发送到每一个顶点和片元
@@ -73,18 +77,64 @@ plane.rotation.x -= Math.PI * .5;
 
 scene.add(plane);
 
-var geometry = new THREE.Geometry();
-
-for (i = 0; i < totalObjects; i++) {
-    var vertex = new THREE.Vector3();//返回沿当前三维线段方向的任意向量
-    vertex.x = Math.random() * planeSize - (planeSize * .5);
-    vertex.y = (Math.random() * 100000) + 10000;
-    vertex.z = Math.random() * planeSize - (planeSize * .5);
-    geometry.vertices.push(vertex);
+//画球体
+for (i = 0; i < 100; i++) {
+    var dian_geometry = new THREE.SphereGeometry(1000, 10, 10);
+    var dian_material = new THREE.MeshLambertMaterial({ color: 0xffff00 });
+    var star = new THREE.Mesh(dian_geometry, dian_material);
+    scene.add(star);
+    star.position.x = Math.random() * planeSize - (planeSize * .5);
+    star.position.y = Math.random() * 40000 + 40000;
+    star.position.z = Math.random() * planeSize - (planeSize * .5);
 }
-var material = new THREE.ParticleBasicMaterial({ size: 200 });
-var particles = new THREE.ParticleSystem(geometry, material);
-scene.add(particles);
+for (i = 0; i < 100; i++) {
+    var dian_geometry = new THREE.SphereGeometry(1000, 10, 10);
+    var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0033 });
+    var star = new THREE.Mesh(dian_geometry, dian_material);
+    scene.add(star);
+    star.position.x = Math.random() * planeSize - (planeSize * .5);
+    star.position.y = Math.random() * 40000 + 40000;
+    star.position.z = Math.random() * planeSize - (planeSize * .5);
+}
+for (i = 0; i < 100; i++) {
+    var dian_geometry = new THREE.SphereGeometry(1000, 10, 10);
+    var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0000 });
+    var star = new THREE.Mesh(dian_geometry, dian_material);
+    scene.add(star);
+    star.position.x = Math.random() * planeSize - (planeSize * .5);
+    star.position.y = Math.random() * 40000 + 40000;
+    star.position.z = Math.random() * planeSize - (planeSize * .5);
+}
+for (i = 0; i < 100; i++) {
+    var dian_geometry = new THREE.SphereGeometry(1000, 10, 10);
+    var dian_material = new THREE.MeshLambertMaterial({ color: 0x0099ff });
+    var star = new THREE.Mesh(dian_geometry, dian_material);
+    scene.add(star);
+    star.position.x = Math.random() * planeSize - (planeSize * .5);
+    star.position.y = Math.random() * 40000 + 40000;;
+    star.position.z = Math.random() * planeSize - (planeSize * .5);
+}
+for (i = 0; i < 100; i++) {
+    var dian_geometry = new THREE.SphereGeometry(1000, 10, 10);
+    var dian_material = new THREE.MeshLambertMaterial({ color: 0x00ff66 });
+    var star = new THREE.Mesh(dian_geometry, dian_material);
+    scene.add(star);
+    star.position.x = Math.random() * planeSize - (planeSize * .5);
+    star.position.y = Math.random() * 40000 + 40000;;
+    star.position.z = Math.random() * planeSize - (planeSize * .5);
+}
+//var geometry = new THREE.Geometry();
+
+// for (i = 0; i < totalObjects; i++) {
+//     var vertex = new THREE.Vector3();//返回沿当前三维线段方向的任意向量
+//     vertex.x = Math.random() * planeSize - (planeSize * .5);
+//     vertex.y = (Math.random() * 100000) + 10000;
+//     vertex.z = Math.random() * planeSize - (planeSize * .5);
+//     geometry.vertices.push(vertex);
+// }
+// var material = new THREE.ParticleBasicMaterial({ size: 200 });
+// var particles = new THREE.ParticleSystem(geometry, material);
+// scene.add(particles);
 
 ////////////////////////////////////////////////////// need font begin ///////////////////////////////////////////////////////////////////
 var loader = new THREE.FontLoader();

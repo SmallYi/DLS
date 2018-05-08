@@ -322,6 +322,8 @@ def history(request):
 def taiyangxi(request):
     return render(request, 'taiyangxi_small.html')
 
+def lstm_guard(request):
+    return render(request, 'lstm_guard.html')
 
 def load_model(request):
     ret_dict = {}

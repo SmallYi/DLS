@@ -21,6 +21,7 @@ urlpatterns = [
 	url(r'^$', appone_views.index, name='first'),
 	url(r'^main$', appone_views.main,name='main'),
 	url(r'^single$', appone_views.single, name='single'),
+	url(r'^lstm_guard$', appone_views.lstm_guard, name='lstm_guard'),
 	url(r'^relation$', appone_views.relation,name='relation'),
 	url(r'^index$', appone_views.index),
     url(r'^admin/', admin.site.urls),
