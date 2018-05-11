@@ -145,33 +145,38 @@ def recordnumber(request):
     return JsonResponse(ret_list, safe=False)
 
 
-def addconfiguretodatabase(request):
-    if request.method == "POST":
-        base_line = request.POST["base"]
-        base_lineunit = request.POST["baseunit"]
-        model_name = request.POST["model"]
-        check_box_list = request.POST.getlist('check_box_list')
+def add_LSTM(request):
+    base_line = request.POST.get("base", None)
+    base_lineunit = request.POST.get("baseunit", None)
+    model_name = request.POST.get("model", None)
+    check_box_list = request.POST.getlist('check_box_list')
 
-    if len(check_box_list) == 2:
-        fields_study = check_box_list[0] + ',' + check_box_list[1]
-    else:
-        fields_study = ''
+    if base_line == '' or base_lineunit == '' or model_name == '' or len(check_box_list) == 0:
+        return render(request, 'addfail.html', {'reason': '参数缺失'})
+
+    check_box_len = len(check_box_list)
+    fields_study = ''
+    for i in range(check_box_len):
+        if i == 0:
+            fields_study += check_box_list[i]
+        else:
+            fields_study += (',' + check_box_list[i])
 
     if base_lineunit == 'single':
         base_linevalue = request.POST["line"]
-        table_name = 'LSTM' + '_' + base_lineunit + '_' + base_linevalue + '_' + model_name
+        table_name = 'NN' + '_' + base_linevalue + '_' + model_name + '_S_N' 
     else:
         base_linevalue = 'all'
-        table_name = 'LSTM' + '_' + base_lineunit + '_' + model_name
+        table_name = 'NN' + '_' + model_name + '_A_N'
     table_name = table_name.replace('-', '')
     table_name = table_name.upper()
 
     db = oracle()
     if len(
             db.select('''
-                        SELECT * FROM MODEL_PARAMETER WHERE BASELINE_UNIT = '%s' AND BASELINE_VALUES = '%s'
-                        ''' % (base_lineunit, base_linevalue))) >= 1:
-        return HttpResponseRedirect('/addfail/')
+                        SELECT * FROM MODEL_PARAMETER WHERE MODEL_NAME = '%s'
+                        ''' % (table_name))) >= 1:
+        return render(request, 'addfail.html', {'reason': '模型重复'})
     db.alter('''
                 CREATE TABLE %s 
                 (	
@@ -208,18 +213,22 @@ def addconfiguretodatabase(request):
                 ''' % (table_name, fields_study, base_line,
                         base_linevalue, base_lineunit, table_name))
 
-    return HttpResponseRedirect('/addok/')
+    return render(request, 'addok.html')
 
 
-def addconfiguretodatabaseRelation(request):
-    if request.method == "POST":
-        operation_type = request.POST["relation_type"]
-        min_support = request.POST["min_support"]
-        min_confidence = request.POST["min_confidence"]
-        model_name = request.POST["model2"]
+def add_Ralation(request):
+    operation_type = request.POST.get("relation_type", None)
+    min_support = request.POST.get("min_support", None)
+    min_confidence = request.POST.get("min_confidence", None)
+    model_name = request.POST.get("model2", None)
+
+    if operation_type == '' or min_support == '' or min_confidence == '' or model_name == '':
+        return render(request, 'addfail.html', {'reason': '参数缺失'})
 
     if operation_type == 'PeopleOperation':
-        user_name = request.POST["user_name"]
+        user_name = request.POST.get("user_name", None)
+        if user_name == '':
+            return render(request, 'addfail.html', {'reason': '参数缺失'})
         model_type = 'PO'
         agent_id = user_name
         table_name = 'PO' + '_' + user_name + '_' + model_name
@@ -227,20 +236,23 @@ def addconfiguretodatabaseRelation(request):
         model_type = 'OO'
         agent_id = 'ALL'
         table_name = 'OO' + '_' + model_name
-    else:
+    elif operation_type == 'PeoplePeople':
         model_type = 'PP'
         agent_id = 'ALL'
         table_name = 'PP' + '_' + model_name
+    else:
+        return render(request, 'addfail.html', {'reason': '参数错误'})
     table_name = table_name.replace('-', '')
     table_name = table_name.upper()
 
     db = oracle()
     if len(
             db.select('''
-                        SELECT * FROM FPGROWTH_PARAMETER WHERE AGENT_ID = '%s' AND MINSUPPORT = %f AND MINCONFIDENCE = %f
-                        ''' % (agent_id, float(min_support),
+                        SELECT * FROM FPGROWTH_PARAMETER 
+                            WHERE FPMODELNAME = '%s' AND MINSUPPORT = %f AND MINCONFIDENCE = %f
+                        ''' % (table_name, float(min_support),
                                 float(min_confidence)))) >= 1:
-        return HttpResponseRedirect('/addfail/')
+        return render(request, 'addfail.html', {'reason': '模型重复'})
     db.alter('''
                 CREATE TABLE %s 
                 (	
@@ -276,22 +288,10 @@ def addconfiguretodatabaseRelation(request):
                     float(min_confidence), table_name, table_name,
                     model_type, agent_id))
 
-    return HttpResponseRedirect('/addok2/')
-
-
-def addok(request):
     return render(request, 'addok.html')
 
 
-def addok2(request):
-    return render(request, 'addok2.html')
-
-
-def addfail(request):
-    return render(request, 'addfail.html')
-
-
-def addconfigure(request):
+def add_model(request):
     return render(request, 'configureadd.html')
 
 
@@ -307,7 +307,7 @@ def simulate(request):
     return render(request, 'realtimecommunicate.html')
 
 
-def single(request):
+def lstm(request):
     return render(request, 'single_mesh.html')
 
 
@@ -319,27 +319,36 @@ def history(request):
     return render(request, 'history.html')
 
 
-def taiyangxi(request):
+def galaxy(request):
     return render(request, 'taiyangxi_small.html')
+
 
 def lstm_guard(request):
     return render(request, 'lstm_guard.html')
 
+
 def load_model(request):
     ret_dict = {}
-    model_type = request.GET['model_type']
-    baseline = request.GET['baseline']
-    page = int(request.GET['page'])
-    size = int(request.GET['size'])
+    model_type = request.GET.get('model_type', None)
+    baseline = request.GET.get('baseline', None)
+    page = request.GET.get('page', None)
+    size = request.GET.get('size', None)
 
-    if model_type == None or baseline == None:
-        ret_dict['total'] = -1
-        return JsonResponse(ret_dict)
+    if model_type == None or baseline == None or page == None or size == None:
+        return JsonResponse({})
+
+    try:
+        page = int(page)
+        size = int(size)
+    except:
+        return JsonResponse({})
 
     if model_type == 'MODEL_PARAMETER':
         unit = 'BASELINE_UNIT'
     elif model_type == 'FPGROWTH_PARAMETER':
         unit = 'MODEL_TYPE'
+    else:
+        return JsonResponse({})
 
     db = oracle()
     ret_dict['total'] = db.select('''
@@ -373,12 +382,22 @@ def load_agent(request):
 
 def search(request):
     ret_dict = {}
-    model_type = request.GET['model_type']
-    model = request.GET['model']
-    start_date = request.GET['start_date']
-    end_date = request.GET['end_date']
-    page = int(request.GET['page'])
-    size = int(request.GET['size'])
+    model_type = request.GET.get('model_type', None)
+    model = request.GET.get('model', None)
+    start_date = request.GET.get('start_date', None)
+    end_date = request.GET.get('end_date', None)
+    page = request.GET.get('page', None)
+    size = request.GET.get('size', None)
+
+    if model_type == None or model_type == None or model_type == None \
+        or model_type == None or model_type == None or model_type == None:
+        return JsonResponse({})
+
+    try:
+        page = int(page)
+        size = int(size)
+    except:
+        return JsonResponse({})
 
     if model_type == 'MODEL_PARAMETER':
         mdname = 'MODEL_NAME'
@@ -386,6 +405,8 @@ def search(request):
     elif model_type == 'FPGROWTH_PARAMETER':
         mdname = 'FPMODELNAME'
         tbname = 'OUTPUTTABLE'
+    else:
+        return JsonResponse({})
 
     db = oracle()
     table_name = db.select('''
@@ -393,8 +414,7 @@ def search(request):
                             ''' % (tbname, model_type, mdname,
                                     model))
     if (table_name == None):
-        ret_dict['total'] = -1
-        return JsonResponse(ret_dict)
+        return JsonResponse({})
     table_name = table_name[0][0]
     table_name = table_name.upper()
     if model_type == 'FPGROWTH_PARAMETER':
@@ -423,20 +443,33 @@ def search(request):
 
 
 def analyse_lstm(request):
-    model = request.GET['model']
-    chart = request.GET['chart']
+    ret_dict = {}
+    model = request.GET.get('model', None)
+    chart = request.GET.get('chart', None)
+    if model == None or chart == None:
+        return JsonResponse({})
 
     if chart == '-1':
         return render(request, 'analyse_lstm.html', {'model': model})
 
-    ret_dict = {}
-    ab = request.GET['ab']
-    page = int(request.GET['page'])
-    size = int(request.GET['size'])
+    ab = request.GET.get('ab', None)
+    page = request.GET.get('page', None)
+    size = request.GET.get('size', None)
+    if ab == None or page == None or size == None:
+        return JsonResponse({})
+
+    try:
+        page = int(page)
+        size = int(size)
+    except:
+        return JsonResponse({})
+    
     if ab == 'all':
         ab_select = ''
-    else:
+    elif ab == '0' or ab == '1':
         ab_select = 'WHERE ABNORMAL = %s' % ab
+    else: 
+        return JsonResponse({})
     model = 'LSTM_' + model + '_SINGLE'
     model = model.upper()
 
@@ -485,24 +518,124 @@ def analyse_lstm(request):
     for record in ret_sql:
         x = record[0].hour * 60 + record[0].minute
         y = code_dict.get(record[1].split(' ')[2], -1)
-        # change the 2
         if y != -1:
             scatter_list.append((x, y))
     ret_dict['scatter'] = scatter_list
 
-    return JsonResponse(ret_dict)
+    if chart == '1':
+        return JsonResponse(ret_dict)
+    
+    return JsonResponse({})
+
+
+def analyse_lstm_g(request):
+    ret_dict = {}
+    model = request.GET.get('model', None)
+    chart = request.GET.get('chart', None)
+    if model == None or chart == None:
+        return JsonResponse({})
+
+    if chart == '-1':
+        return render(request, 'analyse_lstm_g.html', {'model': model})
+
+    ab = request.GET.get('ab', None)
+    page = request.GET.get('page', None)
+    size = request.GET.get('size', None)
+    if ab == None or page == None or size == None:
+        return JsonResponse({})
+
+    try:
+        page = int(page)
+        size = int(size)
+    except:
+        return JsonResponse({})
+    
+    if ab == 'all':
+        ab_select = ''
+    elif ab == '0' or ab == '1':
+        ab_select = 'WHERE ABNORMAL = %s' % ab
+    else: 
+        return JsonResponse({})
+    model = 'NN_' + model + '_S_G'
+    model = model.upper()
+
+    db = oracle()
+    ret_dict['head'] = db.select('''
+                                    SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'
+                                    ''' % model)
+    ret_dict['body'] = db.select('''
+                                    SELECT * FROM
+                                    (
+                                        SELECT A.*, ROWNUM RN
+                                        FROM (SELECT * FROM %s %s) A
+                                        WHERE ROWNUM <= %d
+                                    )   WHERE RN >= %d
+                                    ''' %
+                                    (model, ab_select, page * size,
+                                        page * size - 14))
+    ret_dict['total'] = db.select('''
+                                    SELECT COUNT(*) FROM %s %s
+                                    ''' % (model, ab_select))
+
+    if chart == '0':
+        return JsonResponse(ret_dict)
+
+    bar_list = []
+    for x in range(20):
+        bar_tmp = db.select('''
+                                SELECT COUNT(*) FROM %s
+                                    WHERE PREDICTION BETWEEN %f AND %f
+                                ''' % (model, 0.05 * x,
+                                        0.05 * x + 0.05))
+        bar_list.append(bar_tmp[0][0])
+    ret_dict['bar'] = bar_list
+
+    code_list = db.select('''
+                            SELECT KEY, CODE FROM SIGNALFIELD_CODE
+                                WHERE FIELD_NAME = 'APP_NAME'
+                            ''')
+    code_dict = {}
+    for e in code_list:
+        code_dict[e[0]] = e[1]
+    ret_sql = db.select('''
+                            SELECT ACT_TIME, DATA FROM %s
+                            ''' % (model))
+
+    scatter_list = []
+    for record in ret_sql:
+        x = record[0].hour * 60 + record[0].minute
+        y = code_dict.get(record[1].split(' ')[2], -1)
+        if y != -1:
+            scatter_list.append((x, y))
+    ret_dict['scatter'] = scatter_list
+
+    if chart == '1':
+        return JsonResponse(ret_dict)
+    
+    return JsonResponse({})
 
 
 def analyse_fp(request):
-    model = request.GET['model']
-    chart = request.GET['chart']
-
+    ret_dict = {}
+    model = request.GET.get('model', None)
+    chart = request.GET.get('chart', None)
+    if model == None or chart == None:
+        return JsonResponse({})
+    
     if chart == '-1':
         return render(request, 'analyse_fp.html', {'model': model})
+    
+    page = request.GET.get('page', None)
+    size = request.GET.get('size', None)
+    if page == None or size == None:
+        return JsonResponse({})
 
-    ret_dict = {}
-    page = int(request.GET['page'])
-    size = int(request.GET['size'])
+    try:
+        page = int(page)
+        size = int(size)
+    except:
+        return JsonResponse({})
+
     model = 'PO_' + model + '_20180314'
 
     db = oracle()
@@ -586,19 +719,34 @@ def analyse_fp(request):
     ret_dict['bar2_xdata'] = bar2_xdata
     ret_dict['bar2_ydata'] = bar2_ydata
 
-    return JsonResponse(ret_dict)
+    if chart == '1':
+        return JsonResponse(ret_dict)
+
+    return JsonResponse({})
 
 
 def analyse_OO(request):
-    model = request.GET['model']
-    chart = request.GET['chart']
+    model = request.GET.get('model', None)
+    chart = request.GET.get('chart', None)
+
+    if model == None or chart == None:
+        return JsonResponse({})
 
     if chart == '-1':
         return render(request, 'analyse_OO.html', {'model': model})
 
     ret_dict = {}
-    page = int(request.GET['page'])
-    size = int(request.GET['size'])
+    page = request.GET.get('page', None)
+    size = request.GET.get('size', None)
+
+    if page == None or size == None:
+        return JsonResponse({})
+
+    try:
+        page = int(page)
+        size = int(size)
+    except:
+        return JsonResponse({})
 
     db = oracle()
     data_tbname = db.select('''
@@ -607,7 +755,6 @@ def analyse_OO(request):
                                 ''' % (model))
     data_tbname = data_tbname[0][0] + '_R'
     data_tbname = data_tbname.upper()
-    ret_dict['total'] = -1
     ret_dict['head'] = db.select('''
                                     SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'
                                     ''' % data_tbname)
@@ -702,19 +849,35 @@ def analyse_OO(request):
     ret_dict['bar2_xdata'] = bar2_xdata
     ret_dict['bar2_ydata'] = bar2_ydata
 
-    return JsonResponse(ret_dict)
+    if chart == '1':
+        return JsonResponse(ret_dict)
+
+    return JsonResponse({})
 
 
 def analyse_PP(request):
-    model = request.GET['model']
-    chart = request.GET['chart']
+    model = request.GET.get('model', None)
+    chart = request.GET.get('chart', None)
+
+    if model == None or chart == None:
+        return JsonResponse({})
 
     if chart == '-1':
         return render(request, 'analyse_PP.html', {'model': model})
 
     ret_dict = {}
-    page = int(request.GET['page'])
-    size = int(request.GET['size'])
+    page = request.GET.get('page', None)
+    size = request.GET.get('size', None)
+
+    if page == None or size == None:
+        return JsonResponse({})
+
+    try:
+        page = int(page)
+        size = int(size)
+    except:
+        return JsonResponse({})
+
     db = oracle()
 
     data_tbname = db.select('''
@@ -723,7 +886,6 @@ def analyse_PP(request):
                                 ''' % (model))
     data_tbname = data_tbname[0][0] + '_R'
     data_tbname = data_tbname.upper()
-    ret_dict['total'] = -1
     ret_dict['head'] = db.select(
         "SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'" %
         data_tbname)
@@ -819,4 +981,7 @@ def analyse_PP(request):
     ret_dict['bar2_xdata'] = bar2_xdata
     ret_dict['bar2_ydata'] = bar2_ydata
 
-    return JsonResponse(ret_dict)
+    if chart == '1':
+        return JsonResponse(ret_dict)
+
+    return JsonResponse({})

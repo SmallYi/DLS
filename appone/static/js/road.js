@@ -7,7 +7,7 @@ var i, j, particles = [];
 
 //画散点图
 $(document).ready(function () {
-    $.getJSON('/prediction/', function (ret) {
+    $.getJSON('/prediction', function (ret) {
         for (var j = 0; j < 200; j += 2) {
             var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
             if (ret.abnormalratio[j] / ret.abnormalratio[j + 1] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });

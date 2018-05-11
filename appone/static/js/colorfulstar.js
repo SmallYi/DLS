@@ -6,7 +6,7 @@ var frame = 0;
 var i, j, datax = [10000, 10100, 10200, 10300, 10400, 10500, 10600, 10700, 10800, 10900], datay = [], particles = [], point;
 
 $(document).ready(function () {
-    $.getJSON('/recordnumber/', function (ret) {
+    $.getJSON('/recordnumber', function (ret) {
         var len_WCASZ0627345 = 0, WCASZ0627345 = [];
         var max_WCASZ0627345 = 0;
         for (var i = 0; i < 10; i++) {

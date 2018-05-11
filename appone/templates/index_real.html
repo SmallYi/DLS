@@ -4,13 +4,9 @@
 <head>
 	<meta charset="utf-8">
 	<link href="../static/css/index.css" rel="stylesheet">
-	<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-	 crossorigin="anonymous">
-	<script src="http://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
-	 crossorigin="anonymous">
-	</script>
-	<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-	 crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="http://code.jquery.com/jquery-1.12.4.min.js"></script>
+	<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script src="https://cdn.bootcss.com/echarts/3.8.5/echarts.common.min.js"></script>
 	<script src="../static/js/three.min.js"></script>
 	<script src="../static/js/CanvasRenderer.js"></script>
@@ -101,11 +97,9 @@
 		try {
 			socket.onopen = function (msg) {	
 				socket.send(JSON.stringify(obj));
-				//alert("pcc");
 			};
 			socket.onmessage = function (msg) {
 				if (typeof msg.data == "string") {
-					//console.log(msg.data);
 					displayContent(msg.data);
 					//i++;
 				}
@@ -128,8 +122,6 @@
 
 		}
 	};
-
-	//function $(id) { return document.getElementById(id); }
 
 	function displayContent(msg) {
 		a.push(msg);
@@ -178,7 +170,7 @@
 	</div>
 	<div class="zuobiaoxi" style="position: absolute; top: 0px;"> 
 		<p>
-			<a href="{% url 'single' %}" style="z-index:0;font-size:1vw;">无监督</a>
+			<a href="{% url 'lstm' %}" style="z-index:0;font-size:1vw;">无监督</a>
 		</p>
 		<p>
 			<a href="{% url 'lstm_guard' %}" style="z-index:0;font-size:1vw;">有监督</a>
@@ -187,23 +179,23 @@
 			<a href="{% url 'relation' %}" style="z-index:0;font-size:1vw;">关联分析</a>
 		</p>
 		<p>
-			<a href="/addconfigure" style="z-index:0;font-size:1vw;">模型配置</a>
+			<a href="{% url 'add_model' %}" style="z-index:0;font-size:1vw;">模型配置</a>
 		</p>
 		<p>
-			<a href="/history" style="z-index:0;font-size:1vw;">历史数据</a>
+			<a href="{% url 'history' %}" style="z-index:0;font-size:1vw;">历史数据</a>
 		</p>
 	</div>
-    <!-- <div id="cover_single" ondblclick="left_dblclick1();" style="position: absolute; height: 20%; width: 10%; left: 0; top: 20%; z-index: 2;"></div>
-	<iframe id="frame_single" src="{% url 'single' %}" frameborder='no' style="position: absolute; height: 20%; width: 10%; left: 0; top: 20%; z-index: 1;"></iframe>
-	<iframe id="frame_taiyangxi2" src="{% url 'taiyangxi_small' %}" frameborder='no' style="position: absolute; height: 20%; width: 10%; left: 0; top: 20%; z-index: 0;"></iframe>
+    <div id="cover_single" ondblclick="left_dblclick1();" style="position: absolute; height: 20%; width: 10%; left: 0; top: 20%; z-index: 2;"></div>
+	<iframe id="frame_single" src="{% url 'lstm' %}" frameborder='no' style="position: absolute; height: 20%; width: 10%; left: 0; top: 20%; z-index: 1;"></iframe>
+	<iframe id="frame_taiyangxi2" src="{% url 'galaxy' %}" frameborder='no' style="position: absolute; height: 20%; width: 10%; left: 0; top: 20%; z-index: 0;"></iframe>
 
 	<div id="cover_lstm" ondblclick="left_dblclick2();" style="position: absolute; height: 20%; width: 10%; left: 0; top: 45%; z-index: 2;"></div>
 	<iframe id="frame_lstm" src="{% url 'lstm_guard' %}" frameborder='no' style="position: absolute; height: 20%; width: 10%; left: 0; top: 45%; z-index: 1;"></iframe>
-	<iframe id="frame_taiyangxi3" src="{% url 'taiyangxi_small' %}" frameborder='no' style="position: absolute; height: 20%; width: 10%; left: 0; top:45%; z-index: 0;"></iframe>
+	<iframe id="frame_taiyangxi3" src="{% url 'galaxy' %}" frameborder='no' style="position: absolute; height: 20%; width: 10%; left: 0; top:45%; z-index: 0;"></iframe>
 
 	<div id="cover_relation" ondblclick="left_dblclick3();" style="position: absolute; height: 20%; width: 10%; left: 0; top: 70%; z-index: 2;"></div>
 	<iframe id="frame_relation" src="{% url 'relation' %}" frameborder='no' style="position: absolute; height: 20%; width: 10%; left: 0; top: 70%; z-index:1;"></iframe>
-	<iframe id="frame_taiyangxi" src="{% url 'taiyangxi_small' %}" frameborder='no' style="position: absolute; height: 20%; width: 10%; left: 0; top: 70%; z-index:0;"></iframe> -->
+	<iframe id="frame_taiyangxi" src="{% url 'galaxy' %}" frameborder='no' style="position: absolute; height: 20%; width: 10%; left: 0; top: 70%; z-index:0;"></iframe>
 
 	<div class="zuobiaoxi2">
 		<div id="realtime" style="height: 300px; width: 300px;z-index:2;"></div>
@@ -222,14 +214,14 @@
 				con2.style.height = con3.style.height = '100%';
 				con2.style.right = con3.style.left = '20%';
 				con2.style.top = con3.style.top = '0%';
-				con3.src = "{% url 'single' %}";
+				con3.src = "{% url 'lstm' %}";
 			} else {
 				flag_right = true;
 				con2.style.width = con3.style.width = '10%';
 				con2.style.height = con3.style.height = '20%';
 				con2.style.right = con3.style.left = '0%';
 				con2.style.top = con3.style.top = '20%';
-				con3.src = "{% url 'single' %}";
+				con3.src = "{% url 'lstm' %}";
 			}
 		}
 		function left_dblclick2() {

@@ -1,308 +1,266 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
+{% extends 'base.html' %}
+ 
+{% block title %}历史数据分析{% endblock %}
+ 
+{% block icon_title %} {% endblock %}
 
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>历史数据分析</title>
+{% block head %} 
+<button id="hide_bt" class="btn btn-default navbar-btn" style="display: none;">
+	{{model}}
+</button>
+{% endblock %}
 
-	<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-	 crossorigin="anonymous">
-	<script src="http://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
-	 crossorigin="anonymous">
-	</script>
-	<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-	 crossorigin="anonymous"></script>
-	<script src="https://cdn.bootcss.com/echarts/3.8.5/echarts.common.min.js"></script>
-	<script src="../static/js/jqpaginator.min.js"></script>
-
-</head>
-
-<body style="background-image:url('../static/img/bg_galaxy.jpg');">
-	<nav class="navbar navbar-inverse">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<a class="navbar-brand" href="">
-					<span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>
-				</a>
-				<p class="navbar-text">历史数据分析</p>
+{% block body %}
+<div id="info_chart1" style="position: absolute; left: 20px; top: 120px; z-index: 1; height: 400px; width: 400px"></div>
+<div id="info_chart2" style="position: absolute; left: 20px; top: 500px; z-index: 1; height: 400px; width: 400px"></div>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-3" style="height: 400px;">
+			<div class="col-sm-4">
+				<button class="btn btn-info" onclick="chart_toggle();">
+					显示/隐藏图表
+				</button>
 			</div>
-			<a href="/main">
-				<button class="btn btn-default navbar-btn">
-					首页
-				</button>
-			</a>
-			<a href="/single">
-				<button class="btn btn-default navbar-btn">
-					个体异常
-				</button>
-			</a>
-			<a href="/relation">
-				<button class="btn btn-default navbar-btn">
-					关联分析
-				</button>
-			</a>
-			<a href="/addconfigure">
-				<button class="btn btn-default navbar-btn">
-					模型配置
-				</button>
-			</a>
-			<a href="/history">
-				<button class="btn btn-default navbar-btn">
-					历史数据
-				</button>
-			</a>
-			<button id="hide_bt" class="btn btn-default navbar-btn" style="display: none;">
-				{{model}}
-			</button>
+			<div class="col-sm-4 col-sm-offset-2">
+				<select class="form-control" id="ab" onchange="ab_select();">
+					<option value="all">全部数据</option>
+					<option value="0">正常数据</option>
+					<option value="1">异常数据</option>
+				</select>
+			</div>
 		</div>
-	</nav>
-	<div id="info_chart1" style="position: absolute; left: 20px; top: 120px; z-index: 1; height: 400px; width: 400px"></div>
-	<div id="info_chart2" style="position: absolute; left: 20px; top: 500px; z-index: 1; height: 400px; width: 400px"></div>
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-md-3" style="height: 400px;">
-				<div class="col-sm-4">
-					<button class="btn btn-info" onclick="chart_toggle();">
-						显示/隐藏图表
-					</button>
-				</div>
-				<div class="col-sm-4 col-sm-offset-2">
-					<select class="form-control" id="ab" onchange="ab_select();">
-						<option value="all">全部数据</option>
-						<option value="0">正常数据</option>
-						<option value="1">异常数据</option>
-					</select>
-				</div>
-			</div>
 
-			<div class="col-md-9">
-				<table class="table table-condensed" id="result_table" style="height: 750px; color:azure">
-					<thead id="result_table_head"></thead>
-					<tbody id="result_table_body"></tbody>
-				</table>
-				<nav aria-label="Page navigation" style="margin-left: auto; margin-right: auto; width:650px">
-					<ul class="pagination" id='Paginator'></ul>
-				</nav>
-			</div>
+		<div class="col-md-9">
+			<table class="table table-condensed" id="result_table" style="height: 750px; color:azure">
+				<thead id="result_table_head"></thead>
+				<tbody id="result_table_body"></tbody>
+			</table>
+			<nav aria-label="Page navigation" style="margin-left: auto; margin-right: auto; width:650px">
+				<ul class="pagination" id='Paginator'></ul>
+			</nav>
 		</div>
 	</div>
-	<script>
-		var myChart1 = echarts.init(document.getElementById('info_chart1'));
-		option1 = {
-			title: {
-				text: "No Data",
-				left: 'center',
-				top: '5%',
-				textStyle: {
-					color: '#F0FFFF'
-				}
-			},
-			xAxis: {
-				type: 'category',
-				nameTextStyle: {
-					color: '#F0FFFF'
-				},
-				axisLine: {
-					lineStyle: {
-						color: '#F0FFFF'
-					}
-				},
-				axisTick: {
-					lineStyle: {
-						color: '#F0FFFF'
-					}
-				},
-				data: ['0.05', '0.1', '0.15', '0.2', '0.25',
-					'0.3', '0.35', '0.4', '0.45', '0.5',
-					'0.55', '0.6', '0.65', '0.7', '0.75',
-					'0.8', '0.85', '0.9', '0.95', '1.0',
-				]
-			},
-			yAxis: {
-				type: 'value',
-				nameTextStyle: {
-					color: '#F0FFFF'
-				},
-				axisLine: {
-					lineStyle: {
-						color: '#F0FFFF'
-					}
-				},
-				axisTick: {
-					lineStyle: {
-						color: '#F0FFFF'
-					}
-				}
-			},
-			series: [{
-				data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-				type: 'bar',
-				itemStyle: {
-                    normal: {
-                        color: '#91c7ae'
-                    }
-                }
-			}]
-		};
-		myChart1.setOption(option1);
+</div>
+{% endblock %}
 
-		var myChart2 = echarts.init(document.getElementById('info_chart2'));
-		option2 = {
-			title: {
-				text: "No Data",
-				left: 'center',
-				top: '5%',
-				textStyle: {
+{% block script %} 
+<script>
+	var myChart1 = echarts.init(document.getElementById('info_chart1'));
+	option1 = {
+		title: {
+			text: "No Data",
+			left: 'center',
+			top: '5%',
+			textStyle: {
+				color: '#F0FFFF'
+			}
+		},
+		xAxis: {
+			type: 'category',
+			nameTextStyle: {
+				color: '#F0FFFF'
+			},
+			axisLine: {
+				lineStyle: {
 					color: '#F0FFFF'
 				}
 			},
-			xAxis: {
-				nameTextStyle: {
+			axisTick: {
+				lineStyle: {
 					color: '#F0FFFF'
-				},
-				axisLine: {
-					lineStyle: {
-						color: '#F0FFFF'
-					}
-				},
-				axisTick: {
-					lineStyle: {
-						color: '#F0FFFF'
-					}
 				}
 			},
-			yAxis: {
-				nameTextStyle: {
+			data: ['0.05', '0.1', '0.15', '0.2', '0.25',
+				'0.3', '0.35', '0.4', '0.45', '0.5',
+				'0.55', '0.6', '0.65', '0.7', '0.75',
+				'0.8', '0.85', '0.9', '0.95', '1.0',
+			]
+		},
+		yAxis: {
+			type: 'value',
+			nameTextStyle: {
+				color: '#F0FFFF'
+			},
+			axisLine: {
+				lineStyle: {
 					color: '#F0FFFF'
-				},
-				axisLine: {
-					lineStyle: {
-						color: '#F0FFFF'
-					}
-				},
-				axisTick: {
-					lineStyle: {
-						color: '#F0FFFF'
-					}
 				}
 			},
-			series: [{
-				symbolSize: 4,
-				data: [],
-				type: 'scatter',
-				itemStyle: {
-                    normal: {
-                        color: '#91c7ae'
-                    }
-                }
-			}]
-		};
-		myChart2.setOption(option2);
+			axisTick: {
+				lineStyle: {
+					color: '#F0FFFF'
+				}
+			}
+		},
+		series: [{
+			data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			type: 'bar',
+			itemStyle: {
+				normal: {
+					color: '#91c7ae'
+				}
+			}
+		}]
+	};
+	myChart1.setOption(option1);
 
-		function chart_toggle() {
-			$('#info_chart1').animate({
-				width: 'toggle'
-			})
-			$('#info_chart2').animate({
-				width: 'toggle'
-			})
-		}
+	var myChart2 = echarts.init(document.getElementById('info_chart2'));
+	option2 = {
+		title: {
+			text: "No Data",
+			left: 'center',
+			top: '5%',
+			textStyle: {
+				color: '#F0FFFF'
+			}
+		},
+		xAxis: {
+			nameTextStyle: {
+				color: '#F0FFFF'
+			},
+			axisLine: {
+				lineStyle: {
+					color: '#F0FFFF'
+				}
+			},
+			axisTick: {
+				lineStyle: {
+					color: '#F0FFFF'
+				}
+			}
+		},
+		yAxis: {
+			nameTextStyle: {
+				color: '#F0FFFF'
+			},
+			axisLine: {
+				lineStyle: {
+					color: '#F0FFFF'
+				}
+			},
+			axisTick: {
+				lineStyle: {
+					color: '#F0FFFF'
+				}
+			}
+		},
+		series: [{
+			symbolSize: 4,
+			data: [],
+			type: 'scatter',
+			itemStyle: {
+				normal: {
+					color: '#91c7ae'
+				}
+			}
+		}]
+	};
+	myChart2.setOption(option2);
 
-		$(document).ready(function () {
-			model = $("#hide_bt").text();
-			model = model.slice(5, -4);
-			$.getJSON('/analyse_lstm/', { 'model': model, 'chart': 1, 'page': 1, 'size': 15, 'ab': 'all' }, function (ret) {
-				option1.title.text = model;
-				option1.series[0].data = ret.bar;
-				myChart1.setOption(option1);
-				option2.title.text = model;
-				option2.series[0].data = ret.scatter;
-				myChart2.setOption(option2);
-				$('#result_table_head').empty();
-				$('#result_table_body').empty();
-				var thead_str = "<tr>";
-				for (var i = 0; i < ret.head.length; i++) {
-					thead_str += ('<th>' + ret.head[i] + '</th>');
+	function chart_toggle() {
+		$('#info_chart1').animate({
+			width: 'toggle'
+		})
+		$('#info_chart2').animate({
+			width: 'toggle'
+		})
+	}
+
+	$(document).ready(function () {
+		model = $("#hide_bt").text();
+		model = model.slice(2, -1);
+		$.getJSON('/analyse_lstm/', { 'model': model, 'chart': 1, 'page': 1, 'size': 15, 'ab': 'all' }, function (ret) {
+			if(!ret) return;
+			option1.title.text = model;
+			option1.series[0].data = ret.bar;
+			myChart1.setOption(option1);
+			option2.title.text = model;
+			option2.series[0].data = ret.scatter;
+			myChart2.setOption(option2);
+			$('#result_table_head').empty();
+			$('#result_table_body').empty();
+			var thead_str = "<tr>";
+			for (var i = 0; i < ret.head.length; i++) {
+				thead_str += ('<th>' + ret.head[i] + '</th>');
+			};
+			thead_str += ('<th>Num</th>');
+			thead_str += "</tr>";
+			$('#result_table_head').append(thead_str);
+
+			for (var i = 0; i < ret.body.length; i++) {
+				var tbody_str = "<tr>";
+				for (var j = 0; j < ret.body[i].length; j++) {
+					tbody_str += ('<td>' + ret.body[i][j] + '</td>');
 				};
-				thead_str += ('<th>Num</th>');
-				thead_str += "</tr>";
-				$('#result_table_head').append(thead_str);
-
-				for (var i = 0; i < ret.body.length; i++) {
-					var tbody_str = "<tr>";
-					for (var j = 0; j < ret.body[i].length; j++) {
-						tbody_str += ('<td>' + ret.body[i][j] + '</td>');
-					};
-					tbody_str += "</tr>";
-					$('#result_table_body').append(tbody_str);
-				};
-				$('#Paginator').jqPaginator({
-					totalCounts: parseInt(ret.total),
-					pageSize: 15,
-					visiblePages: 10,
-					currentPage: 1,
-					onPageChange: function (num, type) {
-						if (type == "change") {
-							$.getJSON("/analyse_lstm/", { 'model': model, 'chart': 0, 'page': num, 'size': 15, 'ab': 'all' }, function (ret) {
-								$('#result_table_body').empty();
-								var tbody_str = '<tr>';
-								for (var i = 0; i < ret.body.length; i++) {
-									var tbody_str = "<tr>";
-									for (var j = 0; j < ret.body[i].length; j++) {
-										tbody_str += ('<td>' + ret.body[i][j] + '</td>');
-									};
-									tbody_str += "</tr>";
-									$('#result_table_body').append(tbody_str);
+				tbody_str += "</tr>";
+				$('#result_table_body').append(tbody_str);
+			};
+			$('#Paginator').jqPaginator({
+				totalCounts: parseInt(ret.total),
+				pageSize: 15,
+				visiblePages: 10,
+				currentPage: 1,
+				onPageChange: function (num, type) {
+					if (type == "change") {
+						$.getJSON("/analyse_lstm/", { 'model': model, 'chart': 0, 'page': num, 'size': 15, 'ab': 'all' }, function (ret) {
+							if(!ret) return;
+							$('#result_table_body').empty();
+							var tbody_str = '<tr>';
+							for (var i = 0; i < ret.body.length; i++) {
+								var tbody_str = "<tr>";
+								for (var j = 0; j < ret.body[i].length; j++) {
+									tbody_str += ('<td>' + ret.body[i][j] + '</td>');
 								};
-							});
-						}
+								tbody_str += "</tr>";
+								$('#result_table_body').append(tbody_str);
+							};
+						});
 					}
-				});
-				return;
-			})
-		});
-		function ab_select() {
-			model = $("#hide_bt").text();
-			model = model.slice(5, -4);
-			ab = $("#ab").val();
-			$.getJSON('/analyse_lstm/', { 'model': model, 'chart': 0, 'page': 1, 'size': 15, 'ab': ab }, function (ret) {
-				$('#result_table_body').empty();
-				for (var i = 0; i < ret.body.length; i++) {
-					var tbody_str = "<tr>";
-					for (var j = 0; j < ret.body[i].length; j++) {
-						tbody_str += ('<td>' + ret.body[i][j] + '</td>');
-					};
-					tbody_str += "</tr>";
-					$('#result_table_body').append(tbody_str);
+				}
+			});
+			return;
+		})
+	});
+	function ab_select() {
+		model = $("#hide_bt").text();
+		model = model.slice(2, -1);
+		ab = $("#ab").val();
+		$.getJSON('/analyse_lstm/', { 'model': model, 'chart': 0, 'page': 1, 'size': 15, 'ab': ab }, function (ret) {
+			if(!ret) return;
+			$('#result_table_body').empty();
+			for (var i = 0; i < ret.body.length; i++) {
+				var tbody_str = "<tr>";
+				for (var j = 0; j < ret.body[i].length; j++) {
+					tbody_str += ('<td>' + ret.body[i][j] + '</td>');
 				};
-				$('#Paginator').jqPaginator({
-					totalCounts: parseInt(ret.total),
-					pageSize: 15,
-					visiblePages: 10,
-					currentPage: 1,
-					onPageChange: function (num, type) {
-						if (type == "change") {
-							$.getJSON("/analyse_lstm/", { 'model': model, 'chart': 0, 'page': num, 'size': 15, 'ab': ab }, function (ret) {
-								$('#result_table_body').empty();
-								var tbody_str = '<tr>';
-								for (var i = 0; i < ret.body.length; i++) {
-									var tbody_str = "<tr>";
-									for (var j = 0; j < ret.body[i].length; j++) {
-										tbody_str += ('<td>' + ret.body[i][j] + '</td>');
-									};
-									tbody_str += "</tr>";
-									$('#result_table_body').append(tbody_str);
+				tbody_str += "</tr>";
+				$('#result_table_body').append(tbody_str);
+			};
+			$('#Paginator').jqPaginator({
+				totalCounts: parseInt(ret.total),
+				pageSize: 15,
+				visiblePages: 10,
+				currentPage: 1,
+				onPageChange: function (num, type) {
+					if (type == "change") {
+						$.getJSON("/analyse_lstm/", { 'model': model, 'chart': 0, 'page': num, 'size': 15, 'ab': ab }, function (ret) {
+							if(!ret) return;
+							$('#result_table_body').empty();
+							var tbody_str = '<tr>';
+							for (var i = 0; i < ret.body.length; i++) {
+								var tbody_str = "<tr>";
+								for (var j = 0; j < ret.body[i].length; j++) {
+									tbody_str += ('<td>' + ret.body[i][j] + '</td>');
 								};
-							});
-						}
+								tbody_str += "</tr>";
+								$('#result_table_body').append(tbody_str);
+							};
+						});
 					}
-				});
-				return;
-			})
-		};
-	</script>
-</body>
-
-</html>
+				}
+			});
+			return;
+		})
+	};
+</script>
+{% endblock %}
