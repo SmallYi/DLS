@@ -292,15 +292,15 @@ def add_Ralation(request):
 
 
 def add_model(request):
-    return render(request, 'configureadd.html')
+    return render(request, 'add_model.html')
 
 
 def index(request):
-    return render(request, 'first_interface.html')
+    return render(request, 'index.html')
 
 
 def main(request):
-    return render(request, 'index_real.html')
+    return render(request, 'main.html')
 
 
 def simulate(request):
@@ -308,11 +308,11 @@ def simulate(request):
 
 
 def lstm(request):
-    return render(request, 'single_mesh.html')
+    return render(request, 'lstm.html')
 
 
 def relation(request):
-    return render(request, 'relation2.html')
+    return render(request, 'relation.html')
 
 
 def history(request):
@@ -320,7 +320,7 @@ def history(request):
 
 
 def galaxy(request):
-    return render(request, 'taiyangxi_small.html')
+    return render(request, 'galaxy.html')
 
 
 def lstm_guard(request):
