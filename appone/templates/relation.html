@@ -22,14 +22,24 @@
 <body>
     <div style='position:fixed; z-index:999; top:0;'>
         <p>
-            <a href="main" style="font-size:1vw;">首页</a>
+            <a href="{% url 'main' %}" style="z-index:0;font-size:1vw;">首页</a>
         </p>
         <p>
-            <a href="/add_model/" style="font-size:1vw;">模型配置</a>
+            <a href="{% url 'lstm' %}" style="z-index:0;font-size:1vw;">无监督</a>
         </p>
-        <!-- <div id="relation" style="position:absolute; -webkit-transform: translateX(200%) translateY(120%); height: 500%; width: 500%; z-index: 2;"></div> -->
+        <p>
+            <a href="{% url 'lstm_guard' %}" style="z-index:0;font-size:1vw;">有监督</a>
+        </p>
+        <p>
+            <a href="{% url 'relation' %}" style="z-index:0;font-size:1vw;text-decoration:underline;">关联分析</a>
+        </p>
+        <p>
+            <a href="{% url 'add_model' %}" style="z-index:0;font-size:1vw;">模型配置</a>
+        </p>
+        <p>
+            <a href="{% url 'history' %}" style="z-index:0;font-size:1vw;">历史数据</a>
+        </p>
     </div>
-    <div style='position:fixed; z-index:999; top:0; font-size:6vw; left:35%;'>关联分析</div>
 
     <script id="vertexShader" type="x-shader/x-vertex">
     uniform float time;
