@@ -34,6 +34,7 @@ urlpatterns = [
 	url(r'^recordnumber', appone_views.recordnumber, name='recordnumber'),
 	url(r'^add_LSTM/', appone_views.add_LSTM, name='add_LSTM'),
 	url(r'^add_Ralation/', appone_views.add_Ralation, name='add_Raletion'),
+	url(r'^add_GUARD/', appone_views.add_GUARD, name='add_GUARD'),
 	url(r'^simulate/', appone_views.simulate, name='simulate'),
 
 	url(r'^load_model/', appone_views.load_model, name = 'load_model'),

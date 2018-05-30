@@ -2,6 +2,7 @@
 import os
 import time
 import math
+import cx_Oracle
 from datetime import datetime, timedelta
 from django.db import connection, transaction
 from django.shortcuts import render
@@ -164,10 +165,12 @@ def add_LSTM(request):
 
     if base_lineunit == 'single':
         base_linevalue = request.POST["line"]
-        table_name = 'NN' + '_' + base_linevalue + '_' + model_name + '_S_N' 
-    else:
+        table_name = 'NN' + '_' + base_linevalue + '_' + model_name + '_S' 
+    elif base_lineunit == 'all':
         base_linevalue = 'all'
-        table_name = 'NN' + '_' + model_name + '_A_N'
+        table_name = 'NN' + '_' + model_name + '_A'
+    
+    table_name += '_N'
     table_name = table_name.replace('-', '')
     table_name = table_name.upper()
 
@@ -212,6 +215,67 @@ def add_LSTM(request):
                 )
                 ''' % (table_name, fields_study, base_line,
                         base_linevalue, base_lineunit, table_name))
+
+    return render(request, 'addok.html')
+
+
+def add_GUARD(request):
+    data_format = request.POST.get("foramt", None)
+    name = request.POST.get("name", None)
+    unit = request.POST.get("unit", None)
+    training_fields = request.POST.get("training_fields", None)
+    label_fields = request.POST.get("label_field", None)
+    date_fields = request.POST.get("date_field", None)
+    model_name = request.POST.get("model3", None)
+
+    if data_format == '' or name == '' or unit == '' or training_fields == '' or label_fields == '' or date_fields == '' or model_name == '':
+        return render(request, 'addfail.html', {'reason': '参数缺失'})
+
+    table_name = 'NN_' + name + '_' + model_name + '_A_G'
+    table_name = table_name.replace('-', '')
+    table_name = table_name.upper()
+
+    db = oracle()
+    if len(
+            db.select('''
+                        SELECT * FROM GUARD_PARAMETER WHERE MODEL_NAME = '%s'
+                        ''' % (table_name))) >= 1:
+        return render(request, 'addfail.html', {'reason': '模型重复'})
+    db.alter('''
+                CREATE TABLE %s 
+                (	
+                    DATA VARCHAR2(1024 BYTE) PRIMARY KEY, 
+                    PREDICTION NUMBER(10,5), 
+                    ABNORMAL NUMBER(1,0), 
+                    INSERT_TIME DATE, 
+                    ACT_TIME DATE
+                )
+                ''' % table_name)
+
+    db.alter('''
+                INSERT INTO GUARD_PARAMETER 
+                (	
+                    MODEL_NAME, 
+                    DESCRIPTION, 
+                    FORMAT, 
+                    NAME, 
+                    UNIT,
+                    TRAINING_FIELDS,
+                    LABEL_FIELD,
+                    DATE_FIELD
+                ) VALUES
+                (
+                    '%s',
+                    '%s',
+                    '%s',
+                    '%s',
+                    '%s',
+                    '%s',
+                    '%s',
+                    '%s'
+                )
+                ''' % (table_name, model_name, data_format, name, unit, 
+                        training_fields, label_fields, date_fields))
 
     return render(request, 'addok.html')
 
@@ -556,14 +620,15 @@ def analyse_lstm_g(request):
         ab_select = 'WHERE ABNORMAL = %s' % ab
     else: 
         return JsonResponse({})
-    model = 'NN_' + model + '_S_G'
+    model = 'NN_' + model + '_A_G'
     model = model.upper()
 
     db = oracle()
-    ret_dict['head'] = db.select('''
+    try:
+        ret_dict['head'] = db.select('''
                                     SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'
                                     ''' % model)
-    ret_dict['body'] = db.select('''
+        ret_dict['body'] = db.select('''
                                     SELECT * FROM
                                     (
                                         SELECT A.*, ROWNUM RN
@@ -573,43 +638,13 @@ def analyse_lstm_g(request):
                                     ''' %
                                     (model, ab_select, page * size,
                                         page * size - 14))
-    ret_dict['total'] = db.select('''
+        ret_dict['total'] = db.select('''
                                     SELECT COUNT(*) FROM %s %s
                                     ''' % (model, ab_select))
+    except cx_Oracle.DatabaseError as e:
+        return JsonResponse({})
 
     if chart == '0':
-        return JsonResponse(ret_dict)
-
-    bar_list = []
-    for x in range(20):
-        bar_tmp = db.select('''
-                                SELECT COUNT(*) FROM %s
-                                    WHERE PREDICTION BETWEEN %f AND %f
-                                ''' % (model, 0.05 * x,
-                                        0.05 * x + 0.05))
-        bar_list.append(bar_tmp[0][0])
-    ret_dict['bar'] = bar_list
-
-    code_list = db.select('''
-                            SELECT KEY, CODE FROM SIGNALFIELD_CODE
-                                WHERE FIELD_NAME = 'APP_NAME'
-                            ''')
-    code_dict = {}
-    for e in code_list:
-        code_dict[e[0]] = e[1]
-    ret_sql = db.select('''
-                            SELECT ACT_TIME, DATA FROM %s
-                            ''' % (model))
-
-    scatter_list = []
-    for record in ret_sql:
-        x = record[0].hour * 60 + record[0].minute
-        y = code_dict.get(record[1].split(' ')[2], -1)
-        if y != -1:
-            scatter_list.append((x, y))
-    ret_dict['scatter'] = scatter_list
-
-    if chart == '1':
         return JsonResponse(ret_dict)
     
     return JsonResponse({})

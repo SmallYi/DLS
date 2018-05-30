@@ -1,36 +1,18 @@
-{% extends 'base.html' %}
- 
-{% block title %}历史数据分析{% endblock %}
- 
-{% block icon_title %} {% endblock %}
-
-{% block head %} 
+{% extends 'base.html' %} {% block title %}历史数据分析{% endblock %} {% block icon_title %} {% endblock %} {% block head %}
 <button id="hide_bt" class="btn btn-default navbar-btn" style="display: none;">
 	{{model}}
 </button>
-{% endblock %}
-
-{% block body %}
-<div id="info_chart1" style="position: absolute; left: 20px; top: 120px; z-index: 1; height: 400px; width: 400px"></div>
-<div id="info_chart2" style="position: absolute; left: 20px; top: 500px; z-index: 1; height: 400px; width: 400px"></div>
+{% endblock %} {% block body %}
 <div class="container-fluid">
 	<div class="row">
-		<div class="col-md-3" style="height: 400px;">
-			<div class="col-sm-4">
-				<button class="btn btn-info" onclick="chart_toggle();">
-					显示/隐藏图表
-				</button>
-			</div>
-			<div class="col-sm-4 col-sm-offset-2">
-				<select class="form-control" id="ab" onchange="ab_select();">
-					<option value="all">全部数据</option>
-					<option value="0">正常数据</option>
-					<option value="1">异常数据</option>
-				</select>
-			</div>
+		<div class="col-md-1">
+			<select class="form-control" id="ab" onchange="ab_select();">
+				<option value="all">全部数据</option>
+				<option value="0">正常数据</option>
+				<option value="1">异常数据</option>
+			</select>
 		</div>
-
-		<div class="col-md-9">
+		<div class="col-md-11">
 			<table class="table table-condensed" id="result_table" style="height: 750px; color:azure">
 				<thead id="result_table_head"></thead>
 				<tbody id="result_table_body"></tbody>
@@ -41,136 +23,13 @@
 		</div>
 	</div>
 </div>
-{% endblock %}
-
-{% block script %} 
+{% endblock %} {% block script %}
 <script>
-	var myChart1 = echarts.init(document.getElementById('info_chart1'));
-	option1 = {
-		title: {
-			text: "No Data",
-			left: 'center',
-			top: '5%',
-			textStyle: {
-				color: '#F0FFFF'
-			}
-		},
-		xAxis: {
-			type: 'category',
-			nameTextStyle: {
-				color: '#F0FFFF'
-			},
-			axisLine: {
-				lineStyle: {
-					color: '#F0FFFF'
-				}
-			},
-			axisTick: {
-				lineStyle: {
-					color: '#F0FFFF'
-				}
-			},
-			data: ['0.05', '0.1', '0.15', '0.2', '0.25',
-				'0.3', '0.35', '0.4', '0.45', '0.5',
-				'0.55', '0.6', '0.65', '0.7', '0.75',
-				'0.8', '0.85', '0.9', '0.95', '1.0',
-			]
-		},
-		yAxis: {
-			type: 'value',
-			nameTextStyle: {
-				color: '#F0FFFF'
-			},
-			axisLine: {
-				lineStyle: {
-					color: '#F0FFFF'
-				}
-			},
-			axisTick: {
-				lineStyle: {
-					color: '#F0FFFF'
-				}
-			}
-		},
-		series: [{
-			data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-			type: 'bar',
-			itemStyle: {
-				normal: {
-					color: '#91c7ae'
-				}
-			}
-		}]
-	};
-	myChart1.setOption(option1);
-
-	var myChart2 = echarts.init(document.getElementById('info_chart2'));
-	option2 = {
-		title: {
-			text: "No Data",
-			left: 'center',
-			top: '5%',
-			textStyle: {
-				color: '#F0FFFF'
-			}
-		},
-		xAxis: {
-			nameTextStyle: {
-				color: '#F0FFFF'
-			},
-			axisLine: {
-				lineStyle: {
-					color: '#F0FFFF'
-				}
-			},
-			axisTick: {
-				lineStyle: {
-					color: '#F0FFFF'
-				}
-			}
-		},
-		yAxis: {
-			nameTextStyle: {
-				color: '#F0FFFF'
-			},
-			axisLine: {
-				lineStyle: {
-					color: '#F0FFFF'
-				}
-			},
-			axisTick: {
-				lineStyle: {
-					color: '#F0FFFF'
-				}
-			}
-		},
-		series: [{
-			symbolSize: 4,
-			data: [],
-			type: 'scatter',
-			itemStyle: {
-				normal: {
-					color: '#91c7ae'
-				}
-			}
-		}]
-	};
-	myChart2.setOption(option2);
-
-	function chart_toggle() {
-		$('#info_chart1').animate({
-			width: 'toggle'
-		})
-		$('#info_chart2').animate({
-			width: 'toggle'
-		})
-	}
-
 	$(document).ready(function () {
 		model = $("#hide_bt").text();
 		model = model.slice(2, -1);
-		$.getJSON('/analyse_lstm_g/', { 'model': model, 'chart': 1, 'page': 1, 'size': 15, 'ab': 'all' }, function (ret) {
-			if(!ret) return;
+		$.getJSON('/analyse_lstm_g/', { 'model': model, 'chart': 0, 'page': 1, 'size': 15, 'ab': 'all' }, function (ret) {
+			if (ret == null) return;
 			option1.title.text = model;
 			option1.series[0].data = ret.bar;
 			myChart1.setOption(option1);
@@ -203,7 +62,7 @@
 				onPageChange: function (num, type) {
 					if (type == "change") {
 						$.getJSON("/analyse_lstm_g/", { 'model': model, 'chart': 0, 'page': num, 'size': 15, 'ab': 'all' }, function (ret) {
-							if(!ret) return;
+							if (ret == null) return;
 							$('#result_table_body').empty();
 							var tbody_str = '<tr>';
 							for (var i = 0; i < ret.body.length; i++) {
@@ -226,7 +85,7 @@
 		model = model.slice(2, -1);
 		ab = $("#ab").val();
 		$.getJSON('/analyse_lstm_g/', { 'model': model, 'chart': 0, 'page': 1, 'size': 15, 'ab': ab }, function (ret) {
-			if(!ret) return;
+			if (!ret) return;
 			$('#result_table_body').empty();
 			for (var i = 0; i < ret.body.length; i++) {
 				var tbody_str = "<tr>";
@@ -244,7 +103,7 @@
 				onPageChange: function (num, type) {
 					if (type == "change") {
 						$.getJSON("/analyse_lstm_g/", { 'model': model, 'chart': 0, 'page': num, 'size': 15, 'ab': ab }, function (ret) {
-							if(!ret) return;
+							if (!ret) return;
 							$('#result_table_body').empty();
 							var tbody_str = '<tr>';
 							for (var i = 0; i < ret.body.length; i++) {
@@ -262,5 +121,4 @@
 			return;
 		})
 	};
-</script>
-{% endblock %}
+</script> {% endblock %}
