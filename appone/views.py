@@ -390,6 +390,9 @@ def galaxy(request):
 def lstm_guard(request):
     return render(request, 'lstm_guard.html')
 
+def main_guard(request):
+    return render(request, 'main_guard.html')
+
 
 def load_model(request):
     ret_dict = {}

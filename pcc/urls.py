@@ -26,6 +26,7 @@ urlpatterns = [
 	url(r'^history', appone_views.history, name='history'),
 	url(r'^lstm$', appone_views.lstm, name='lstm'),
 	url(r'^lstm_guard$', appone_views.lstm_guard, name='lstm_guard'),
+    url(r'^main_guard$', appone_views.main_guard, name='main_guard'),
 	url(r'^relation$', appone_views.relation, name='relation'),
 	url(r'^galaxy$', appone_views.galaxy, name='galaxy'),
 
