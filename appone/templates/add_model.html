@@ -1,5 +1,8 @@
-{% extends 'base.html' %} {% block title %}模型配置{% endblock %} {% block icon_title %} {% endblock %} {% block head %} {% endblock
-%} {% block body %}
+{% extends 'base.html' %} 
+{% block title %}模型配置{% endblock %} 
+{% block icon_title %} {% endblock %} 
+{% block head %} {% endblock%} 
+{% block body %}
 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel" data-interval="0">
     <!-- Wrapper for slides -->
     <div class="carousel-inner" role="listbox">
@@ -270,7 +273,8 @@
         <span class="sr-only">Next</span>
     </a>
 </div>
-{% endblock %} {% block script %}
+{% endblock %} 
+{% block script %}
 <script>
     function load_agent() {
         $.getJSON("/load_agent/", function (ret) {
@@ -382,4 +386,5 @@
 
         localStorage.setItem('uid', JSON.stringify(obj));
     })	
-</script> {% endblock %}
+</script> 
+{% endblock %}

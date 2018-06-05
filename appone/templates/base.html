@@ -26,22 +26,27 @@
 			</div>
 			<a href="{% url 'main' %}">
 				<button class="btn btn-default navbar-btn">
-					首页
+					无监督实时
+				</button>
+			</a>
+			<a href="{% url 'main_guard' %}">
+				<button class="btn btn-default navbar-btn">
+					有监督实时
 				</button>
 			</a>
 			<a href="{% url 'lstm' %}">
 				<button class="btn btn-default navbar-btn">
-					无监督模式
+					无监督历史
 				</button>
 			</a>
 			<a href="{% url 'lstm_guard' %}">
 				<button class="btn btn-default navbar-btn">
-					有监督模式
+					有监督历史
 				</button>
 			</a>
 			<a href="{% url 'relation' %}">
 				<button class="btn btn-default navbar-btn">
-					关联分析
+					关联分析历史
 				</button>
 			</a>
 			<a href="{% url 'add_model' %}">
