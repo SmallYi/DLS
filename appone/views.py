@@ -145,6 +145,37 @@ def recordnumber(request):
                     ('DL_TMSAPP_C0A80006_' + history_time[y], agent[x])))
     return JsonResponse(ret_list, safe=False)
 
+def guard(request):
+    # history_time = []
+    # now = datetime.now()
+    # history_time.append(now)
+    # for x in range(1,11):
+    #     history_time.append((now - timedelta(days = x)).strftime('%Y-%m-%d'))
+
+    db = oracle()
+    history_time = [
+        '20170122', '20170123', '20170124', '20170206', '20170207', '20170208',
+        '20170209', '20170210', '20170211', '20170212'
+    ]
+    agent = [
+        'WD-WCASZ0627345', 'S2A58BGQ', '5VM45975', 'Z1D3XB0A', 'Z4YAZWRB',
+        'Z4YAZVXM', 'Z4YAZW4W', 'Z4YAZVV4', '537TT03OT', '6VY152TL',
+        'Z4YAZTEF', 'Z4YAZTKF'
+    ]
+    ret_list = []
+    for x in range(12):
+        for y in range(10):
+            record = db.select("SELECT COUNT(*) FROM %s WHERE agent_id='%s'" % ('DL_TMSAPP_C0A80006_' + history_time[y], agent[x]))
+            total = db.select("SELECT COUNT(*) FROM %s"% ('DL_TMSAPP_C0A80006_' + history_time[y]))
+            a=record[0][0]
+            b=total[0][0]
+            if(b==0):
+                c=0
+            else:
+                c=a/b
+            ret_list.append(c)
+    return JsonResponse(ret_list, safe=False)
+
 
 def add_LSTM(request):
     base_line = request.POST.get("base", None)

@@ -394,7 +394,7 @@
             var hai_position_z=hai.position.z;
 
             count++;
-            console.log(count);
+            //console.log(count);
             if(count%500==0)
             var model = model_number[0];//模型编号，用于追光效果
             else if(count%500==100)
@@ -446,7 +446,7 @@
 				greenPoint_mu.position.copy(mu_warn.position);
             }
             if(model==2)  {
-                var material_r1 = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+                var material_r1 = new THREE.LineBasicMaterial({ color: 0xff0066 });
                 var geometry_r1 = new THREE.Geometry();
                 geometry_r1.vertices.push(new THREE.Vector3(0, 0, 0));
                 geometry_r1.vertices.push(new THREE.Vector3(mu_position_x, mu_position_y, mu_position_z));
@@ -471,7 +471,7 @@
 				greenPoint_tu.position.copy(tu_warn.position);
             }
             if(model==3)  {
-                var material_r1 = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+                var material_r1 = new THREE.LineBasicMaterial({ color: 0xffff33 });
                 var geometry_r1 = new THREE.Geometry();
                 geometry_r1.vertices.push(new THREE.Vector3(0, 0, 0));
                 geometry_r1.vertices.push(new THREE.Vector3(tu_position_x, tu_position_y, tu_position_z));
@@ -497,7 +497,7 @@
 				greenPoint_tian.position.copy(tian_warn.position);
             }
             if(model==4)  {
-                var material_r1 = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+                var material_r1 = new THREE.LineBasicMaterial({ color: 0xcc66ff });
                 var geometry_r1 = new THREE.Geometry();
                 geometry_r1.vertices.push(new THREE.Vector3(0, 0, 0));
                 geometry_r1.vertices.push(new THREE.Vector3(tian_position_x, tian_position_y, tian_position_z));
@@ -522,7 +522,7 @@
 				greenPoint_hai.position.copy(hai_warn.position);
             }
             if(model==5)  {
-                var material_r1 = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+                var material_r1 = new THREE.LineBasicMaterial({ color: 0x3399ff });
                 var geometry_r1 = new THREE.Geometry();
                 geometry_r1.vertices.push(new THREE.Vector3(0, 0, 0));
                 geometry_r1.vertices.push(new THREE.Vector3(hai_position_x, hai_position_y, hai_position_z));
