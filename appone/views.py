@@ -448,10 +448,11 @@ def load_model(request):
     else:
         return JsonResponse({})
 
-    db = oracle()
-    ret_dict['total'] = db.select('''
-                                    SELECT COUNT(*) FROM %s WHERE %s = '%s'
-                                    ''' % (model_type, unit, baseline))
+    db = oracle() 
+    ret_sql = db.select('''
+                            SELECT COUNT(*) FROM %s WHERE %s = '%s'
+                            ''' % (model_type, unit, baseline))
+    ret_dict['total'] = ret_sql[0][0]
     ret_dict['head'] = db.select('''
                                     SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'
                                     ''' % model_type)
@@ -464,7 +465,7 @@ def load_model(request):
                                     )   WHERE RN >= %d
                                     ''' %
                                     (model_type, unit, baseline,
-                                        page * size, page * size - 14))
+                                        page * size, page * size - size + 1))
 
     return JsonResponse(ret_dict)
 
@@ -511,7 +512,7 @@ def search(request):
                             SELECT %s FROM %s WHERE %s = '%s'
                             ''' % (tbname, model_type, mdname,
                                     model))
-    if (table_name == None):
+    if table_name == None:
         return JsonResponse({})
     table_name = table_name[0][0]
     table_name = table_name.upper()
@@ -528,14 +529,15 @@ def search(request):
                                         FROM (SELECT * FROM %s WHERE INSERT_TIME BETWEEN to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')) A
                                         WHERE ROWNUM <= %d
                                     )   WHERE RN >= %d
-                                ''' %
-                                    (table_name, start_date, end_date,
-                                        page * size, page * size - 14))
-    ret_dict['total'] = db.select('''
-                                    SELECT COUNT(*) FROM %s WHERE INSERT_TIME BETWEEN 
-                                    to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD') 
-                                    ''' % (table_name, start_date,
-                                            end_date))
+                                    ''' %
+                                        (table_name, start_date, end_date,
+                                            page * size, page * size - size + 1))
+    ret_sql = db.select('''
+                            SELECT COUNT(*) FROM %s WHERE INSERT_TIME BETWEEN 
+                            to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD') 
+                            ''' % (table_name, start_date,
+                                    end_date))
+    ret_dict['total'] = ret_sql[0][0]
 
     return JsonResponse(ret_dict)
 
@@ -584,10 +586,11 @@ def analyse_lstm(request):
                                     )   WHERE RN >= %d
                                     ''' %
                                     (model, ab_select, page * size,
-                                        page * size - 14))
-    ret_dict['total'] = db.select('''
-                                    SELECT COUNT(*) FROM %s %s
-                                    ''' % (model, ab_select))
+                                        page * size - size + 1))
+    ret_sql = db.select('''
+                            SELECT COUNT(*) FROM %s %s
+                            ''' % (model, ab_select))
+    ret_dict['total'] = ret_sql[0][0]
     if chart == '0':
         return JsonResponse(ret_dict)
 
@@ -671,11 +674,13 @@ def analyse_lstm_g(request):
                                     )   WHERE RN >= %d
                                     ''' %
                                     (model, ab_select, page * size,
-                                        page * size - 14))
-        ret_dict['total'] = db.select('''
+                                        page * size - size + 1))
+        ret_sql = db.select('''
                                     SELECT COUNT(*) FROM %s %s
                                     ''' % (model, ab_select))
+        ret_dict['total'] = ret_sql[0][0]
     except cx_Oracle.DatabaseError as e:
+        print(e)
         return JsonResponse({})
 
     if chart == '0':
@@ -725,10 +730,11 @@ def analyse_fp(request):
                                         WHERE ROWNUM <= %d
                                     )   WHERE RN >= %d
                                     ''' % (data_tbname, page * size,
-                                            page * size - 14))
-    ret_dict['total'] = db.select('''
+                                            page * size - size + 1))
+    ret_sql = db.select('''
                                     SELECT COUNT(*) FROM %s 
                                     ''' % (data_tbname))
+    ret_dict['total'] = ret_sql[0][0]
     if chart == '0':
         return JsonResponse(ret_dict)
 
@@ -835,10 +841,11 @@ def analyse_OO(request):
                                         WHERE ROWNUM <= %d
                                     )   WHERE RN >= %d
                                     ''' % (data_tbname, page * size,
-                                            page * size - 14))
-    ret_dict['total'] = db.select('''
+                                            page * size - size + 1))
+    ret_sql = db.select('''
                                     SELECT COUNT(*) FROM %s 
                                     ''' % (data_tbname))
+    ret_dict['total'] = ret_sql[0][0]
     if chart == '0':
         return JsonResponse(ret_dict)
 
@@ -966,9 +973,10 @@ def analyse_PP(request):
                                         WHERE ROWNUM <= %d
                                     )   WHERE RN >= %d
                                     ''' % (data_tbname, page * size,
-                                            page * size - 14))
-    ret_dict['total'] = db.select('''SELECT COUNT(*) FROM %s 
+                                            page * size - size + 1))
+    ret_sql = db.select('''SELECT COUNT(*) FROM %s 
                                             ''' % (data_tbname))
+    ret_dict['total'] = ret_sql[0][0]
     if chart == '0':
         return JsonResponse(ret_dict)
 
