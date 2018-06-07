@@ -33,12 +33,6 @@
 		model = model.slice(2, -1);
 		$.getJSON('/analyse_lstm_g/', { 'model': model, 'chart': 0, 'page': 1, 'size': num_data, 'ab': 'all' }, function (ret) {
 			if (ret == null) return;
-			option1.title.text = model;
-			option1.series[0].data = ret.bar;
-			myChart1.setOption(option1);
-			option2.title.text = model;
-			option2.series[0].data = ret.scatter;
-			myChart2.setOption(option2);
 			$('#result_table_head').empty();
 			$('#result_table_body').empty();
 			var thead_str = "<tr>";

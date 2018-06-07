@@ -421,8 +421,13 @@ def galaxy(request):
 def lstm_guard(request):
     return render(request, 'lstm_guard.html')
 
+
 def main_guard(request):
-    return render(request, 'main_guard.html')
+    model = request.GET.get('model', None)
+    if model == None:
+        return render(request, 'main_guard.html', {'model': 'test'})
+    else:
+        return render(request, 'main_guard.html', {'model': model})
 
 
 def load_model(request):
@@ -471,11 +476,28 @@ def load_model(request):
 
 
 def load_agent(request):
-    db = oracle()
-    ret_dict = {}
-    ret_dict['agent'] = db.select('''
+    try:
+        db = oracle()
+        ret_dict = {}
+        ret_dict['agent'] = db.select('''
                                     SELECT TERM_AGENT_ID FROM CP_TERMINAL_INFO
                                     ''')
+    except cx_Oracle.DatabaseError as e:
+        print(e)
+        ret_dict['guard'] = []
+    return JsonResponse(ret_dict)
+
+
+def load_guard(request):
+    try:
+        db = oracle()
+        ret_dict = {}
+        ret_dict['guard'] = db.select('''
+                                    SELECT MODEL_NAME FROM GUARD_PARAMETER
+                                    ''')
+    except cx_Oracle.DatabaseError as e:
+        print(e)
+        ret_dict['guard'] = []
     return JsonResponse(ret_dict)
 
 

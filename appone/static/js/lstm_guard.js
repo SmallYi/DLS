@@ -585,7 +585,7 @@ function onClick(event) {
     if (intersects.length > 0) {
         var currObj = intersects[0].object;
         if (currObj.name) {
-            window.location.href = ('analyse_fp/?chart=-1&model=' + currObj.name);
+            window.location.href = ('analyse_lstm_g/?chart=-1&model=' + currObj.name);
         }
     }
     renderer.render(scene, camera);

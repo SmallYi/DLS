@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html style="width: 100%; height: 100%;">
 
 <head>
 	<meta charset="utf-8">
-	<link href="../static/css/index.css" rel="stylesheet">
+	<title>{{ model }}</title>
 	<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<script src="http://code.jquery.com/jquery-1.12.4.min.js"></script>
 	<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -20,16 +20,15 @@
 	var a = new Array(), b, i = 0;
 	var low_threshold = 1, high_threshold = 9;//记录上下阈值，后期由传过来的数据决定
 	var abnormal_count = 0, ratio = 0;//记录异常记录数目
-	
-		
+
 	function connect() {
 		var host = "ws://222.20.72.244:3368/ws";
 		socket = new WebSocket(host);
 		obj = {
-			'algorithm' : 'start'
+			'algorithm': 'start'
 		}
 		try {
-			socket.onopen = function (msg) {	
+			socket.onopen = function (msg) {
 				socket.send(JSON.stringify(obj));
 			};
 			socket.onmessage = function (msg) {
@@ -64,7 +63,7 @@
 		var data = obj.data;
 		var type = obj.type;
 		var description = obj.description;
-		if(type=="realtime") {
+		if (type == "realtime") {
 			i++;
 			var act = obj.data.act_time;
 			var flag = obj.data.abnormal;
@@ -72,22 +71,22 @@
 			var detail = obj.data.item;
 			var agent = obj.description.agent_id;
 			var modeltype = obj.description.model_type;//lstm模型名
-			
+
 			localStorage.setItem('acttime', act);
-		    localStorage.setItem('lstmvalue', lstm);
+			localStorage.setItem('lstmvalue', lstm);
 			localStorage.setItem('details', detail);
 			localStorage.setItem('descriptions', agent);
 			localStorage.setItem('number', i);//数据编号
-			
-			if(modeltype=="single")  {//lstm个体模型				
+
+			if (modeltype == "single") {//lstm个体模型				
 				var single_abnormalrate = obj.data.abnormal_rate;
-				localStorage.setItem('agent_id',agent);
-				localStorage.setItem('single_abnormal_rate',single_abnormalrate);
+				localStorage.setItem('agent_id', agent);
+				localStorage.setItem('single_abnormal_rate', single_abnormalrate);
 				//console.log(single_abnormalrate);
 			}
-			if(modeltype=="all")  {//lstm整体模型
+			if (modeltype == "all") {//lstm整体模型
 				var all_abnormalrate = obj.data.abnormal_rate;
-				localStorage.setItem('all_abnormal_rate',all_abnormalrate);
+				localStorage.setItem('all_abnormal_rate', all_abnormalrate);
 				//console.log(all_abnormalrate);
 			}
 		}
@@ -97,37 +96,71 @@
 			send();
 		}
 	}
+
+	function load_guard(){
+		$.getJSON("/load_guard/", function (ret) {
+			if (ret.guard.length == 0) 
+				return;
+			$('#guard_list').empty();
+			var ul_str = '';
+			for (var i = 0; i < ret.guard.length; i++) {
+				ul_str += ('<li> <a href="/main_guard/?model=' + ret.guard[i] + '">' + ret.guard[i] +'</a></li>');
+			};
+			$('#guard_list').append(ul_str);
+		});
+	}
 </script>
 
-<body onload="connect()">
-	<div class="canvasbox" id="canvasbox">
+<body onload="connect();load_guard();" style="margin: 0; overflow: hidden; width: 100%; height: 100%;">
+	<div style="width: 100%; height: 100%;" id="canvasbox">
 	</div>
-	<div class="zuobiaoxi" style="position: absolute; top: 0px;"> 
-            <p>
-				<a href="{% url 'main' %}" style="z-index:0;font-size:1vw;">无监督实时</a>
-			</p>
-			<p>
-				<a href="{% url 'main_guard' %}" style="z-index:0;font-size:1vw;text-decoration:underline;">有监督实时</a>
-			</p>
-			<p>
-				<a href="{% url 'lstm' %}" style="z-index:0;font-size:1vw;">无监督历史</a>
-			</p>
-			<p>
-				<a href="{% url 'lstm_guard' %}" style="z-index:0;font-size:1vw;">有监督历史</a>
-			</p>
-			<p>
-				<a href="{% url 'relation' %}" style="z-index:0;font-size:1vw;">关联分析历史</a>
-			</p>
-			<p>
-				<a href="{% url 'add_model' %}" style="z-index:0;font-size:1vw;">模型配置</a>
-			</p>
-			<p>
-				<a href="{% url 'history' %}" style="z-index:0;font-size:1vw;">历史数据</a>
-			</p>
+
+	<div style="position: absolute; top: 0px; left: 10px; z-index: 1">
+		<p>
+			<a href="{% url 'main' %}" style="z-index:0;font-size:1vw;">无监督实时</a>
+		</p>
+		<p>
+			<a href="{% url 'main_guard' %}" style="z-index:0;font-size:1vw;text-decoration:underline;">有监督实时</a>
+		</p>
+		<p>
+			<a href="{% url 'lstm' %}" style="z-index:0;font-size:1vw;">无监督历史</a>
+		</p>
+		<p>
+			<a href="{% url 'lstm_guard' %}" style="z-index:0;font-size:1vw;">有监督历史</a>
+		</p>
+		<p>
+			<a href="{% url 'relation' %}" style="z-index:0;font-size:1vw;">关联分析历史</a>
+		</p>
+		<p>
+			<a href="{% url 'add_model' %}" style="z-index:0;font-size:1vw;">模型配置</a>
+		</p>
+		<p>
+			<a href="{% url 'history' %}" style="z-index:0;font-size:1vw;">历史数据</a>
+		</p>
+		<div class="btn-group">
+			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				选择模型
+				<span class="caret"></span>
+			</button>
+			<ul id="guard_list" class="dropdown-menu">
+				<li>
+					<a href="www.baidu.com">Action</a>
+				</li>
+				<li>
+					<a href="#">Another action</a>
+				</li>
+				<li>
+					<a href="#">Something else here</a>
+				</li>
+				<li>
+					<a href="#">Separated link</a>
+				</li>
+			</ul>
+		</div>
 	</div>
-    
-	<div class="zuobiaoxi2">
-        <div id="realtime_lstm_guard" style="height: 300px; width: 300px;z-index:2;"></div>
+
+	<div style="position: absolute; display: table; right:10px; top: 10px; font-size: 20px; z-index: 1;">
+		<div id="realtime_lstm_guard" style="height: 300px; width: 300px;z-index:2;"></div>
 	</div>
 
 	<script src="../static/js/galaxy2.js"></script>
