@@ -419,7 +419,11 @@ def galaxy(request):
 
 
 def lstm_guard(request):
-    return render(request, 'lstm_guard.html')
+    model = request.GET.get('model', None)
+    if model == None:
+        return render(request, 'lstm_guard.html', {'model': 'test'})
+    else:
+        return render(request, 'lstm_guard.html', {'model': model})
 
 
 def main_guard(request):

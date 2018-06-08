@@ -1,18 +1,12 @@
 (function (canvasbox, _window) {
 	/* 基础 */
-	var abnormal_lightcolor1 = 0;
-	var abnormal_lightcolor2 = 0;
-	var person_to_operation = 0;
-	var abnormal_lightcolor4 = 0;
-	var abnormal_lightcolor5 = 0;
 
-	var scene, camera, renderer, states, controls, particles = [], bluePoint;
+	var scene, camera, renderer, particles = [];
 	var initCamera;
 	var action, action_buzhuan, count_act = 0;
 	var taiyang, huo, mu, tu, tian, hai;
 	var sprite_sun, sprite_huo, sprite_mu, sprite_tu, sprite_tian, sprite_hai;
 	var ctx_sun, ctx_huo, ctx_mu, ctx_tu, ctx_tian, ctx_hai;
-	var time = Date.now() * 0.0005;
 	var count = 0;
 
 	(function () {
@@ -327,11 +321,7 @@
 	/* 初始化 */
 	(function () {
 		var PI2 = 2 * Math.PI; // 弧度的最大值
-		var zuobiaoxi = [ // 显示坐标系的信息
-			document.getElementById("zuobiao-x"), // X
-			document.getElementById("zuobiao-y"), // Y
-			document.getElementById("zuobiao-z")  // Z
-		];
+		
 		// 自转，沿着y轴自转
 		function zizhuan() {
 			taiyang.rotation.y = taiyang.rotation.y + 0.01 >= 2 * PI2 ? 0 : taiyang.rotation.y + 0.01; // 太阳自转			
@@ -348,31 +338,6 @@
 
 		// 公转
 		function gongzhuan() {
-			abnormal_lightcolor1 = localStorage.getItem('single_abnormal_rate');//获取lstm个体模型异常记录比例
-			agent_name = localStorage.getItem('agent_id');//获取lstm个体模型user
-			abnormal_lightcolor2 = localStorage.getItem('all_abnormal_rate');//获取模型2异常记录比例
-			//person_to_operation = localStorage.getItem('person_to_operation');//人与操作关联比例
-			//console.log(person_to_operation);
-			var abnormal_lightcolor3_Z4YAZWRB = localStorage.getItem('person_to_operation_Z4YAZWRB');//获取模型3异常记录比例
-			var abnormal_lightcolor3_537TT03OT = localStorage.getItem('person_to_operation_537TT03OT');
-			var abnormal_lightcolor3_5VM42727 = localStorage.getItem('person_to_operation_5VM42727');
-			var abnormal_lightcolor3_5VM452F4 = localStorage.getItem('person_to_operation_5VM452F4');
-			var abnormal_lightcolor3_5VMTSDK5 = localStorage.getItem('person_to_operation_5VMTSDK5');
-			var abnormal_lightcolor3 = (parseFloat(abnormal_lightcolor3_Z4YAZWRB) + parseFloat(abnormal_lightcolor3_537TT03OT) + parseFloat(abnormal_lightcolor3_5VM42727) + parseFloat(abnormal_lightcolor3_5VM452F4) + parseFloat(abnormal_lightcolor3_5VMTSDK5)) / 5;
-			var abnormal_lightcolor4_1ratio = localStorage.getItem('operation_to_operation1_ratio');
-			var abnormal_lightcolor4_2ratio = localStorage.getItem('operation_to_operation2_ratio');
-			var abnormal_lightcolor4_3ratio = localStorage.getItem('operation_to_operation3_ratio');
-			var abnormal_lightcolor4_4ratio = localStorage.getItem('operation_to_operation4_ratio');
-			var abnormal_lightcolor4_5ratio = localStorage.getItem('operation_to_operation5_ratio');
-			var abnormal_lightcolor4 = (parseFloat(abnormal_lightcolor4_1ratio) + parseFloat(abnormal_lightcolor4_2ratio) + parseFloat(abnormal_lightcolor4_3ratio) + parseFloat(abnormal_lightcolor4_4ratio) + parseFloat(abnormal_lightcolor4_5ratio)) / 5;
-			// console.log(abnormal_lightcolor4);
-			var abnormal_lightcolor5_1day = localStorage.getItem('people_to_people1_day');
-			var abnormal_lightcolor5_2day = localStorage.getItem('people_to_people2_day');
-			var abnormal_lightcolor5_3day = localStorage.getItem('people_to_people3_day');
-			var abnormal_lightcolor5_4day = localStorage.getItem('people_to_people4_day');
-			var abnormal_lightcolor5_5day = localStorage.getItem('people_to_people5_day');
-			var abnormal_lightcolor5 = (parseFloat(abnormal_lightcolor5_1day) + parseFloat(abnormal_lightcolor5_2day) + parseFloat(abnormal_lightcolor5_3day) + parseFloat(abnormal_lightcolor5_4day) + parseFloat(abnormal_lightcolor5_5day)) / 5;
-
 			var huo_position_x = huo.position.x;
 			var huo_position_y = huo.position.y;
 			var huo_position_z = huo.position.z;

@@ -24,8 +24,12 @@
 	function connect() {
 		var host = "ws://222.20.72.244:3368/ws";
 		socket = new WebSocket(host);
+		model = $("title").text();
+		model = model.slice(2, -1);
 		obj = {
-			'algorithm': 'start'
+			'algorithm': 'start',
+			'type': 'GUARD_PARAMETER',
+			'model_name': model
 		}
 		try {
 			socket.onopen = function (msg) {
@@ -143,18 +147,7 @@
 				<span class="caret"></span>
 			</button>
 			<ul id="guard_list" class="dropdown-menu">
-				<li>
-					<a href="www.baidu.com">Action</a>
-				</li>
-				<li>
-					<a href="#">Another action</a>
-				</li>
-				<li>
-					<a href="#">Something else here</a>
-				</li>
-				<li>
-					<a href="#">Separated link</a>
-				</li>
+
 			</ul>
 		</div>
 	</div>

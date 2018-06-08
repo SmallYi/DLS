@@ -8,8 +8,8 @@
     var data = [];
     var thresold_high = localStorage.getItem('max_thresold');//动态获取上下阈值
     var thresold_low = localStorage.getItem('min_thresold');
-    normal1=parseFloat(thresold_low);
-    normal2=parseFloat(thresold_high);
+    normal1 = parseFloat(thresold_low);
+    normal2 = parseFloat(thresold_high);
     var myChart = echarts.init(document.getElementById('realtime_lstm_guard'));
     option = {
         title: {
@@ -143,8 +143,7 @@
         act_time = localStorage.getItem('acttime');
         detail = localStorage.getItem('details');
         description = localStorage.getItem('descriptions');
-//   console.log(num);
-//   console.log(act_time);
+
         if (num != oldnumber) {
             olddata = newdata;
             oldnumber = num;         
