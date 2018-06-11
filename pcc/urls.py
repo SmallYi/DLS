@@ -30,7 +30,7 @@ urlpatterns = [
 	url(r'^relation$', appone_views.relation, name='relation'),
 	url(r'^galaxy$', appone_views.galaxy, name='galaxy'),
 
-	url(r'^thresold$', appone_views.thresold, name='thresold'),
+	url(r'^thresold/$', appone_views.thresold, name='thresold'),
 	url(r'^prediction$', appone_views.prediction, name='prediction'),
 	url(r'^recordnumber$', appone_views.recordnumber, name='recordnumber'),
 	url(r'^guard$', appone_views.guard, name='guard'),

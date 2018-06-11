@@ -204,10 +204,11 @@
 		})();
 		// 太阳
 		(function () {
+			var loader = new THREE.TextureLoader();
 			var taiyang_geometry = new THREE.SphereGeometry(32, 100, 100);
 			var taiyang_material = new THREE.MeshLambertMaterial({
 				emissive: 0xe65f05,
-				map: THREE.ImageUtils.loadTexture("../static/img/taiyang2.jpg"),
+				map: loader.load("../static/img/taiyang2.jpg"),
 				side: THREE.DoubleSide,
 				color: 0xffffff
 			});
@@ -220,26 +221,27 @@
 			taiyang.name = "taiyang";
 
 			let canvas = document.createElement("canvas");
-			canvas.height = '520';
-			canvas.width = '800';
+			canvas.width = '1024';
+			canvas.height = '512';
 			ctx_sun = canvas.getContext("2d");
 			ctx_sun.fillStyle = "#ffff00";
-			ctx_sun.font = "Bold 60px Arial";
+			ctx_sun.font = "Bold 80px Arial";
 			ctx_sun.lineWidth = 4;
 			let texture = new THREE.Texture(canvas);
 			texture.needsUpdate = true;
 			var spriteMaterial = new THREE.SpriteMaterial({ map: texture, opacity: 0 });
 			sprite_sun = new THREE.Sprite(spriteMaterial);
 			sprite_sun.name = "spt_sun";
-			sprite_sun.scale.set(54, 36, 1);
+			sprite_sun.scale.set(72, 36, 1);
 			sprite_sun.position.set(50, 64, 0);
 			scene.add(sprite_sun);
 		})();
 		// 火星
 		(function () {
+			var loader = new THREE.TextureLoader();
 			var huo_geometry = new THREE.SphereGeometry(17, 100, 100);
 			var huo_material = new THREE.MeshLambertMaterial({
-				map: THREE.ImageUtils.loadTexture("../static/img/huo.jpg"),
+				map: loader.load("../static/img/huo.jpg"),
 				side: THREE.DoubleSide,
 			});
 			huo = new THREE.Mesh(huo_geometry, huo_material);
@@ -253,26 +255,27 @@
 			huo.name = 'huo';
 
 			let canvas = document.createElement("canvas");
-			canvas.height = '520';
-			canvas.width = '800';
+			canvas.width = '1024';
+			canvas.height = '512';
 			ctx_huo = canvas.getContext("2d");
 			ctx_huo.fillStyle = "#ffff00";
-			ctx_huo.font = "Bold 60px Arial";
+			ctx_huo.font = "Bold 80px Arial";
 			ctx_huo.lineWidth = 4;
 			let texture = new THREE.Texture(canvas);
 			texture.needsUpdate = true;
 			var spriteMaterial = new THREE.SpriteMaterial({ map: texture, opacity: 0 });
 			sprite_huo = new THREE.Sprite(spriteMaterial);
 			sprite_huo.name = "spt_huo";
-			sprite_huo.scale.set(54, 36, 1);
+			sprite_huo.scale.set(72, 36, 1);
 			sprite_huo.position.set(50, 0, 70);
 			scene.add(sprite_huo);
 		})();
 		// 木星
 		(function () {
+			var loader = new THREE.TextureLoader();
 			var mu_geometry = new THREE.SphereGeometry(17, 100, 100);
 			var mu_material = new THREE.MeshLambertMaterial({
-				map: THREE.ImageUtils.loadTexture("../static/img/mu.jpg"),
+				map: loader.load("../static/img/mu.jpg"),
 				side: THREE.DoubleSide,
 			});
 			mu = new THREE.Mesh(mu_geometry, mu_material);
@@ -289,26 +292,27 @@
 			mu.name = "mu";
 
 			let canvas = document.createElement("canvas");
-			canvas.height = '520';
-			canvas.width = '800';
+			canvas.width = '1024';
+			canvas.height = '512';
 			ctx_mu = canvas.getContext("2d");
 			ctx_mu.fillStyle = "#ffff00";
-			ctx_mu.font = "Bold 60px Arial";
+			ctx_mu.font = "Bold 80px Arial";
 			ctx_mu.lineWidth = 4;
 			let texture = new THREE.Texture(canvas);
 			texture.needsUpdate = true;
 			var spriteMaterial = new THREE.SpriteMaterial({ map: texture, opacity: 0 });
 			sprite_mu = new THREE.Sprite(spriteMaterial);
 			sprite_mu.name = 'spt_mu';
-			sprite_mu.scale.set(54, 36, 1);
+			sprite_mu.scale.set(72, 36, 1);
 			sprite_mu.position.set(50, 0, 100);
 			scene.add(sprite_mu);
 		})();
 		// 土星
 		(function () {
+			var loader = new THREE.TextureLoader();
 			var tu_geometry = new THREE.SphereGeometry(17, 100, 100);
 			var tu_material = new THREE.MeshLambertMaterial({
-				map: THREE.ImageUtils.loadTexture("../static/img/tu.jpg"),
+				map: loader.load("../static/img/tu.jpg"),
 				side: THREE.DoubleSide,
 			});
 			tu = new THREE.Mesh(tu_geometry, tu_material);
@@ -325,26 +329,27 @@
 			tu.name = "tu";
 
 			let canvas = document.createElement("canvas");
-			canvas.height = '720';
-			canvas.width = '1080';
+			canvas.width = '1024';
+			canvas.height = '512';
 			ctx_tu = canvas.getContext("2d");
 			ctx_tu.fillStyle = "#ffff00";
-			ctx_tu.font = "Bold 60px Arial";
+			ctx_tu.font = "Bold 80px Arial";
 			ctx_tu.lineWidth = 4;
 			let texture = new THREE.Texture(canvas);
 			texture.needsUpdate = true;
 			var spriteMaterial = new THREE.SpriteMaterial({ map: texture, opacity: 0 });
 			sprite_tu = new THREE.Sprite(spriteMaterial);
 			sprite_tu.name = "spt_tu";
-			sprite_tu.scale.set(54, 36, 1);
+			sprite_tu.scale.set(72, 36, 1);
 			sprite_tu.position.set(50, 0, 140);
 			scene.add(sprite_tu);
 		})();
 		// 天王星
 		(function () {
+			var loader = new THREE.TextureLoader();
 			var tian_geometry = new THREE.SphereGeometry(17, 100, 100);
 			var tian_material = new THREE.MeshLambertMaterial({
-				map: THREE.ImageUtils.loadTexture("../static/img/tian.jpg"),
+				map: loader.load("../static/img/tian.jpg"),
 				side: THREE.DoubleSide,
 			});
 			tian = new THREE.Mesh(tian_geometry, tian_material);
@@ -360,26 +365,27 @@
 			tian.name = "tian";
 
 			let canvas = document.createElement("canvas");
-			canvas.height = '720';
-			canvas.width = '1080';
+			canvas.width = '1024';
+			canvas.height = '512';
 			ctx_tian = canvas.getContext("2d");
 			ctx_tian.fillStyle = "#ffff00";
-			ctx_tian.font = "Bold 60px Arial";
+			ctx_tian.font = "Bold 80px Arial";
 			ctx_tian.lineWidth = 4;
 			let texture = new THREE.Texture(canvas);
 			texture.needsUpdate = true;
 			var spriteMaterial = new THREE.SpriteMaterial({ map: texture, opacity: 0 });
 			sprite_tian = new THREE.Sprite(spriteMaterial);
 			sprite_tian.name = "spt_tian";
-			sprite_tian.scale.set(54, 36, 1);
+			sprite_tian.scale.set(72, 36, 1);
 			sprite_tian.position.set(50, 0, 195);
 			scene.add(sprite_tian);
 		})();
 		// 海王星
 		(function () {
+			var loader = new THREE.TextureLoader();
 			var hai_geometry = new THREE.SphereGeometry(17, 100, 100);
 			var hai_material = new THREE.MeshLambertMaterial({
-				map: THREE.ImageUtils.loadTexture("../static/img/huo.jpg"),
+				map: loader.load("../static/img/huo.jpg"),
 				side: THREE.DoubleSide,
 			});
 			hai = new THREE.Mesh(hai_geometry, hai_material);
@@ -393,18 +399,18 @@
 			hai.name = "hai";
 
 			let canvas = document.createElement("canvas");
-			canvas.height = '720';
-			canvas.width = '1080';
+			canvas.width = '1024';
+			canvas.height = '512';
 			ctx_hai = canvas.getContext("2d");
 			ctx_hai.fillStyle = "#ffff00";
-			ctx_hai.font = "Bold 60px Arial";
+			ctx_hai.font = "Bold 80px Arial";
 			ctx_hai.lineWidth = 4;
 			let texture = new THREE.Texture(canvas);
 			texture.needsUpdate = true;
 			var spriteMaterial = new THREE.SpriteMaterial({ map: texture, opacity: 0 });
 			sprite_hai = new THREE.Sprite(spriteMaterial);
 			sprite_hai.name = "spt_hai";
-			sprite_hai.scale.set(54, 36, 1);
+			sprite_hai.scale.set(72, 36, 1);
 			sprite_hai.position.set(50, 0, 250);
 			scene.add(sprite_hai);
 		})();
@@ -772,7 +778,7 @@
 				if (currObj.name == "huo") {
 					var abnormal_lightcolor1 = localStorage.getItem('single_abnormal_rate');//获取模型1异常记录比例
 					var agent_name = localStorage.getItem('agent_id');//获取lstm个体模型user
-					ctx_huo.clearRect(0, 0, 800, 520);
+					ctx_huo.clearRect(0, 0, 1024, 512);
 					if(abnormal_lightcolor1){
 						ctx_huo.fillText(agent_name, 0, 100);
 						ctx_huo.fillText('LSTM异常率：' + parseFloat(abnormal_lightcolor1).toFixed(4).toString(), 0, 200)
@@ -784,7 +790,7 @@
 				}
 				if (currObj.name == "mu") {
 					var abnormal_lightcolor2 = localStorage.getItem('all_abnormal_rate');//获取模型2异常记录比例
-					ctx_mu.clearRect(0, 0, 800, 520);
+					ctx_mu.clearRect(0, 0, 1024, 512);
 					if(abnormal_lightcolor2){
 						ctx_mu.fillText('LSTM整体异常率:', 0, 100);
 						ctx_mu.fillText(parseFloat(abnormal_lightcolor2).toFixed(4).toString(), 0, 200);
@@ -800,14 +806,14 @@
 					var abnormal_lightcolor3_5VM42727 = localStorage.getItem('person_to_operation_5VM42727');
 					var abnormal_lightcolor3_5VM452F4 = localStorage.getItem('person_to_operation_5VM452F4');
 					var abnormal_lightcolor3_5VMTSDK5 = localStorage.getItem('person_to_operation_5VMTSDK5');
-					ctx_tu.clearRect(0, 0, 1080, 720);
+					ctx_tu.clearRect(0, 0, 1024, 512);
 					if(abnormal_lightcolor3_Z4YAZWRB){
-						ctx_tu.fillText('人与操作', 0, 100);
-						ctx_tu.fillText('Z4YAZWRB关联率：' + parseFloat(abnormal_lightcolor3_Z4YAZWRB).toFixed(5).toString(), 0, 200);
-						ctx_tu.fillText('537TT03OT关联率：' + parseFloat(abnormal_lightcolor3_537TT03OT).toFixed(5).toString(), 0, 300);
-						ctx_tu.fillText('5VM42727关联率：' + parseFloat(abnormal_lightcolor3_5VM42727).toFixed(5).toString(), 0, 400);
-						ctx_tu.fillText('5VM452F4关联率：' + parseFloat(abnormal_lightcolor3_5VM452F4).toFixed(5).toString(), 0, 500);
-						ctx_tu.fillText('5VMTSDK5关联率：' + parseFloat(abnormal_lightcolor3_5VMTSDK5).toFixed(5).toString(), 0, 600);
+						ctx_tu.fillText('人与操作(关联率)', 0, 100);
+						ctx_tu.fillText('Z4YAZWRB：' + parseFloat(abnormal_lightcolor3_Z4YAZWRB).toFixed(5).toString(), 0, 200);
+						ctx_tu.fillText('537TT03OT：' + parseFloat(abnormal_lightcolor3_537TT03OT).toFixed(5).toString(), 0, 300);
+						ctx_tu.fillText('5VM42727：' + parseFloat(abnormal_lightcolor3_5VM42727).toFixed(5).toString(), 0, 400);
+						ctx_tu.fillText('5VM452F4：' + parseFloat(abnormal_lightcolor3_5VM452F4).toFixed(5).toString(), 0, 500);
+						ctx_tu.fillText('5VMTSDK5：' + parseFloat(abnormal_lightcolor3_5VMTSDK5).toFixed(5).toString(), 0, 600);
 					}else{
 						ctx_tu.fillText('暂无数据！', 0, 100);
 					}
@@ -826,14 +832,14 @@
 					var abnormal_lightcolor4_5exe = localStorage.getItem('operation_to_operation5_exe');
 					var abnormal_lightcolor4_5ratio = localStorage.getItem('operation_to_operation5_ratio');
 					//console.log(abnormal_lightcolor4_1ratio,abnormal_lightcolor4_2ratio,abnormal_lightcolor4_3ratio,abnormal_lightcolor4_4ratio,abnormal_lightcolor4_5ratio);
-					ctx_tian.clearRect(0, 0, 1084, 720);
+					ctx_tian.clearRect(0, 0, 1024, 512);
 					if(abnormal_lightcolor4_1exe){
-						ctx_tian.fillText('操作与操作', 0, 100);
-						ctx_tian.fillText(abnormal_lightcolor4_1exe+'关联率：' + parseFloat(abnormal_lightcolor4_1ratio).toFixed(4).toString(), 0, 200);
-						ctx_tian.fillText(abnormal_lightcolor4_2exe+'关联率：' + parseFloat(abnormal_lightcolor4_2ratio).toFixed(4).toString(), 0, 300);
-						ctx_tian.fillText(abnormal_lightcolor4_3exe+'关联率：' + parseFloat(abnormal_lightcolor4_3ratio).toFixed(4).toString(), 0, 400);
-						ctx_tian.fillText(abnormal_lightcolor4_4exe+'关联率：' + parseFloat(abnormal_lightcolor4_4ratio).toFixed(4).toString(), 0, 500);
-						ctx_tian.fillText(abnormal_lightcolor4_5exe+'关联率：' + parseFloat(abnormal_lightcolor4_5ratio).toFixed(4).toString(), 0, 600);
+						ctx_tian.fillText('操作与操作（关联率）', 0, 100);
+						ctx_tian.fillText(abnormal_lightcolor4_1exe+'：' + parseFloat(abnormal_lightcolor4_1ratio).toFixed(4).toString(), 0, 200);
+						ctx_tian.fillText(abnormal_lightcolor4_2exe+'：' + parseFloat(abnormal_lightcolor4_2ratio).toFixed(4).toString(), 0, 300);
+						ctx_tian.fillText(abnormal_lightcolor4_3exe+'：' + parseFloat(abnormal_lightcolor4_3ratio).toFixed(4).toString(), 0, 400);
+						ctx_tian.fillText(abnormal_lightcolor4_4exe+'：' + parseFloat(abnormal_lightcolor4_4ratio).toFixed(4).toString(), 0, 500);
+						ctx_tian.fillText(abnormal_lightcolor4_5exe+'：' + parseFloat(abnormal_lightcolor4_5ratio).toFixed(4).toString(), 0, 600);
 					}else{
 						ctx_tian.fillText('暂无数据！', 0, 100);
 					}
@@ -853,14 +859,14 @@
 					var abnormal_lightcolor5_5day = localStorage.getItem('people_to_people5_day');
 
 					var pp = localStorage.getItem('pp_max_discrete');
-					ctx_hai.clearRect(0, 0, 1080, 720);
+					ctx_hai.clearRect(0, 0, 1024, 512);
 					if(abnormal_lightcolor5_1people){
-						ctx_hai.fillText('人与人', 0, 100);
-						ctx_hai.fillText(abnormal_lightcolor5_1people+'离散天数：' + parseFloat(abnormal_lightcolor5_1day).toFixed(1).toString(), 0, 200);
-						ctx_hai.fillText(abnormal_lightcolor5_2people+'离散天数：' + parseFloat(abnormal_lightcolor5_2day).toFixed(1).toString(), 0, 300);
-						ctx_hai.fillText(abnormal_lightcolor5_3people+'离散天数：' + parseFloat(abnormal_lightcolor5_3day).toFixed(1).toString(), 0, 400);
-						ctx_hai.fillText(abnormal_lightcolor5_4people+'离散天数：' + parseFloat(abnormal_lightcolor5_4day).toFixed(1).toString(), 0, 500);
-						ctx_hai.fillText(abnormal_lightcolor5_5people+'离散天数：' + parseFloat(abnormal_lightcolor5_5day).toFixed(1).toString(), 0, 600);
+						ctx_hai.fillText('人与人（离散天数）', 0, 100);
+						ctx_hai.fillText(abnormal_lightcolor5_1people+'：' + parseFloat(abnormal_lightcolor5_1day).toFixed(1).toString(), 0, 200);
+						ctx_hai.fillText(abnormal_lightcolor5_2people+'：' + parseFloat(abnormal_lightcolor5_2day).toFixed(1).toString(), 0, 300);
+						ctx_hai.fillText(abnormal_lightcolor5_3people+'：' + parseFloat(abnormal_lightcolor5_3day).toFixed(1).toString(), 0, 400);
+						ctx_hai.fillText(abnormal_lightcolor5_4people+'：' + parseFloat(abnormal_lightcolor5_4day).toFixed(1).toString(), 0, 500);
+						ctx_hai.fillText(abnormal_lightcolor5_5people+'：' + parseFloat(abnormal_lightcolor5_5day).toFixed(1).toString(), 0, 600);
 					}else{
 						ctx_hai.fillText('暂无数据！', 0, 100);
 					}

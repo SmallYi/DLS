@@ -9,7 +9,7 @@
 	var ctx_sun, ctx_huo, ctx_mu, ctx_tu, ctx_tian, ctx_hai;
 	var count = 0;
 
-	
+
 	(function () {
 		// 场景
 		scene = new THREE.Scene();
@@ -114,10 +114,11 @@
 		})();
 		// 太阳
 		(function () {
+			var loader = new THREE.TextureLoader();
 			var taiyang_geometry = new THREE.SphereGeometry(32, 100, 100);
 			var taiyang_material = new THREE.MeshLambertMaterial({
 				emissive: 0xe65f05,
-				map: THREE.ImageUtils.loadTexture("../static/img/taiyang2.jpg"),
+				map: loader.load("../static/img/taiyang2.jpg"),
 				side: THREE.DoubleSide,
 				color: 0xffffff
 			});
@@ -130,26 +131,27 @@
 			taiyang.name = "taiyang";
 
 			let canvas = document.createElement("canvas");
-			canvas.height = '520';
-			canvas.width = '800';
+			canvas.width = '1024';
+			canvas.height = '512';
 			ctx_sun = canvas.getContext("2d");
 			ctx_sun.fillStyle = "#ffff00";
-			ctx_sun.font = "Bold 60px Arial";
+			ctx_sun.font = "Bold 80px Arial";
 			ctx_sun.lineWidth = 4;
 			let texture = new THREE.Texture(canvas);
 			texture.needsUpdate = true;
 			var spriteMaterial = new THREE.SpriteMaterial({ map: texture, opacity: 0 });
 			sprite_sun = new THREE.Sprite(spriteMaterial);
 			sprite_sun.name = "spt_sun";
-			sprite_sun.scale.set(54, 36, 1);
+			sprite_sun.scale.set(72, 36, 1);
 			sprite_sun.position.set(50, 64, 0);
 			scene.add(sprite_sun);
 		})();
 		// 火星
 		(function () {
+			var loader = new THREE.TextureLoader();
 			var huo_geometry = new THREE.SphereGeometry(17, 100, 100);
 			var huo_material = new THREE.MeshLambertMaterial({
-				map: THREE.ImageUtils.loadTexture("../static/img/huo.jpg"),
+				map: loader.load("../static/img/huo.jpg"),
 				side: THREE.DoubleSide,
 			});
 			huo = new THREE.Mesh(huo_geometry, huo_material);
@@ -163,26 +165,27 @@
 			huo.name = 'huo';
 
 			let canvas = document.createElement("canvas");
-			canvas.height = '520';
-			canvas.width = '800';
+			canvas.width = '1024';
+			canvas.height = '512';
 			ctx_huo = canvas.getContext("2d");
 			ctx_huo.fillStyle = "#ffff00";
-			ctx_huo.font = "Bold 60px Arial";
+			ctx_huo.font = "Bold 80px Arial";
 			ctx_huo.lineWidth = 4;
 			let texture = new THREE.Texture(canvas);
 			texture.needsUpdate = true;
 			var spriteMaterial = new THREE.SpriteMaterial({ map: texture, opacity: 0 });
 			sprite_huo = new THREE.Sprite(spriteMaterial);
 			sprite_huo.name = "spt_huo";
-			sprite_huo.scale.set(54, 36, 1);
+			sprite_huo.scale.set(72, 36, 1);
 			sprite_huo.position.set(50, 0, 70);
 			scene.add(sprite_huo);
 		})();
 		// 木星
 		(function () {
+			var loader = new THREE.TextureLoader();
 			var mu_geometry = new THREE.SphereGeometry(17, 100, 100);
 			var mu_material = new THREE.MeshLambertMaterial({
-				map: THREE.ImageUtils.loadTexture("../static/img/mu.jpg"),
+				map: loader.load("../static/img/mu.jpg"),
 				side: THREE.DoubleSide,
 			});
 			mu = new THREE.Mesh(mu_geometry, mu_material);
@@ -199,26 +202,27 @@
 			mu.name = "mu";
 
 			let canvas = document.createElement("canvas");
-			canvas.height = '720';
-			canvas.width = '1080';
+			canvas.width = '1024';
+			canvas.height = '512';
 			ctx_mu = canvas.getContext("2d");
 			ctx_mu.fillStyle = "#ffff00";
-			ctx_mu.font = "Bold 60px Arial";
+			ctx_mu.font = "Bold 80px Arial";
 			ctx_mu.lineWidth = 4;
 			let texture = new THREE.Texture(canvas);
 			texture.needsUpdate = true;
 			var spriteMaterial = new THREE.SpriteMaterial({ map: texture, opacity: 0 });
 			sprite_mu = new THREE.Sprite(spriteMaterial);
 			sprite_mu.name = 'spt_mu';
-			sprite_mu.scale.set(54, 36, 1);
+			sprite_mu.scale.set(72, 36, 1);
 			sprite_mu.position.set(50, 0, 100);
 			scene.add(sprite_mu);
 		})();
 		// 土星
 		(function () {
+			var loader = new THREE.TextureLoader();
 			var tu_geometry = new THREE.SphereGeometry(17, 100, 100);
 			var tu_material = new THREE.MeshLambertMaterial({
-				map: THREE.ImageUtils.loadTexture("../static/img/tu.jpg"),
+				map: loader.load("../static/img/tu.jpg"),
 				side: THREE.DoubleSide,
 			});
 			tu = new THREE.Mesh(tu_geometry, tu_material);
@@ -235,26 +239,27 @@
 			tu.name = "tu";
 
 			let canvas = document.createElement("canvas");
-			canvas.height = '720';
-			canvas.width = '1080';
+			canvas.width = '1024';
+			canvas.height = '512';
 			ctx_tu = canvas.getContext("2d");
 			ctx_tu.fillStyle = "#ffff00";
-			ctx_tu.font = "Bold 60px Arial";
+			ctx_tu.font = "Bold 80px Arial";
 			ctx_tu.lineWidth = 4;
 			let texture = new THREE.Texture(canvas);
 			texture.needsUpdate = true;
 			var spriteMaterial = new THREE.SpriteMaterial({ map: texture, opacity: 0 });
 			sprite_tu = new THREE.Sprite(spriteMaterial);
 			sprite_tu.name = "spt_tu";
-			sprite_tu.scale.set(54, 36, 1);
+			sprite_tu.scale.set(72, 36, 1);
 			sprite_tu.position.set(50, 0, 140);
 			scene.add(sprite_tu);
 		})();
 		// 天王星
 		(function () {
+			var loader = new THREE.TextureLoader();
 			var tian_geometry = new THREE.SphereGeometry(17, 100, 100);
 			var tian_material = new THREE.MeshLambertMaterial({
-				map: THREE.ImageUtils.loadTexture("../static/img/tian.jpg"),
+				map: loader.load("../static/img/tian.jpg"),
 				side: THREE.DoubleSide,
 			});
 			tian = new THREE.Mesh(tian_geometry, tian_material);
@@ -270,26 +275,27 @@
 			tian.name = "tian";
 
 			let canvas = document.createElement("canvas");
-			canvas.height = '720';
-			canvas.width = '1080';
+			canvas.width = '1024';
+			canvas.height = '512';
 			ctx_tian = canvas.getContext("2d");
 			ctx_tian.fillStyle = "#ffff00";
-			ctx_tian.font = "Bold 60px Arial";
+			ctx_tian.font = "Bold 80px Arial";
 			ctx_tian.lineWidth = 4;
 			let texture = new THREE.Texture(canvas);
 			texture.needsUpdate = true;
 			var spriteMaterial = new THREE.SpriteMaterial({ map: texture, opacity: 0 });
 			sprite_tian = new THREE.Sprite(spriteMaterial);
 			sprite_tian.name = "spt_tian";
-			sprite_tian.scale.set(54, 36, 1);
+			sprite_tian.scale.set(72, 36, 1);
 			sprite_tian.position.set(50, 0, 195);
 			scene.add(sprite_tian);
 		})();
 		// 海王星
 		(function () {
+			var loader = new THREE.TextureLoader();
 			var hai_geometry = new THREE.SphereGeometry(17, 100, 100);
 			var hai_material = new THREE.MeshLambertMaterial({
-				map: THREE.ImageUtils.loadTexture("../static/img/huo.jpg"),
+				map: loader.load("../static/img/huo.jpg"),
 				side: THREE.DoubleSide,
 			});
 			hai = new THREE.Mesh(hai_geometry, hai_material);
@@ -303,18 +309,18 @@
 			hai.name = "hai";
 
 			let canvas = document.createElement("canvas");
-			canvas.height = '720';
-			canvas.width = '1080';
+			canvas.width = '1024';
+			canvas.height = '512';
 			ctx_hai = canvas.getContext("2d");
 			ctx_hai.fillStyle = "#ffff00";
-			ctx_hai.font = "Bold 60px Arial";
+			ctx_hai.font = "Bold 80px Arial";
 			ctx_hai.lineWidth = 4;
 			let texture = new THREE.Texture(canvas);
 			texture.needsUpdate = true;
 			var spriteMaterial = new THREE.SpriteMaterial({ map: texture, opacity: 0 });
 			sprite_hai = new THREE.Sprite(spriteMaterial);
 			sprite_hai.name = "spt_hai";
-			sprite_hai.scale.set(54, 36, 1);
+			sprite_hai.scale.set(72, 36, 1);
 			sprite_hai.position.set(50, 0, 250);
 			scene.add(sprite_hai);
 		})();
@@ -322,7 +328,7 @@
 	/* 初始化 */
 	(function () {
 		var PI2 = 2 * Math.PI; // 弧度的最大值
-		
+
 		// 自转，沿着y轴自转
 		function zizhuan() {
 			taiyang.rotation.y = taiyang.rotation.y + 0.01 >= 2 * PI2 ? 0 : taiyang.rotation.y + 0.01; // 太阳自转			
@@ -576,7 +582,7 @@
 		var raycaster = new THREE.Raycaster();
 		var old_timestamp = new Date().getTime();
 		var new_timestamp = new Date().getTime();
-		
+
 		function onClick(event) {
 			event.preventDefault();
 			//将屏幕像素坐标转化成camare坐标
@@ -608,161 +614,181 @@
 				old_timestamp = new_timestamp;
 				if (intersects.length > 0) {
 					var currObj = intersects[0].object;
-					if (currObj.name == "huo") {
-						window.location.href = ('analyse_lstm_g/?chart=-1&model=WDWCASZ0627345');
+					var datasource = localStorage.getItem('datasource');
+					if (datasource == "test") {
+						if (currObj.name == "huo") {
+							window.location.href = ('/analyse_lstm_g/?chart=-1&model=Z4YAZWRB');
+						}
+						if (currObj.name == "mu") {
+							window.location.href = ('/analyse_lstm_g/?chart=-1&model=537TT03OT');
+						}
+						if (currObj.name == "tu") {
+							window.location.href = ('/analyse_lstm_g/?chart=-1&model=5VM42727');
+						}
+						if (currObj.name == "tian") {
+							window.location.href = ('/analyse_lstm_g/?chart=-1&model=5VM452F4');
+						}
+						if (currObj.name == "hai") {
+							window.location.href = ('/analyse_lstm_g/?chart=-1&model=5VMTSDK5');
+						}
+					}else{
+						if (currObj.name == "huo") {
+							window.location.href = ('/analyse_lstm_g/?chart=-1&model=normal');
+						}
+						if (currObj.name == "mu") {
+							window.location.href = ('/analyse_lstm_g/?chart=-1&model=ipsweep');
+						}
+						if (currObj.name == "tu") {
+							window.location.href = ('/analyse_lstm_g/?chart=-1&model=smurf');
+						}
+						if (currObj.name == "tian") {
+							window.location.href = ('/analyse_lstm_g/?chart=-1&model=neptune');
+						}
+						if (currObj.name == "hai") {
+							window.location.href = ('/analyse_lstm_g/?chart=-1&model=nmap');
+						}
 					}
-					if (currObj.name == "mu") {
-						window.location.href = ('analyse_lstm_g/?chart=-1&model=S2A58BGQ');
-					}
-					if (currObj.name == "tu") {
-						window.location.href = ('analyse_lstm_g/?chart=-1&model=5VM45975');
-					}
-					if (currObj.name == "tian") {
-						window.location.href = ('analyse_lstm_g/?chart=-1&model=Z1D3XB0A');
-					}
-					if (currObj.name == "hai") {
-						window.location.href = ('analyse_lstm_g/?chart=-1&model=Z4YAZWRB');
-					}
+
 				}
 			} else {
 				old_timestamp = new_timestamp;
 				if (intersects.length > 0) {
 					var currObj = intersects[0].object;
 					var datasource = localStorage.getItem('datasource');
-					if(datasource=="test")  {
-					if (currObj.name == "huo") {
-						var _Z4YAZWRB_parameter = localStorage.getItem('_Z4YAZWRB_parameter');//获取Z4YAZWRB_parameter
-						console.log(_Z4YAZWRB_parameter);
-						ctx_huo.clearRect(0, 0, 800, 520);
-						if (_Z4YAZWRB_parameter) {
-							ctx_huo.fillText('Z4YAZWRB', 0, 100);
-							ctx_huo.fillText('异常率：' + parseFloat(_Z4YAZWRB_parameter).toFixed(4).toString(), 0, 200)
-						} else {
-							ctx_huo.fillText('暂无数据！', 0, 100);
+					if (datasource == "test") {
+						if (currObj.name == "huo") {
+							var _Z4YAZWRB_parameter = localStorage.getItem('_Z4YAZWRB_parameter');//获取Z4YAZWRB_parameter
+							console.log(_Z4YAZWRB_parameter);
+							ctx_huo.clearRect(0, 0, 1024, 512);
+							if (_Z4YAZWRB_parameter) {
+								ctx_huo.fillText('Z4YAZWRB', 0, 100);
+								ctx_huo.fillText('异常率：' + parseFloat(_Z4YAZWRB_parameter).toFixed(4).toString(), 0, 200)
+							} else {
+								ctx_huo.fillText('暂无数据！', 0, 100);
+							}
+							sprite_huo.material.map.needsUpdate = true;
+							showInfo(sprite_huo);
 						}
-						sprite_huo.material.map.needsUpdate = true;
-						showInfo(sprite_huo);
+						if (currObj.name == "mu") {
+							var _537TT03OT_parameter = localStorage.getItem('_537TT03OT_parameter');//获取_537TT03OT_parameter
+							console.log(_537TT03OT_parameter);
+							ctx_mu.clearRect(0, 0, 1024, 512);
+							if (_537TT03OT_parameter) {
+								ctx_mu.fillText('537TT03OT', 0, 100);
+								ctx_mu.fillText('异常率：' + parseFloat(_537TT03OT_parameter).toFixed(4).toString(), 0, 200)
+							} else {
+								ctx_mu.fillText('暂无数据！', 0, 100);
+							}
+							sprite_mu.material.map.needsUpdate = true;
+							showInfo(sprite_mu);
+						}
+						if (currObj.name == "tu") {
+							var Z4YAZWRB_parameter = localStorage.getItem('Z4YAZWRB_parameter');//获取模型3异常记录比例
+							console.log(Z4YAZWRB_parameter);
+							ctx_tu.clearRect(0, 0, 1024, 512);
+							if (Z4YAZWRB_parameter) {
+								ctx_tu.fillText('5VM42727', 0, 100);
+								ctx_tu.fillText('异常率：' + parseFloat(Z4YAZWRB_parameter).toFixed(4).toString(), 0, 200)
+							} else {
+								ctx_tu.fillText('暂无数据！', 0, 100);
+							}
+							sprite_tu.material.map.needsUpdate = true;
+							showInfo(sprite_tu);
+						}
+						if (currObj.name == "tian") {
+							var _5VM452F4_parameter = localStorage.getItem('_5VM452F4_parameter');
+							console.log(_5VM452F4_parameter);
+							ctx_tian.clearRect(0, 0, 1024, 512);
+							if (_5VM452F4_parameter) {
+								ctx_tian.fillText('5VM452F4', 0, 100);
+								ctx_tian.fillText('异常率：' + parseFloat(_5VM452F4_parameter).toFixed(4).toString(), 0, 200)
+							} else {
+								ctx_tian.fillText('暂无数据！', 0, 100);
+							}
+							sprite_tian.material.map.needsUpdate = true;
+							showInfo(sprite_tian);
+						}
+						if (currObj.name == "hai") {
+							var _5VMTSDK5_parameter = localStorage.getItem('_5VMTSDK5_parameter');
+							console.log(_5VMTSDK5_parameter);
+							ctx_hai.clearRect(0, 0, 1024, 512);
+							if (_5VMTSDK5_parameter) {
+								ctx_hai.fillText('5VMTSDK5', 0, 100);
+								ctx_hai.fillText('异常率：' + parseFloat(_5VMTSDK5_parameter).toFixed(4).toString(), 0, 200)
+							} else {
+								ctx_hai.fillText('暂无数据！', 0, 100);
+							}
+							sprite_hai.material.map.needsUpdate = true;
+							showInfo(sprite_hai);
+						}
 					}
-					if (currObj.name == "mu") {
-						var _537TT03OT_parameter = localStorage.getItem('_537TT03OT_parameter');//获取_537TT03OT_parameter
-						console.log(_537TT03OT_parameter);
-						ctx_mu.clearRect(0, 0, 800, 520);
-						if (_537TT03OT_parameter) {
-							ctx_mu.fillText('537TT03OT', 0, 100);
-							ctx_huo.fillText('异常率：' + parseFloat(_537TT03OT_parameter).toFixed(4).toString(), 0, 200)
-						} else {
-							ctx_mu.fillText('暂无数据！', 0, 100);
+					else {
+						if (currObj.name == "huo") {
+							var normal_parameter = localStorage.getItem('normal_parameter');//获取Z4YAZWRB_parameter
+							console.log(normal_parameter);
+							ctx_huo.clearRect(0, 0, 1024, 512);
+							if (normal_parameter) {
+								ctx_huo.fillText('normal', 0, 100);
+								ctx_huo.fillText('比率：' + parseFloat(normal_parameter).toFixed(4).toString(), 0, 200)
+							} else {
+								ctx_huo.fillText('暂无数据！', 0, 100);
+							}
+							sprite_huo.material.map.needsUpdate = true;
+							showInfo(sprite_huo);
 						}
-						sprite_mu.material.map.needsUpdate = true;
-						showInfo(sprite_mu);
+						if (currObj.name == "mu") {
+							var ipsweep_parameter = localStorage.getItem('ipsweep_parameter');//获取_537TT03OT_parameter
+							console.log('mu: ' + parseFloat(ipsweep_parameter).toFixed(4).toString());
+							ctx_mu.clearRect(0, 0, 1024, 512);
+							if (ipsweep_parameter) {
+								ctx_mu.fillText('ipsweep', 0, 100);
+								ctx_mu.fillText('比率：' + parseFloat(ipsweep_parameter).toFixed(4).toString(), 0, 200)
+							} else {
+								ctx_mu.fillText('暂无数据！', 0, 100);
+							}
+							sprite_mu.material.map.needsUpdate = true;
+							showInfo(sprite_mu);
+						}
+						if (currObj.name == "tu") {
+							var smurf_parameter = localStorage.getItem('smurf_parameter');//获取模型3异常记录比例
+							console.log(smurf_parameter);
+							ctx_tu.clearRect(0, 0, 1024, 512);
+							if (smurf_parameter) {
+								ctx_tu.fillText('smurf', 0, 100);
+								ctx_tu.fillText('异常率：' + parseFloat(smurf_parameter).toFixed(4).toString(), 0, 200)
+							} else {
+								ctx_tu.fillText('暂无数据！', 0, 100);
+							}
+							sprite_tu.material.map.needsUpdate = true;
+							showInfo(sprite_tu);
+						}
+						if (currObj.name == "tian") {
+							var neptune_parameter = localStorage.getItem('neptune_parameter');
+							console.log(neptune_parameter);
+							ctx_tian.clearRect(0, 0, 1024, 512);
+							if (neptune_parameter) {
+								ctx_tian.fillText('neptune', 0, 100);
+								ctx_tian.fillText('比率：' + parseFloat(neptune_parameter).toFixed(4).toString(), 0, 200)
+							} else {
+								ctx_tian.fillText('暂无数据！', 0, 100);
+							}
+							sprite_tian.material.map.needsUpdate = true;
+							showInfo(sprite_tian);
+						}
+						if (currObj.name == "hai") {
+							var nmap_parameter = localStorage.getItem('nmap_parameter');
+							console.log(nmap_parameter);
+							ctx_hai.clearRect(0, 0, 1024, 512);
+							if (nmap_parameter) {
+								ctx_hai.fillText('nmap', 0, 100);
+								ctx_hai.fillText('比率：' + parseFloat(nmap_parameter).toFixed(4).toString(), 0, 200)
+							} else {
+								ctx_hai.fillText('暂无数据！', 0, 100);
+							}
+							sprite_hai.material.map.needsUpdate = true;
+							showInfo(sprite_hai);
+						}
 					}
-					if (currObj.name == "tu") {
-						var Z4YAZWRB_parameter = localStorage.getItem('Z4YAZWRB_parameter');//获取模型3异常记录比例
-						console.log(Z4YAZWRB_parameter);
-						ctx_tu.clearRect(0, 0, 1080, 720);
-						if (Z4YAZWRB_parameter) {
-							ctx_tu.fillText('5VM42727', 0, 100);
-							ctx_huo.fillText('异常率：' + parseFloat(Z4YAZWRB_parameter).toFixed(4).toString(), 0, 200)
-						} else {
-							ctx_tu.fillText('暂无数据！', 0, 100);
-						}
-						sprite_tu.material.map.needsUpdate = true;
-						showInfo(sprite_tu);
-					}
-					if (currObj.name == "tian") {
-						var _5VM452F4_parameter = localStorage.getItem('_5VM452F4_parameter');
-						console.log(_5VM452F4_parameter);
-						ctx_tian.clearRect(0, 0, 1084, 720);
-						if (_5VM452F4_parameter) {
-							 ctx_tian.fillText('5VM452F4', 0, 100);
-							 ctx_huo.fillText('异常率：' + parseFloat(_5VM452F4_parameter).toFixed(4).toString(), 0, 200)
-						} else {
-							ctx_tian.fillText('暂无数据！', 0, 100);
-						}
-						sprite_tian.material.map.needsUpdate = true;
-						showInfo(sprite_tian);
-					}
-					if (currObj.name == "hai") {
-						var _5VMTSDK5_parameter = localStorage.getItem('_5VMTSDK5_parameter');
-						console.log(_5VMTSDK5_parameter);
-						ctx_hai.clearRect(0, 0, 1080, 720);
-						if (_5VMTSDK5_parameter) {
-							ctx_hai.fillText('5VMTSDK5', 0, 100);
-							ctx_huo.fillText('异常率：' + parseFloat(_5VMTSDK5_parameter).toFixed(4).toString(), 0, 200)
-						} else {
-							ctx_hai.fillText('暂无数据！', 0, 100);
-						}
-						sprite_hai.material.map.needsUpdate = true;
-						showInfo(sprite_hai);
-					}
-				}
-				else  {	
-					if (currObj.name == "huo") {
-						var normal_parameter = localStorage.getItem('normal_parameter');//获取Z4YAZWRB_parameter
-						console.log(normal_parameter);
-						ctx_huo.clearRect(0, 0, 800, 520);
-						if (normal_parameter) {
-							ctx_huo.fillText('normal', 0, 100);
-							ctx_huo.fillText('比率：' + parseFloat(normal_parameter).toFixed(4).toString(), 0, 200)
-						} else {
-							ctx_huo.fillText('暂无数据！', 0, 100);
-						}
-						sprite_huo.material.map.needsUpdate = true;
-						showInfo(sprite_huo);
-					}
-					if (currObj.name == "mu") {
-						var ipsweep_parameter = localStorage.getItem('ipsweep_parameter');//获取_537TT03OT_parameter
-						console.log(ipsweep_parameter);
-						ctx_mu.clearRect(0, 0, 800, 520);
-						if (ipsweep_parameter) {
-							ctx_mu.fillText('ipsweep', 0, 100);
-							ctx_huo.fillText('比率：' + parseFloat(ipsweep_parameter).toFixed(4).toString(), 0, 200)
-						} else {
-							ctx_mu.fillText('暂无数据！', 0, 100);
-						}
-						sprite_mu.material.map.needsUpdate = true;
-						showInfo(sprite_mu);
-					}
-					if (currObj.name == "tu") {
-						var smurf_parameter = localStorage.getItem('smurf_parameter');//获取模型3异常记录比例
-						console.log(smurf_parameter);
-						ctx_tu.clearRect(0, 0, 1080, 720);
-						if (smurf_parameter) {
-							ctx_tu.fillText('smurf', 0, 100);
-							ctx_huo.fillText('异常率：' + parseFloat(smurf_parameter).toFixed(4).toString(), 0, 200)
-						} else {
-							ctx_tu.fillText('暂无数据！', 0, 100);
-						}
-						sprite_tu.material.map.needsUpdate = true;
-						showInfo(sprite_tu);
-					}
-					if (currObj.name == "tian") {
-						var neptune_parameter = localStorage.getItem('neptune_parameter');
-						console.log(neptune_parameter);
-						ctx_tian.clearRect(0, 0, 1084, 720);
-						if (neptune_parameter) {
-							 ctx_tian.fillText('neptune', 0, 100);
-							 ctx_huo.fillText('比率：' + parseFloat(neptune_parameter).toFixed(4).toString(), 0, 200)
-						} else {
-							ctx_tian.fillText('暂无数据！', 0, 100);
-						}
-						sprite_tian.material.map.needsUpdate = true;
-						showInfo(sprite_tian);
-					}
-					if (currObj.name == "hai") {
-						var nmap_parameter = localStorage.getItem('nmap_parameter');
-						console.log(nmap_parameter);
-						ctx_hai.clearRect(0, 0, 1080, 720);
-						if (nmap_parameter) {
-							ctx_hai.fillText('nmap', 0, 100);
-							ctx_huo.fillText('比率：' + parseFloat(nmap_parameter).toFixed(4).toString(), 0, 200)
-						} else {
-							ctx_hai.fillText('暂无数据！', 0, 100);
-						}
-						sprite_hai.material.map.needsUpdate = true;
-						showInfo(sprite_hai);
-					}			
-				}
 				}
 			}
 			renderer.render(scene, camera);
