@@ -77,7 +77,7 @@
             minInterval:0.01,
             splitLine: { show: false },//去除网格线
             scale: true,
-            name: '用户名',
+            name: '分类',
             nameTextStyle: {
                 color: '#fff',
                 fontSize: 12

@@ -9,6 +9,7 @@
 	var ctx_sun, ctx_huo, ctx_mu, ctx_tu, ctx_tian, ctx_hai;
 	var count = 0;
 
+	
 	(function () {
 		// 场景
 		scene = new THREE.Scene();
@@ -198,8 +199,8 @@
 			mu.name = "mu";
 
 			let canvas = document.createElement("canvas");
-			canvas.height = '520';
-			canvas.width = '800';
+			canvas.height = '720';
+			canvas.width = '1080';
 			ctx_mu = canvas.getContext("2d");
 			ctx_mu.fillStyle = "#ffff00";
 			ctx_mu.font = "Bold 60px Arial";
@@ -575,6 +576,7 @@
 		var raycaster = new THREE.Raycaster();
 		var old_timestamp = new Date().getTime();
 		var new_timestamp = new Date().getTime();
+		
 		function onClick(event) {
 			event.preventDefault();
 			//将屏幕像素坐标转化成camare坐标
@@ -626,19 +628,15 @@
 				old_timestamp = new_timestamp;
 				if (intersects.length > 0) {
 					var currObj = intersects[0].object;
-					// if (currObj.name == "taiyang") {
-					// 	ctx_sun.clearRect(0, 0, 500, 320);
-					// 	ctx_sun.fillText('暂无数据！', 0, 100);
-					// 	sprite_sun.material.map.needsUpdate = true;
-					// 	showInfo(sprite_sun);
-					// }
+					var datasource = localStorage.getItem('datasource');
+					if(datasource=="test")  {
 					if (currObj.name == "huo") {
-						var abnormal_lightcolor1 = localStorage.getItem('single_abnormal_rate');//获取模型1异常记录比例
-						var agent_name = localStorage.getItem('agent_id');//获取lstm个体模型user
+						var _Z4YAZWRB_parameter = localStorage.getItem('_Z4YAZWRB_parameter');//获取Z4YAZWRB_parameter
+						console.log(_Z4YAZWRB_parameter);
 						ctx_huo.clearRect(0, 0, 800, 520);
-						if (abnormal_lightcolor1) {
-							ctx_huo.fillText(agent_name, 0, 100);
-							ctx_huo.fillText('LSTM异常率：' + parseFloat(abnormal_lightcolor1).toFixed(4).toString(), 0, 200)
+						if (_Z4YAZWRB_parameter) {
+							ctx_huo.fillText('Z4YAZWRB', 0, 100);
+							ctx_huo.fillText('异常率：' + parseFloat(_Z4YAZWRB_parameter).toFixed(4).toString(), 0, 200)
 						} else {
 							ctx_huo.fillText('暂无数据！', 0, 100);
 						}
@@ -646,11 +644,12 @@
 						showInfo(sprite_huo);
 					}
 					if (currObj.name == "mu") {
-						var abnormal_lightcolor2 = localStorage.getItem('all_abnormal_rate');//获取模型2异常记录比例
+						var _537TT03OT_parameter = localStorage.getItem('_537TT03OT_parameter');//获取_537TT03OT_parameter
+						console.log(_537TT03OT_parameter);
 						ctx_mu.clearRect(0, 0, 800, 520);
-						if (abnormal_lightcolor2) {
-							ctx_mu.fillText('LSTM整体异常率:', 0, 100);
-							ctx_mu.fillText(parseFloat(abnormal_lightcolor2).toFixed(4).toString(), 0, 200);
+						if (_537TT03OT_parameter) {
+							ctx_mu.fillText('537TT03OT', 0, 100);
+							ctx_huo.fillText('异常率：' + parseFloat(_537TT03OT_parameter).toFixed(4).toString(), 0, 200)
 						} else {
 							ctx_mu.fillText('暂无数据！', 0, 100);
 						}
@@ -658,19 +657,12 @@
 						showInfo(sprite_mu);
 					}
 					if (currObj.name == "tu") {
-						var abnormal_lightcolor3_Z4YAZWRB = localStorage.getItem('person_to_operation_Z4YAZWRB');//获取模型3异常记录比例
-						var abnormal_lightcolor3_537TT03OT = localStorage.getItem('person_to_operation_537TT03OT');
-						var abnormal_lightcolor3_5VM42727 = localStorage.getItem('person_to_operation_5VM42727');
-						var abnormal_lightcolor3_5VM452F4 = localStorage.getItem('person_to_operation_5VM452F4');
-						var abnormal_lightcolor3_5VMTSDK5 = localStorage.getItem('person_to_operation_5VMTSDK5');
+						var Z4YAZWRB_parameter = localStorage.getItem('Z4YAZWRB_parameter');//获取模型3异常记录比例
+						console.log(Z4YAZWRB_parameter);
 						ctx_tu.clearRect(0, 0, 1080, 720);
-						if (abnormal_lightcolor3_Z4YAZWRB) {
-							ctx_tu.fillText('人与操作', 0, 100);
-							ctx_tu.fillText('Z4YAZWRB关联率：' + parseFloat(abnormal_lightcolor3_Z4YAZWRB).toFixed(5).toString(), 0, 200);
-							ctx_tu.fillText('537TT03OT关联率：' + parseFloat(abnormal_lightcolor3_537TT03OT).toFixed(5).toString(), 0, 300);
-							ctx_tu.fillText('5VM42727关联率：' + parseFloat(abnormal_lightcolor3_5VM42727).toFixed(5).toString(), 0, 400);
-							ctx_tu.fillText('5VM452F4关联率：' + parseFloat(abnormal_lightcolor3_5VM452F4).toFixed(5).toString(), 0, 500);
-							ctx_tu.fillText('5VMTSDK5关联率：' + parseFloat(abnormal_lightcolor3_5VMTSDK5).toFixed(5).toString(), 0, 600);
+						if (Z4YAZWRB_parameter) {
+							ctx_tu.fillText('5VM42727', 0, 100);
+							ctx_huo.fillText('异常率：' + parseFloat(Z4YAZWRB_parameter).toFixed(4).toString(), 0, 200)
 						} else {
 							ctx_tu.fillText('暂无数据！', 0, 100);
 						}
@@ -678,25 +670,12 @@
 						showInfo(sprite_tu);
 					}
 					if (currObj.name == "tian") {
-						var abnormal_lightcolor4_1exe = localStorage.getItem('operation_to_operation1_exe');
-						var abnormal_lightcolor4_1ratio = localStorage.getItem('operation_to_operation1_ratio');
-						var abnormal_lightcolor4_2exe = localStorage.getItem('operation_to_operation2_exe');
-						var abnormal_lightcolor4_2ratio = localStorage.getItem('operation_to_operation2_ratio');
-						var abnormal_lightcolor4_3exe = localStorage.getItem('operation_to_operation3_exe');
-						var abnormal_lightcolor4_3ratio = localStorage.getItem('operation_to_operation3_ratio');
-						var abnormal_lightcolor4_4exe = localStorage.getItem('operation_to_operation4_exe');
-						var abnormal_lightcolor4_4ratio = localStorage.getItem('operation_to_operation4_ratio');
-						var abnormal_lightcolor4_5exe = localStorage.getItem('operation_to_operation5_exe');
-						var abnormal_lightcolor4_5ratio = localStorage.getItem('operation_to_operation5_ratio');
-						//console.log(abnormal_lightcolor4_1ratio,abnormal_lightcolor4_2ratio,abnormal_lightcolor4_3ratio,abnormal_lightcolor4_4ratio,abnormal_lightcolor4_5ratio);
+						var _5VM452F4_parameter = localStorage.getItem('_5VM452F4_parameter');
+						console.log(_5VM452F4_parameter);
 						ctx_tian.clearRect(0, 0, 1084, 720);
-						if (abnormal_lightcolor4_1exe) {
-							ctx_tian.fillText('操作与操作', 0, 100);
-							ctx_tian.fillText(abnormal_lightcolor4_1exe + '关联率：' + parseFloat(abnormal_lightcolor4_1ratio).toFixed(4).toString(), 0, 200);
-							ctx_tian.fillText(abnormal_lightcolor4_2exe + '关联率：' + parseFloat(abnormal_lightcolor4_2ratio).toFixed(4).toString(), 0, 300);
-							ctx_tian.fillText(abnormal_lightcolor4_3exe + '关联率：' + parseFloat(abnormal_lightcolor4_3ratio).toFixed(4).toString(), 0, 400);
-							ctx_tian.fillText(abnormal_lightcolor4_4exe + '关联率：' + parseFloat(abnormal_lightcolor4_4ratio).toFixed(4).toString(), 0, 500);
-							ctx_tian.fillText(abnormal_lightcolor4_5exe + '关联率：' + parseFloat(abnormal_lightcolor4_5ratio).toFixed(4).toString(), 0, 600);
+						if (_5VM452F4_parameter) {
+							 ctx_tian.fillText('5VM452F4', 0, 100);
+							 ctx_huo.fillText('异常率：' + parseFloat(_5VM452F4_parameter).toFixed(4).toString(), 0, 200)
 						} else {
 							ctx_tian.fillText('暂无数据！', 0, 100);
 						}
@@ -704,32 +683,86 @@
 						showInfo(sprite_tian);
 					}
 					if (currObj.name == "hai") {
-						var abnormal_lightcolor5_1people = localStorage.getItem('people_to_people1_people');
-						var abnormal_lightcolor5_1day = localStorage.getItem('people_to_people1_day');
-						var abnormal_lightcolor5_2people = localStorage.getItem('people_to_people2_people');
-						var abnormal_lightcolor5_2day = localStorage.getItem('people_to_people2_day');
-						var abnormal_lightcolor5_3people = localStorage.getItem('people_to_people3_people');
-						var abnormal_lightcolor5_3day = localStorage.getItem('people_to_people3_day');
-						var abnormal_lightcolor5_4people = localStorage.getItem('people_to_people4_people');
-						var abnormal_lightcolor5_4day = localStorage.getItem('people_to_people4_day');
-						var abnormal_lightcolor5_5people = localStorage.getItem('people_to_people5_people');
-						var abnormal_lightcolor5_5day = localStorage.getItem('people_to_people5_day');
-
-						var pp = localStorage.getItem('pp_max_discrete');
+						var _5VMTSDK5_parameter = localStorage.getItem('_5VMTSDK5_parameter');
+						console.log(_5VMTSDK5_parameter);
 						ctx_hai.clearRect(0, 0, 1080, 720);
-						if (abnormal_lightcolor5_1people) {
-							ctx_hai.fillText('人与人', 0, 100);
-							ctx_hai.fillText(abnormal_lightcolor5_1people + '离散天数：' + parseFloat(abnormal_lightcolor5_1day).toFixed(1).toString(), 0, 200);
-							ctx_hai.fillText(abnormal_lightcolor5_2people + '离散天数：' + parseFloat(abnormal_lightcolor5_2day).toFixed(1).toString(), 0, 300);
-							ctx_hai.fillText(abnormal_lightcolor5_3people + '离散天数：' + parseFloat(abnormal_lightcolor5_3day).toFixed(1).toString(), 0, 400);
-							ctx_hai.fillText(abnormal_lightcolor5_4people + '离散天数：' + parseFloat(abnormal_lightcolor5_4day).toFixed(1).toString(), 0, 500);
-							ctx_hai.fillText(abnormal_lightcolor5_5people + '离散天数：' + parseFloat(abnormal_lightcolor5_5day).toFixed(1).toString(), 0, 600);
+						if (_5VMTSDK5_parameter) {
+							ctx_hai.fillText('5VMTSDK5', 0, 100);
+							ctx_huo.fillText('异常率：' + parseFloat(_5VMTSDK5_parameter).toFixed(4).toString(), 0, 200)
 						} else {
 							ctx_hai.fillText('暂无数据！', 0, 100);
 						}
 						sprite_hai.material.map.needsUpdate = true;
 						showInfo(sprite_hai);
 					}
+				}
+				else  {	
+					if (currObj.name == "huo") {
+						var normal_parameter = localStorage.getItem('normal_parameter');//获取Z4YAZWRB_parameter
+						console.log(normal_parameter);
+						ctx_huo.clearRect(0, 0, 800, 520);
+						if (normal_parameter) {
+							ctx_huo.fillText('normal', 0, 100);
+							ctx_huo.fillText('比率：' + parseFloat(normal_parameter).toFixed(4).toString(), 0, 200)
+						} else {
+							ctx_huo.fillText('暂无数据！', 0, 100);
+						}
+						sprite_huo.material.map.needsUpdate = true;
+						showInfo(sprite_huo);
+					}
+					if (currObj.name == "mu") {
+						var ipsweep_parameter = localStorage.getItem('ipsweep_parameter');//获取_537TT03OT_parameter
+						console.log(ipsweep_parameter);
+						ctx_mu.clearRect(0, 0, 800, 520);
+						if (ipsweep_parameter) {
+							ctx_mu.fillText('ipsweep', 0, 100);
+							ctx_huo.fillText('比率：' + parseFloat(ipsweep_parameter).toFixed(4).toString(), 0, 200)
+						} else {
+							ctx_mu.fillText('暂无数据！', 0, 100);
+						}
+						sprite_mu.material.map.needsUpdate = true;
+						showInfo(sprite_mu);
+					}
+					if (currObj.name == "tu") {
+						var smurf_parameter = localStorage.getItem('smurf_parameter');//获取模型3异常记录比例
+						console.log(smurf_parameter);
+						ctx_tu.clearRect(0, 0, 1080, 720);
+						if (smurf_parameter) {
+							ctx_tu.fillText('smurf', 0, 100);
+							ctx_huo.fillText('异常率：' + parseFloat(smurf_parameter).toFixed(4).toString(), 0, 200)
+						} else {
+							ctx_tu.fillText('暂无数据！', 0, 100);
+						}
+						sprite_tu.material.map.needsUpdate = true;
+						showInfo(sprite_tu);
+					}
+					if (currObj.name == "tian") {
+						var neptune_parameter = localStorage.getItem('neptune_parameter');
+						console.log(neptune_parameter);
+						ctx_tian.clearRect(0, 0, 1084, 720);
+						if (neptune_parameter) {
+							 ctx_tian.fillText('neptune', 0, 100);
+							 ctx_huo.fillText('比率：' + parseFloat(neptune_parameter).toFixed(4).toString(), 0, 200)
+						} else {
+							ctx_tian.fillText('暂无数据！', 0, 100);
+						}
+						sprite_tian.material.map.needsUpdate = true;
+						showInfo(sprite_tian);
+					}
+					if (currObj.name == "hai") {
+						var nmap_parameter = localStorage.getItem('nmap_parameter');
+						console.log(nmap_parameter);
+						ctx_hai.clearRect(0, 0, 1080, 720);
+						if (nmap_parameter) {
+							ctx_hai.fillText('nmap', 0, 100);
+							ctx_huo.fillText('比率：' + parseFloat(nmap_parameter).toFixed(4).toString(), 0, 200)
+						} else {
+							ctx_hai.fillText('暂无数据！', 0, 100);
+						}
+						sprite_hai.material.map.needsUpdate = true;
+						showInfo(sprite_hai);
+					}			
+				}
 				}
 			}
 			renderer.render(scene, camera);
