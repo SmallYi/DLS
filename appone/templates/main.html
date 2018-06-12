@@ -92,7 +92,9 @@
 		var host = "ws://222.20.72.244:3368/ws";
 		socket = new WebSocket(host);
 		obj = {
-			'algorithm' : 'start'
+			'algorithm' : 'start',
+			'type': 'NOGUARD',
+			'mode': ''
 		}
 		try {
 			socket.onopen = function (msg) {	
