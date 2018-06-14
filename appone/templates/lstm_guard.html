@@ -34,8 +34,8 @@
         });
     }
     var model = $("title").text();
-    model = model.slice(2, -1);
-    
+   // model = model.slice(2, -1);
+    localStorage.setItem('datasource_name', model);
 </script>
 
 <body onload="load_guard();">
