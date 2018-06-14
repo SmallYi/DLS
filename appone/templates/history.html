@@ -11,8 +11,9 @@
 			</label>
 			<div class="col-sm-8">
 				<select class="form-control" id="model_type" onchange="type_select();">
-					<option value="MODEL_PARAMETER">异常检测</option>
+					<option value="MODEL_PARAMETER">无监督</option>
 					<option value="FPGROWTH_PARAMETER">关联分析</option>
+					<option value="GUARD_PARAMETER">有监督</option>
 				</select>
 			</div>
 		</div>
@@ -127,6 +128,11 @@
 			$('#baseline').append('<option value="PP">人与人</option>');
 			$('#baseline').append('<option value="OO">操作与操作</option>');
 			$('#baseline').append('<option value="PO">人与操作</option>');
+		}
+		if ($('#model_type').val() == 'GUARD_PARAMETER') {
+			$('#baseline').empty();
+			$('#baseline').append('<option value="single">单条数据</option>');
+			$('#baseline').append('<option value="hour">小时数据</option>');
 		}
 	};
 
