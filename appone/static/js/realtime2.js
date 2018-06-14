@@ -1,15 +1,15 @@
 
 //(function () {
-    var newdata, num, act_time, detail, description;
-    var normal1 = 1, normal2 = 9;//记录正常数据的阈值
+    var newdata, num, datasource, detail, description;
+   // var normal1 = 0, normal2 = 2;//记录正常数据的阈值
     //开始画图
     var olddata = 0;
     var oldnumber = 0;
     var data = [];
-    var thresold_high = localStorage.getItem('max_thresold');//动态获取上下阈值
-    var thresold_low = localStorage.getItem('min_thresold');
-    normal1 = parseFloat(thresold_low);
-    normal2 = parseFloat(thresold_high);
+    // var thresold_high = localStorage.getItem('max_thresold');//动态获取上下阈值
+    // var thresold_low = localStorage.getItem('min_thresold');
+    // normal1 = parseFloat(thresold_low);
+    // normal2 = parseFloat(thresold_high);
     var myChart = echarts.init(document.getElementById('realtime_lstm_guard'));
     option = {
         title: {
@@ -97,27 +97,27 @@
                 }
             },
         },
-        visualMap: {
-            top: 10,
-            right: 10,
-            show: false,
-            pieces: [{//异常
-                gt: -10,
-                lte: normal1,
-                color: '#ff3300'
-            }, {//正常
-                gt: normal1,
-                lte: normal2,
-                color: '#00cc00'
-            }, {//异常
-                gt: normal2,
-                lte: 10,
-                color: '#ff3300'
-            }],
-            outOfRange: {
-                color: '#999'
-            },
-        },
+        // visualMap: {
+        //     top: 10,
+        //     right: 10,
+        //     show: false,
+        //     pieces: [{//异常
+        //         gt: -10,
+        //         lte: normal1,
+        //         color: '#ff3300'
+        //     }, {//正常
+        //         gt: normal1,
+        //         lte: normal2,
+        //         color: '#ff3300'
+        //     }, {//异常
+        //         gt: normal2,
+        //         lte: 10,
+        //         color: '#ff3300'
+        //     }],
+        //     outOfRange: {
+        //         color: '#999'
+        //     },
+        // },
 
         series: [{
             name: 'lstm',
@@ -127,7 +127,9 @@
                     var res = [];
                     var len = 0;
                     while (len < 1) {
-                        newdata = localStorage.getItem('lstm');
+                        datasource = localStorage.getItem('datasource');
+                        if(datasource=="test") newdata = localStorage.getItem('current_user');
+                        if(datasource=="KDDcup") newdata = localStorage.getItem('current_attack');
                         res.push(newdata);
                         len++;
                     }
@@ -138,10 +140,12 @@
 
     setInterval(function () {
         //新来的实时数据保存在newdata中
-        newdata = localStorage.getItem('lstmvalue');
-        num = localStorage.getItem('number');
-        act_time = localStorage.getItem('acttime');
-        detail = localStorage.getItem('details');
+        datasource = localStorage.getItem('datasource');
+        if(datasource=="test") newdata = localStorage.getItem('current_user');
+        if(datasource=="KDDcup") newdata = localStorage.getItem('current_attack');
+        num = localStorage.getItem('number_guard');
+       // act_time = localStorage.getItem('acttime');
+        detail = localStorage.getItem('item');
         description = localStorage.getItem('descriptions');
 
         if (num != oldnumber) {

@@ -145,7 +145,7 @@ def recordnumber(request):
                     ('DL_TMSAPP_C0A80006_' + history_time[y], agent[x])))
     return JsonResponse(ret_list, safe=False)
 
-def guard(request):
+def guard_test(request):
     # history_time = []
     # now = datetime.now()
     # history_time.append(now)
@@ -167,6 +167,37 @@ def guard(request):
         for y in range(10):
             record = db.select("SELECT COUNT(*) FROM %s WHERE agent_id='%s'" % ('DL_TMSAPP_C0A80006_' + history_time[y], agent[x]))
             total = db.select("SELECT COUNT(*) FROM %s"% ('DL_TMSAPP_C0A80006_' + history_time[y]))
+            a=record[0][0]
+            b=total[0][0]
+            if(b==0):
+                c=0
+            else:
+                c=a/b
+            ret_list.append(c)
+    return JsonResponse(ret_list, safe=False)
+
+def guard_kdd(request):
+    # history_time = []
+    # now = datetime.now()
+    # history_time.append(now)
+    # for x in range(1,11):
+    #     history_time.append((now - timedelta(days = x)).strftime('%Y-%m-%d'))
+
+    db = oracle()
+    history_time = [
+        '2018-06-04', '2018-06-05', '2018-06-06', '2018-06-07', '2018-06-08', '2018-06-09',
+        '2018-06-10', '2018-06-11', '2018-06-12', '2018-06-13', '2018-06-14'
+    ]
+    agent = [
+        'normal.', 'nmap.', 'smurf.', 'neptune.', 'ping of death.', 'syn flood.',
+        'guessing password.', 'buffer overflow.', 'port scan.', 'ping sweep.', 'land.',
+        'back.'
+    ]
+    ret_list = []
+    for x in range(12):
+        for y in range(10):
+            record = db.select("SELECT COUNT(*) FROM nn_kddcup_s_g WHERE output='%s' AND insert_time BETWEEN to_DATE('%s', 'YYYY-MM-DD') AND to_DATE('%s', 'YYYY-MM-DD')" % (agent[x], history_time[y], history_time[y+1]))
+            total = db.select("SELECT COUNT(*) FROM nn_kddcup_s_g WHERE insert_time BETWEEN to_DATE('%s', 'YYYY-MM-DD') AND to_DATE('%s', 'YYYY-MM-DD')" % (history_time[y], history_time[y+1]))
             a=record[0][0]
             b=total[0][0]
             if(b==0):

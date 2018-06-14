@@ -366,17 +366,24 @@
 			var hai_position_z = hai.position.z;
 
 			count++;
+			var op = localStorage.getItem('output');
+			var model;
+			if(op=="Z4YAZWRB"||op=="normal.")  model=1;
+			if(op=="537TT03OT"||op=="smurf.")  model=2;
+			if(op=="5VM42727"||op=="ipsweep.")  model=3;
+			if(op=="5VM452F4"||op=="neptune.")  model=4;
+			if(op=="5VMTSDK5"||op=="nmap.")  model=5;
 			//console.log(count);
-			if (count % 500 == 0)
-				var model = model_number[0];//模型编号，用于追光效果
-			else if (count % 500 == 100)
-				var model = model_number[1];//模型编号，用于追光效果
-			else if (count % 500 == 200)
-				var model = model_number[2];//模型编号，用于追光效果
-			else if (count % 500 == 300)
-				var model = model_number[3];//模型编号，用于追光效果
-			else if (count % 500 == 400)
-				var model = model_number[4];//模型编号，用于追光效果
+			// if (count % 500 == 0)
+			// 	var model = model_number[0];//模型编号，用于追光效果
+			// else if (count % 500 == 100)
+			// 	var model = model_number[1];//模型编号，用于追光效果
+			// else if (count % 500 == 200)
+			// 	var model = model_number[2];//模型编号，用于追光效果
+			// else if (count % 500 == 300)
+			// 	var model = model_number[3];//模型编号，用于追光效果
+			// else if (count % 500 == 400)
+			// 	var model = model_number[4];//模型编号，用于追光效果
 
 			// 火星
 			huo_deg = huo_deg + 0.01 >= PI2 ? 0 : huo_deg + 0.01;
@@ -402,7 +409,7 @@
 				scene.add(line_r1);
 				setTimeout(function () {
 					scene.remove(line_r1);
-				}, 200);
+				}, 10);
 			}
 			// 木星
 			mu_deg = mu_deg + 0.002 >= PI2 ? 0 : mu_deg + 0.002;
@@ -427,7 +434,7 @@
 				scene.add(line_r1);
 				setTimeout(function () {
 					scene.remove(line_r1);
-				}, 200);
+				}, 10);
 			}
 			// 土星 人与操作
 			tu_deg = tu_deg + 0.0009 >= PI2 ? 0 : tu_deg + 0.0009;
@@ -452,7 +459,7 @@
 				scene.add(line_r1);
 				setTimeout(function () {
 					scene.remove(line_r1);
-				}, 200);
+				}, 10);
 			}
 
 			// 天王星 操作与操作
@@ -478,7 +485,7 @@
 				scene.add(line_r1);
 				setTimeout(function () {
 					scene.remove(line_r1);
-				}, 200);
+				}, 10);
 			}
 			// 海王星 人与人
 			hai_deg = hai_deg + 0.0003 >= PI2 ? 0 : hai_deg + 0.0003;
@@ -503,7 +510,7 @@
 				scene.add(line_r1);
 				setTimeout(function () {
 					scene.remove(line_r1);
-				}, 200);
+				}, 10);
 			}
 			//背景闪烁
 			for (var i = 0; i < particles.length; i++) {
@@ -655,7 +662,74 @@
 				if (intersects.length > 0) {
 					var currObj = intersects[0].object;
 					var datasource = localStorage.getItem('datasource');
-					if (datasource == "test") {
+					if (datasource == "KDDcup") {
+						if (currObj.name == "huo") {
+							var normal_parameter = localStorage.getItem('normal_parameter');//获取Z4YAZWRB_parameter
+							console.log(normal_parameter);
+							ctx_huo.clearRect(0, 0, 1024, 512);
+							if (normal_parameter) {
+								ctx_huo.fillText('normal', 0, 100);
+								ctx_huo.fillText('time：' + normal_parameter, 0, 200)
+							} else {
+								ctx_huo.fillText('暂无数据！', 0, 100);
+							}
+							sprite_huo.material.map.needsUpdate = true;
+							showInfo(sprite_huo);
+						}
+						if (currObj.name == "mu") {
+							var ipsweep_parameter = localStorage.getItem('ipsweep_parameter');//获取_537TT03OT_parameter
+							console.log('mu: ' + parseFloat(ipsweep_parameter).toFixed(4).toString());
+							ctx_mu.clearRect(0, 0, 1024, 512);
+							if (ipsweep_parameter) {
+								ctx_mu.fillText('ipsweep', 0, 100);
+								ctx_mu.fillText('time：' +  ipsweep_parameter, 0, 200)
+							} else {
+								ctx_mu.fillText('暂无数据！', 0, 100);
+							}
+							sprite_mu.material.map.needsUpdate = true;
+							showInfo(sprite_mu);
+						}
+						if (currObj.name == "tu") {
+							var smurf_parameter = localStorage.getItem('smurf_parameter');//获取模型3异常记录比例
+							console.log(smurf_parameter);
+							ctx_tu.clearRect(0, 0, 1024, 512);
+							if (smurf_parameter) {
+								ctx_tu.fillText('smurf', 0, 100);
+								ctx_tu.fillText('time：' + smurf_parameter, 0, 200)
+							} else {
+								ctx_tu.fillText('暂无数据！', 0, 100);
+							}
+							sprite_tu.material.map.needsUpdate = true;
+							showInfo(sprite_tu);
+						}
+						if (currObj.name == "tian") {
+							var neptune_parameter = localStorage.getItem('neptune_parameter');
+							console.log(neptune_parameter);
+							ctx_tian.clearRect(0, 0, 1024, 512);
+							if (neptune_parameter) {
+								ctx_tian.fillText('neptune', 0, 100);
+								ctx_tian.fillText('time：' + neptune_parameter, 0, 200)
+							} else {
+								ctx_tian.fillText('暂无数据！', 0, 100);
+							}
+							sprite_tian.material.map.needsUpdate = true;
+							showInfo(sprite_tian);
+						}
+						if (currObj.name == "hai") {
+							var nmap_parameter = localStorage.getItem('nmap_parameter');
+							console.log(nmap_parameter);
+							ctx_hai.clearRect(0, 0, 1024, 512);
+							if (nmap_parameter) {
+								ctx_hai.fillText('nmap', 0, 100);
+								ctx_hai.fillText('time：' + nmap_parameter, 0, 200)
+							} else {
+								ctx_hai.fillText('暂无数据！', 0, 100);
+							}
+							sprite_hai.material.map.needsUpdate = true;
+							showInfo(sprite_hai);
+						}
+					}
+					else {
 						if (currObj.name == "huo") {
 							var _Z4YAZWRB_parameter = localStorage.getItem('_Z4YAZWRB_parameter');//获取Z4YAZWRB_parameter
 							console.log(_Z4YAZWRB_parameter);
@@ -715,73 +789,6 @@
 							if (_5VMTSDK5_parameter) {
 								ctx_hai.fillText('5VMTSDK5', 0, 100);
 								ctx_hai.fillText('异常率：' + parseFloat(_5VMTSDK5_parameter).toFixed(4).toString(), 0, 200)
-							} else {
-								ctx_hai.fillText('暂无数据！', 0, 100);
-							}
-							sprite_hai.material.map.needsUpdate = true;
-							showInfo(sprite_hai);
-						}
-					}
-					else {
-						if (currObj.name == "huo") {
-							var normal_parameter = localStorage.getItem('normal_parameter');//获取Z4YAZWRB_parameter
-							console.log(normal_parameter);
-							ctx_huo.clearRect(0, 0, 1024, 512);
-							if (normal_parameter) {
-								ctx_huo.fillText('normal', 0, 100);
-								ctx_huo.fillText('比率：' + parseFloat(normal_parameter).toFixed(4).toString(), 0, 200)
-							} else {
-								ctx_huo.fillText('暂无数据！', 0, 100);
-							}
-							sprite_huo.material.map.needsUpdate = true;
-							showInfo(sprite_huo);
-						}
-						if (currObj.name == "mu") {
-							var ipsweep_parameter = localStorage.getItem('ipsweep_parameter');//获取_537TT03OT_parameter
-							console.log('mu: ' + parseFloat(ipsweep_parameter).toFixed(4).toString());
-							ctx_mu.clearRect(0, 0, 1024, 512);
-							if (ipsweep_parameter) {
-								ctx_mu.fillText('ipsweep', 0, 100);
-								ctx_mu.fillText('比率：' + parseFloat(ipsweep_parameter).toFixed(4).toString(), 0, 200)
-							} else {
-								ctx_mu.fillText('暂无数据！', 0, 100);
-							}
-							sprite_mu.material.map.needsUpdate = true;
-							showInfo(sprite_mu);
-						}
-						if (currObj.name == "tu") {
-							var smurf_parameter = localStorage.getItem('smurf_parameter');//获取模型3异常记录比例
-							console.log(smurf_parameter);
-							ctx_tu.clearRect(0, 0, 1024, 512);
-							if (smurf_parameter) {
-								ctx_tu.fillText('smurf', 0, 100);
-								ctx_tu.fillText('异常率：' + parseFloat(smurf_parameter).toFixed(4).toString(), 0, 200)
-							} else {
-								ctx_tu.fillText('暂无数据！', 0, 100);
-							}
-							sprite_tu.material.map.needsUpdate = true;
-							showInfo(sprite_tu);
-						}
-						if (currObj.name == "tian") {
-							var neptune_parameter = localStorage.getItem('neptune_parameter');
-							console.log(neptune_parameter);
-							ctx_tian.clearRect(0, 0, 1024, 512);
-							if (neptune_parameter) {
-								ctx_tian.fillText('neptune', 0, 100);
-								ctx_tian.fillText('比率：' + parseFloat(neptune_parameter).toFixed(4).toString(), 0, 200)
-							} else {
-								ctx_tian.fillText('暂无数据！', 0, 100);
-							}
-							sprite_tian.material.map.needsUpdate = true;
-							showInfo(sprite_tian);
-						}
-						if (currObj.name == "hai") {
-							var nmap_parameter = localStorage.getItem('nmap_parameter');
-							console.log(nmap_parameter);
-							ctx_hai.clearRect(0, 0, 1024, 512);
-							if (nmap_parameter) {
-								ctx_hai.fillText('nmap', 0, 100);
-								ctx_hai.fillText('比率：' + parseFloat(nmap_parameter).toFixed(4).toString(), 0, 200)
 							} else {
 								ctx_hai.fillText('暂无数据！', 0, 100);
 							}

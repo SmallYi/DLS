@@ -89,12 +89,12 @@
 	
 		
 	function connect() {
-		var host = "ws://222.20.72.244:3368/ws";
+		var host = "ws://192.168.1.44:3368/ws";
 		socket = new WebSocket(host);
 		obj = {
 			'algorithm' : 'start',
 			'type': 'NOGUARD',
-			'mode': ''
+			'model_name': ''
 		}
 		try {
 			socket.onopen = function (msg) {	
@@ -128,11 +128,12 @@
 	function displayContent(msg) {
 		a.push(msg);
 		b = a.pop();
+		console.log(b);
 		var obj = JSON.parse(b);
 		var data = obj.data;
 		var type = obj.type;
 		var description = obj.description;
-		if(type=="realtime_noguard") {
+		if(type=="noguard_realtime") {
 			i++;
 			var act = obj.data.act_time;
 			var flag = obj.data.abnormal;
