@@ -285,12 +285,11 @@ def add_GUARD(request):
     data_format = request.POST.get("foramt", None)
     name = request.POST.get("name", None)
     unit = request.POST.get("unit", None)
-    training_fields = request.POST.get("training_fields", None)
     label_fields = request.POST.get("label_field", None)
     date_fields = request.POST.get("date_field", None)
     model_name = request.POST.get("model3", None)
 
-    if data_format == '' or name == '' or unit == '' or training_fields == '' or label_fields == '' or date_fields == '' or model_name == '':
+    if data_format == '' or name == '' or unit == '' or label_fields == '' or date_fields == '' or model_name == '':
         return render(request, 'addfail.html', {'reason': '参数缺失'})
 
     table_name = 'NN_' + name + '_' + model_name + '_A_G'
@@ -307,10 +306,8 @@ def add_GUARD(request):
                 CREATE TABLE %s 
                 (	
                     DATA VARCHAR2(1024 BYTE) PRIMARY KEY, 
-                    PREDICTION NUMBER(10,5), 
-                    ABNORMAL NUMBER(1,0), 
-                    INSERT_TIME DATE, 
-                    ACT_TIME DATE
+                    OUTPUT VARCHAR2(64 BYTE), 
+                    INSERT_TIME DATE
                 )
                 ''' % table_name)
 
@@ -322,9 +319,9 @@ def add_GUARD(request):
                     FORMAT, 
                     NAME, 
                     UNIT,
-                    TRAINING_FIELDS,
                     LABEL_FIELD,
-                    DATE_FIELD
+                    DATE_FIELD,
+                    RESULT_TABLE
                 ) VALUES
                 (
                     '%s',
@@ -337,7 +334,7 @@ def add_GUARD(request):
                     '%s'
                 )
                 ''' % (table_name, model_name, data_format, name, unit, 
-                        training_fields, label_fields, date_fields))
+                        label_fields, date_fields, table_name))
 
     return render(request, 'addok.html')
 
@@ -460,7 +457,7 @@ def lstm_guard(request):
 def main_guard(request):
     model = request.GET.get('model', None)
     if model == None:
-        return render(request, 'main_guard.html', {'model': 'test'})
+        return render(request, 'main_guard.html', {'model': 'default'})
     else:
         return render(request, 'main_guard.html', {'model': model})
 
@@ -485,6 +482,8 @@ def load_model(request):
         unit = 'BASELINE_UNIT'
     elif model_type == 'FPGROWTH_PARAMETER':
         unit = 'MODEL_TYPE'
+    elif model_type == 'GUARD_PARAMETER':
+        unit = 'UNIT'
     else:
         return JsonResponse({})
 
@@ -561,6 +560,9 @@ def search(request):
     elif model_type == 'FPGROWTH_PARAMETER':
         mdname = 'FPMODELNAME'
         tbname = 'OUTPUTTABLE'
+    elif model_type == 'GUARD_PARAMETER':
+        mdname = 'MODEL_NAME'
+        tbname = 'RESULT_TABLE'
     else:
         return JsonResponse({})
 
@@ -689,17 +691,17 @@ def analyse_lstm(request):
 def analyse_lstm_g(request):
     ret_dict = {}
     model = request.GET.get('model', None)
+    output = request.GET.get('output', None)
     chart = request.GET.get('chart', None)
-    if model == None or chart == None:
+    if model == None or output == None or chart == None:
         return JsonResponse({})
 
     if chart == '-1':
-        return render(request, 'analyse_lstm_g.html', {'model': model})
+        return render(request, 'analyse_lstm_g.html', {'model': model, 'output': output})
 
-    ab = request.GET.get('ab', None)
     page = request.GET.get('page', None)
     size = request.GET.get('size', None)
-    if ab == None or page == None or size == None:
+    if page == None or size == None:
         return JsonResponse({})
 
     try:
@@ -708,14 +710,9 @@ def analyse_lstm_g(request):
     except:
         return JsonResponse({})
     
-    if ab == 'all':
-        ab_select = ''
-    elif ab == '0' or ab == '1':
-        ab_select = 'WHERE ABNORMAL = %s' % ab
-    else: 
-        return JsonResponse({})
-    model = 'NN_' + model + '_A_G'
+    model = 'NN_' + model + '_S_G'
     model = model.upper()
+    print(model)
 
     db = oracle()
     try:
@@ -726,15 +723,15 @@ def analyse_lstm_g(request):
                                     SELECT * FROM
                                     (
                                         SELECT A.*, ROWNUM RN
-                                        FROM (SELECT * FROM %s %s) A
+                                        FROM (SELECT * FROM %s WHERE OUTPUT = '%s') A
                                         WHERE ROWNUM <= %d
                                     )   WHERE RN >= %d
                                     ''' %
-                                    (model, ab_select, page * size,
+                                    (model, output, page * size,
                                         page * size - size + 1))
         ret_sql = db.select('''
-                                    SELECT COUNT(*) FROM %s %s
-                                    ''' % (model, ab_select))
+                                    SELECT COUNT(*) FROM %s WHERE OUTPUT = '%s'
+                                    ''' % (model, output))
         ret_dict['total'] = ret_sql[0][0]
     except cx_Oracle.DatabaseError as e:
         print(e)

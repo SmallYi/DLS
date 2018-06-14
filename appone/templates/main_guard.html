@@ -27,11 +27,20 @@
 		model = $("title").text();
 		// model = model.slice(2, -1);
 		localStorage.setItem('datasource', model);//保存数据源
-		obj = {
-			'algorithm': 'start',
-			'type': 'guard',
-			'model_name': model
+		if (model == 'default') {
+			obj = {
+				'algorithm': 'start',
+				'type': 'guard',
+				'model_name': ''
+			}
+		} else {
+			obj = {
+				'algorithm': 'change',
+				'type': 'guard',
+				'model_name': model
+			}
 		}
+
 		try {
 			socket.onopen = function (msg) {
 				socket.send(JSON.stringify(obj));
@@ -154,14 +163,14 @@
 		}
 	}
 
-	function load_guard(){
+	function load_guard() {
 		$.getJSON("/load_guard/", function (ret) {
-			if (ret.guard.length == 0) 
+			if (ret.guard.length == 0)
 				return;
 			$('#guard_list').empty();
 			var ul_str = '';
 			for (var i = 0; i < ret.guard.length; i++) {
-				ul_str += ('<li> <a href="/main_guard/?model=' + ret.guard[i] + '">' + ret.guard[i] +'</a></li>');
+				ul_str += ('<li> <a href="/main_guard/?model=' + ret.guard[i] + '">' + ret.guard[i] + '</a></li>');
 			};
 			$('#guard_list').append(ul_str);
 		});
@@ -196,7 +205,7 @@
 	</div>
 
 	<div style="position: absolute; top: 0px; left: 10px; z-index: 1">
-			
+
 		<p>
 			<a href="{% url 'main' %}" style="z-index:0;font-size:1vw;">无监督实时</a>
 		</p>
@@ -219,14 +228,14 @@
 			<a href="{% url 'history' %}" style="z-index:0;font-size:1vw;">历史数据</a>
 		</p>
 		<div class="btn-group">
-				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					选择模型
-					<span class="caret"></span>
-				</button>
-				<ul id="guard_list" class="dropdown-menu">
-	
-				</ul>
-			</div>
+			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				选择模型
+				<span class="caret"></span>
+			</button>
+			<ul id="guard_list" class="dropdown-menu">
+
+			</ul>
+		</div>
 	</div>
 
 	<div style="position: absolute; display: table; right:10px; top: 10px; font-size: 20px; z-index: 1;">

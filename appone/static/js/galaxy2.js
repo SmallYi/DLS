@@ -624,35 +624,35 @@
 					var datasource = localStorage.getItem('datasource');
 					if (datasource == "test") {
 						if (currObj.name == "huo") {
-							window.location.href = ('/analyse_lstm_g/?chart=-1&model=Z4YAZWRB');
+							window.location.href = ('/analyse_lstm_g/?chart=-1&model=test&output=Z4YAZWRB');
 						}
 						if (currObj.name == "mu") {
-							window.location.href = ('/analyse_lstm_g/?chart=-1&model=537TT03OT');
+							window.location.href = ('/analyse_lstm_g/?chart=-1&model=test&output=537TT03OT');
 						}
 						if (currObj.name == "tu") {
-							window.location.href = ('/analyse_lstm_g/?chart=-1&model=5VM42727');
+							window.location.href = ('/analyse_lstm_g/?chart=-1&model=test&output=5VM42727');
 						}
 						if (currObj.name == "tian") {
-							window.location.href = ('/analyse_lstm_g/?chart=-1&model=5VM452F4');
+							window.location.href = ('/analyse_lstm_g/?chart=-1&model=test&output=5VM452F4');
 						}
 						if (currObj.name == "hai") {
-							window.location.href = ('/analyse_lstm_g/?chart=-1&model=5VMTSDK5');
+							window.location.href = ('/analyse_lstm_g/?chart=-1&model=test&output=5VMTSDK5');
 						}
 					}else{
 						if (currObj.name == "huo") {
-							window.location.href = ('/analyse_lstm_g/?chart=-1&model=normal');
+							window.location.href = ('/analyse_lstm_g/?chart=-1&model=KDDcup&output=normal.');
 						}
 						if (currObj.name == "mu") {
-							window.location.href = ('/analyse_lstm_g/?chart=-1&model=ipsweep');
+							window.location.href = ('/analyse_lstm_g/?chart=-1&model=KDDcup&output=ipsweep');
 						}
 						if (currObj.name == "tu") {
-							window.location.href = ('/analyse_lstm_g/?chart=-1&model=smurf');
+							window.location.href = ('/analyse_lstm_g/?chart=-1&model=KDDcup&output=smurf');
 						}
 						if (currObj.name == "tian") {
-							window.location.href = ('/analyse_lstm_g/?chart=-1&model=neptune');
+							window.location.href = ('/analyse_lstm_g/?chart=-1&model=KDDcup&output=neptune');
 						}
 						if (currObj.name == "hai") {
-							window.location.href = ('/analyse_lstm_g/?chart=-1&model=nmap');
+							window.location.href = ('/analyse_lstm_g/?chart=-1&model=KDDcup&output=nmap');
 						}
 					}
 
