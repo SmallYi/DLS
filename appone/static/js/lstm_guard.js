@@ -27,9 +27,9 @@ light2.position.set(0, 10000, 300000);
 light2.density = 5000000;
 scene.add(light2);
 var uniforms =
-    {
-        time: { type: "f", value: 0.0 }// uniforms通过这个属性可以向你的着色器发信息。同样的信息会发送到每一个顶点和片元
-    };
+{
+    time: { type: "f", value: 0.0 }// uniforms通过这个属性可以向你的着色器发信息。同样的信息会发送到每一个顶点和片元
+};
 
 
 //自己定制着色器ShaderMaterial
@@ -205,11 +205,10 @@ loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) 
         scene.add(mesh);
     }
 
-    if(datasource=="test")  {
+    if (datasource == "default") {
         $(document).ready(function () {
             $.getJSON('/guard_test', function (ret) {
                 for (var j = 0; j < 10; j++) {
-                   // console.log(ret[j]);
                     var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
                     if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
                     else if (ret[j] > 0.8) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
@@ -223,10 +222,9 @@ loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) 
                     star.position.y = ret[j] * 20000 + 10000;
                     star.position.z = 500000;
                 }
-        
-        
+
+
                 for (var j = 10; j < 20; j++) {
-                    //console.log(ret[j]);
                     var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
                     if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
                     else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
@@ -240,7 +238,7 @@ loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) 
                     star.position.y = ret[j] * 20000 + 10000;
                     star.position.z = 450000;
                 }
-        
+
                 for (var j = 20; j < 30; j++) {
                     var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
                     if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
@@ -255,7 +253,7 @@ loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) 
                     star.position.y = ret[j] * 20000 + 10000;
                     star.position.z = 400000;
                 }
-        
+
                 for (var j = 30; j < 40; j++) {
                     var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
                     if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
@@ -270,7 +268,7 @@ loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) 
                     star.position.y = ret[j] * 20000 + 10000;
                     star.position.z = 350000;
                 }
-        
+
                 for (var j = 40; j < 50; j++) {
                     var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
                     if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
@@ -282,12 +280,12 @@ loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) 
                     var star = new THREE.Mesh(dian_geometry, dian_material);
                     scene.add(star);
                     star.position.x = -(10000 + 2000 * (j - 40));
-                    star.position.y = ret[j]* 20000 + 10000;
+                    star.position.y = ret[j] * 20000 + 10000;
                     star.position.z = 300000;
                 }
-        
+
                 for (var j = 50; j < 60; j++) {
-        
+
                     var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
                     if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
                     else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
@@ -298,12 +296,12 @@ loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) 
                     var star = new THREE.Mesh(dian_geometry, dian_material);
                     scene.add(star);
                     star.position.x = 10000 + 2000 * (j - 50);
-                    star.position.y = ret[j]* 20000 + 10000;
+                    star.position.y = ret[j] * 20000 + 10000;
                     star.position.z = 250000;
                 }
-        
+
                 for (var j = 60; j < 70; j++) {
-        
+
                     var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
                     if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
                     else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
@@ -314,12 +312,12 @@ loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) 
                     var star = new THREE.Mesh(dian_geometry, dian_material);
                     scene.add(star);
                     star.position.x = -(10000 + 2000 * (j - 60));
-                    star.position.y = ret[j]* 20000 + 10000;
+                    star.position.y = ret[j] * 20000 + 10000;
                     star.position.z = 200000;
                 }
-        
+
                 for (var j = 70; j < 80; j++) {
-        
+
                     var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
                     if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
                     else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
@@ -330,12 +328,12 @@ loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) 
                     var star = new THREE.Mesh(dian_geometry, dian_material);
                     scene.add(star);
                     star.position.x = 10000 + 2000 * (j - 70);
-                    star.position.y = ret[j]* 20000 + 10000;
+                    star.position.y = ret[j] * 20000 + 10000;
                     star.position.z = 150000;
                 }
-        
+
                 for (var j = 80; j < 90; j++) {
-        
+
                     var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
                     if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
                     else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
@@ -349,9 +347,9 @@ loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) 
                     star.position.y = ret[j] * 20000 + 10000;
                     star.position.z = 100000;
                 }
-        
+
                 for (var j = 90; j < 100; j++) {
-        
+
                     var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
                     if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
                     else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
@@ -362,11 +360,11 @@ loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) 
                     var star = new THREE.Mesh(dian_geometry, dian_material);
                     scene.add(star);
                     star.position.x = 10000 + 2000 * (j - 90);
-                    star.position.y = ret[j]* 20000 + 10000;
+                    star.position.y = ret[j] * 20000 + 10000;
                     star.position.z = 50000;
                 }
                 for (var j = 100; j < 110; j++) {
-        
+
                     var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
                     if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
                     else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
@@ -396,221 +394,218 @@ loader.load('../static/fonts/helvetiker_regular.typeface.json', function (font) 
                 }
             })
         });
-    titleLeft('WDWCASZ0627345', 500000, tL1);   //0
-    titleRight('S2A58BGQ', 450000, tR1);    //0
-    titleLeft('5VM45975', 400000, tL2);     //0
-    titleRight('Z1D3XB0A', 350000, tR2);    //0
-    titleLeft('Z4YAZWRB', 300000, tL3);     //1
-    titleRight('Z4YAZVXM', 250000, tR3);    //1
-    titleLeft('Z4YAZW4W', 200000, tL4);     //0
-    titleRight('Z4YAZVV4', 150000, tR4);    //0
-    titleLeft('537TT03OT', 100000, tL5);    //1
-    titleRight('6VY152TL', 50000, tR5);     //0
-    titleLeft('Z4YAZTEF', 0, tL6);      //0
-    titleRight('Z4YAZTKF', -50000, tR6);    //0  
-        }
-        else  {
-            $(document).ready(function () {
-                $.getJSON('/guard_kdd', function (ret) {
-                    for (var j = 0; j < 10; j++) {
-                        console.log(ret[j]);
-                         var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
-                         if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
-                         else if (ret[j] > 0.8) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
-                         else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
-                         else if (ret[j] > 0.6) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
-                         else if (ret[j] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
-                         else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
-                         var star = new THREE.Mesh(dian_geometry, dian_material);
-                         scene.add(star);
-                         star.position.x = -(10000 + 2000 * j);
-                         star.position.y = ret[j] * 20000 + 10000;
-                         star.position.z = 500000;
-                     }
-                     for (var j = 10; j < 20; j++) {
-                        console.log(ret[j]);
-                        var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
-                        if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
-                        else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
-                        else if (ret[j] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
-                        else if (ret[j] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
-                        else if (ret[j] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
-                        else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
-                        var star = new THREE.Mesh(dian_geometry, dian_material);
-                        scene.add(star);
-                        star.position.x = 10000 + 2000 * (j - 10);
-                        star.position.y = ret[j] * 20000 + 10000;
-                        star.position.z = 450000;
-                    }  
-                    for (var j = 20; j < 30; j++) {
-                        console.log(ret[j]);
-                        var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
-                        if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
-                        else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
-                        else if (ret[j] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
-                        else if (ret[j] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
-                        else if (ret[j] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
-                        else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
-                        var star = new THREE.Mesh(dian_geometry, dian_material);
-                        scene.add(star);
-                        star.position.x = -(10000 + 2000 * (j - 20));
-                        star.position.y = ret[j] * 20000 + 10000;
-                        star.position.z = 400000;
-                    }
-                    for (var j = 30; j < 40; j++) {
-                        var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
-                        if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
-                        else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
-                        else if (ret[j] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
-                        else if (ret[j] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
-                        else if (ret[j] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
-                        else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
-                        var star = new THREE.Mesh(dian_geometry, dian_material);
-                        scene.add(star);
-                        star.position.x = 10000 + 2000 * (j - 30);
-                        star.position.y = ret[j] * 20000 + 10000;
-                        star.position.z = 350000;
-                    }
-            
-                    for (var j = 40; j < 50; j++) {
-                        var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
-                        if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
-                        else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
-                        else if (ret[j] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
-                        else if (ret[j] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
-                        else if (ret[j] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
-                        else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
-                        var star = new THREE.Mesh(dian_geometry, dian_material);
-                        scene.add(star);
-                        star.position.x = -(10000 + 2000 * (j - 40));
-                        star.position.y = ret[j]* 20000 + 10000;
-                        star.position.z = 300000;
-                    }
-            
-                    for (var j = 50; j < 60; j++) {
-            
-                        var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
-                        if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
-                        else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
-                        else if (ret[j] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
-                        else if (ret[j] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
-                        else if (ret[j] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
-                        else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
-                        var star = new THREE.Mesh(dian_geometry, dian_material);
-                        scene.add(star);
-                        star.position.x = 10000 + 2000 * (j - 50);
-                        star.position.y = ret[j]* 20000 + 10000;
-                        star.position.z = 250000;
-                    }
-            
-                    for (var j = 60; j < 70; j++) {
-            
-                        var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
-                        if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
-                        else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
-                        else if (ret[j] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
-                        else if (ret[j] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
-                        else if (ret[j] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
-                        else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
-                        var star = new THREE.Mesh(dian_geometry, dian_material);
-                        scene.add(star);
-                        star.position.x = -(10000 + 2000 * (j - 60));
-                        star.position.y = ret[j]* 20000 + 10000;
-                        star.position.z = 200000;
-                    }
-            
-                    for (var j = 70; j < 80; j++) {
-            
-                        var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
-                        if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
-                        else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
-                        else if (ret[j] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
-                        else if (ret[j] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
-                        else if (ret[j] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
-                        else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
-                        var star = new THREE.Mesh(dian_geometry, dian_material);
-                        scene.add(star);
-                        star.position.x = 10000 + 2000 * (j - 70);
-                        star.position.y = ret[j]* 20000 + 10000;
-                        star.position.z = 150000;
-                    }
-            
-                    for (var j = 80; j < 90; j++) {
-            
-                        var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
-                        if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
-                        else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
-                        else if (ret[j] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
-                        else if (ret[j] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
-                        else if (ret[j] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
-                        else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
-                        var star = new THREE.Mesh(dian_geometry, dian_material);
-                        scene.add(star);
-                        star.position.x = -(10000 + 2000 * (j - 80));
-                        star.position.y = ret[j] * 20000 + 10000;
-                        star.position.z = 100000;
-                    }
-            
-                    for (var j = 90; j < 100; j++) {
-            
-                        var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
-                        if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
-                        else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
-                        else if (ret[j] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
-                        else if (ret[j] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
-                        else if (ret[j] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
-                        else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
-                        var star = new THREE.Mesh(dian_geometry, dian_material);
-                        scene.add(star);
-                        star.position.x = 10000 + 2000 * (j - 90);
-                        star.position.y = ret[j]* 20000 + 10000;
-                        star.position.z = 50000;
-                    }
-                    for (var j = 100; j < 110; j++) {
-            
-                        var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
-                        if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
-                        else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
-                        else if (ret[j] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
-                        else if (ret[j] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
-                        else if (ret[j] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
-                        else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
-                        var star = new THREE.Mesh(dian_geometry, dian_material);
-                        scene.add(star);
-                        star.position.x = -(10000 + 2000 * (j - 100));
-                        star.position.y = ret[j] * 20000 + 10000;
-                        star.position.z = 0;
-                    }
-                    for (var j = 110; j < 120; j++) {
-                        var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
-                        if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
-                        else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
-                        else if (ret[j] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
-                        else if (ret[j] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
-                        else if (ret[j] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
-                        else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
-                        var star = new THREE.Mesh(dian_geometry, dian_material);
-                        scene.add(star);
-                        star.position.x = 10000 + 2000 * (j - 110);
-                        star.position.y = ret[j] * 20000 + 10000;
-                        star.position.z = -50000;
-                    }
-                })
-            });
-    titleLeft('normal', 500000, tL1);   //0
-    titleRight('nmap', 450000, tR1);    //0
-    titleLeft('smurf', 400000, tL2);     //0
-    titleRight('neptune', 350000, tR2);    //0
-    titleLeft('ping of death', 300000, tL3);     //1
-    titleRight('syn flood', 250000, tR3);    //1
-    titleLeft('guessing password', 200000, tL4);     //0
-    titleRight('buffer overflow', 150000, tR4);    //0
-    titleLeft('port scan', 100000, tL5);    //1
-    titleRight('ping sweep', 50000, tR5);     //0
-    titleLeft('land', 0, tL6);      //0
-    titleRight('back', -50000, tR6);    //0 
-        }
-    
+        titleLeft('WDWCASZ0627345', 500000, tL1);   //0
+        titleRight('S2A58BGQ', 450000, tR1);    //0
+        titleLeft('5VM45975', 400000, tL2);     //0
+        titleRight('Z1D3XB0A', 350000, tR2);    //0
+        titleLeft('Z4YAZWRB', 300000, tL3);     //1
+        titleRight('Z4YAZVXM', 250000, tR3);    //1
+        titleLeft('Z4YAZW4W', 200000, tL4);     //0
+        titleRight('Z4YAZVV4', 150000, tR4);    //0
+        titleLeft('537TT03OT', 100000, tL5);    //1
+        titleRight('6VY152TL', 50000, tR5);     //0
+        titleLeft('Z4YAZTEF', 0, tL6);      //0
+        titleRight('Z4YAZTKF', -50000, tR6);    //0  
+    }
+    else {
+        $(document).ready(function () {
+            $.getJSON('/guard_kdd', function (ret) {
+                for (var j = 0; j < 10; j++) {
+                    var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
+                    if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
+                    else if (ret[j] > 0.8) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
+                    else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
+                    else if (ret[j] > 0.6) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
+                    else if (ret[j] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
+                    else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
+                    var star = new THREE.Mesh(dian_geometry, dian_material);
+                    scene.add(star);
+                    star.position.x = -(10000 + 2000 * j);
+                    star.position.y = ret[j] * 20000 + 10000;
+                    star.position.z = 500000;
+                }
+                for (var j = 10; j < 20; j++) {
+                    var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
+                    if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
+                    else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
+                    else if (ret[j] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
+                    else if (ret[j] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
+                    else if (ret[j] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
+                    else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
+                    var star = new THREE.Mesh(dian_geometry, dian_material);
+                    scene.add(star);
+                    star.position.x = 10000 + 2000 * (j - 10);
+                    star.position.y = ret[j] * 20000 + 10000;
+                    star.position.z = 450000;
+                }
+                for (var j = 20; j < 30; j++) {
+                    var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
+                    if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
+                    else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
+                    else if (ret[j] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
+                    else if (ret[j] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
+                    else if (ret[j] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
+                    else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
+                    var star = new THREE.Mesh(dian_geometry, dian_material);
+                    scene.add(star);
+                    star.position.x = -(10000 + 2000 * (j - 20));
+                    star.position.y = ret[j] * 20000 + 10000;
+                    star.position.z = 400000;
+                }
+                for (var j = 30; j < 40; j++) {
+                    var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
+                    if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
+                    else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
+                    else if (ret[j] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
+                    else if (ret[j] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
+                    else if (ret[j] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
+                    else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
+                    var star = new THREE.Mesh(dian_geometry, dian_material);
+                    scene.add(star);
+                    star.position.x = 10000 + 2000 * (j - 30);
+                    star.position.y = ret[j] * 20000 + 10000;
+                    star.position.z = 350000;
+                }
+
+                for (var j = 40; j < 50; j++) {
+                    var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
+                    if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
+                    else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
+                    else if (ret[j] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
+                    else if (ret[j] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
+                    else if (ret[j] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
+                    else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
+                    var star = new THREE.Mesh(dian_geometry, dian_material);
+                    scene.add(star);
+                    star.position.x = -(10000 + 2000 * (j - 40));
+                    star.position.y = ret[j] * 20000 + 10000;
+                    star.position.z = 300000;
+                }
+
+                for (var j = 50; j < 60; j++) {
+
+                    var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
+                    if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
+                    else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
+                    else if (ret[j] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
+                    else if (ret[j] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
+                    else if (ret[j] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
+                    else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
+                    var star = new THREE.Mesh(dian_geometry, dian_material);
+                    scene.add(star);
+                    star.position.x = 10000 + 2000 * (j - 50);
+                    star.position.y = ret[j] * 20000 + 10000;
+                    star.position.z = 250000;
+                }
+
+                for (var j = 60; j < 70; j++) {
+
+                    var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
+                    if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
+                    else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
+                    else if (ret[j] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
+                    else if (ret[j] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
+                    else if (ret[j] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
+                    else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
+                    var star = new THREE.Mesh(dian_geometry, dian_material);
+                    scene.add(star);
+                    star.position.x = -(10000 + 2000 * (j - 60));
+                    star.position.y = ret[j] * 20000 + 10000;
+                    star.position.z = 200000;
+                }
+
+                for (var j = 70; j < 80; j++) {
+
+                    var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
+                    if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
+                    else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
+                    else if (ret[j] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
+                    else if (ret[j] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
+                    else if (ret[j] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
+                    else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
+                    var star = new THREE.Mesh(dian_geometry, dian_material);
+                    scene.add(star);
+                    star.position.x = 10000 + 2000 * (j - 70);
+                    star.position.y = ret[j] * 20000 + 10000;
+                    star.position.z = 150000;
+                }
+
+                for (var j = 80; j < 90; j++) {
+
+                    var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
+                    if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
+                    else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
+                    else if (ret[j] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
+                    else if (ret[j] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
+                    else if (ret[j] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
+                    else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
+                    var star = new THREE.Mesh(dian_geometry, dian_material);
+                    scene.add(star);
+                    star.position.x = -(10000 + 2000 * (j - 80));
+                    star.position.y = ret[j] * 20000 + 10000;
+                    star.position.z = 100000;
+                }
+
+                for (var j = 90; j < 100; j++) {
+
+                    var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
+                    if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
+                    else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
+                    else if (ret[j] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
+                    else if (ret[j] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
+                    else if (ret[j] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
+                    else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
+                    var star = new THREE.Mesh(dian_geometry, dian_material);
+                    scene.add(star);
+                    star.position.x = 10000 + 2000 * (j - 90);
+                    star.position.y = ret[j] * 20000 + 10000;
+                    star.position.z = 50000;
+                }
+                for (var j = 100; j < 110; j++) {
+
+                    var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
+                    if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
+                    else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
+                    else if (ret[j] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
+                    else if (ret[j] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
+                    else if (ret[j] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
+                    else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
+                    var star = new THREE.Mesh(dian_geometry, dian_material);
+                    scene.add(star);
+                    star.position.x = -(10000 + 2000 * (j - 100));
+                    star.position.y = ret[j] * 20000 + 10000;
+                    star.position.z = 0;
+                }
+                for (var j = 110; j < 120; j++) {
+                    var dian_geometry = new THREE.SphereGeometry(500, 10, 10);
+                    if (ret[j] > 0.9) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff3300 });
+                    else if (ret[j] > 0.7) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff0066 });
+                    else if (ret[j] > 0.5) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff6699 });
+                    else if (ret[j] > 0.3) var dian_material = new THREE.MeshLambertMaterial({ color: 0xff99cc });
+                    else if (ret[j] > 0.1) var dian_material = new THREE.MeshLambertMaterial({ color: 0xffccff });
+                    else var dian_material = new THREE.MeshLambertMaterial({ color: 0x33ff00 });
+                    var star = new THREE.Mesh(dian_geometry, dian_material);
+                    scene.add(star);
+                    star.position.x = 10000 + 2000 * (j - 110);
+                    star.position.y = ret[j] * 20000 + 10000;
+                    star.position.z = -50000;
+                }
+            })
+        });
+        titleLeft('normal.', 500000, tL1);   //0
+        titleRight('nmap.', 450000, tR1);    //0
+        titleLeft('smurf.', 400000, tL2);     //0
+        titleRight('neptune.', 350000, tR2);    //0
+        titleLeft('ping of death', 300000, tL3);     //1
+        titleRight('syn flood', 250000, tR3);    //1
+        titleLeft('guessing password', 200000, tL4);     //0
+        titleRight('buffer overflow', 150000, tR4);    //0
+        titleLeft('port scan', 100000, tL5);    //1
+        titleRight('ping sweep', 50000, tR5);     //0
+        titleLeft('land', 0, tL6);      //0
+        titleRight('back', -50000, tR6);    //0 
+    }
+
     //添加坐标变量
     function axisflag(x1, y1, x2, y2, z) {
         var material = new THREE.MeshPhongMaterial({
@@ -788,8 +783,13 @@ function onClick(event) {
 
     if (intersects.length > 0) {
         var currObj = intersects[0].object;
-        if (currObj.name) {
-            window.location.href = ('/analyse_lstm_g/?chart=-1&model=' + currObj.name);
+        var datasource = localStorage.getItem('datasource');
+        if (datasource == "default") {
+
+        } else {
+            if (currObj.name) {
+                window.location.href = ('/analyse_lstm_g/?chart=-1&model=' + datasource + '&output=' + currObj.name);
+            }
         }
     }
     renderer.render(scene, camera);

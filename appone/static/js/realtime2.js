@@ -24,7 +24,7 @@
             formatter: function (params) {//数据单位格式化
                 //params = params[0];
                 var date = new Date();
-                return num + ":" + newdata + "/"+detail+"/"+description;
+                return num + ":" + newdata + "/"+detail+"/" + output;
             },
             axisPointer: {
                 //animation: false
@@ -128,7 +128,7 @@
                     var len = 0;
                     while (len < 1) {
                         datasource = localStorage.getItem('datasource');
-                        if(datasource=="test") newdata = localStorage.getItem('current_user');
+                        if(datasource=="default") newdata = localStorage.getItem('current_user');
                         if(datasource=="KDDcup") newdata = localStorage.getItem('current_attack');
                         res.push(newdata);
                         len++;
@@ -141,12 +141,12 @@
     setInterval(function () {
         //新来的实时数据保存在newdata中
         datasource = localStorage.getItem('datasource');
-        if(datasource=="test") newdata = localStorage.getItem('current_user');
+        if(datasource=="default") newdata = localStorage.getItem('current_user');
         if(datasource=="KDDcup") newdata = localStorage.getItem('current_attack');
         num = localStorage.getItem('number_guard');
        // act_time = localStorage.getItem('acttime');
         detail = localStorage.getItem('item');
-        description = localStorage.getItem('descriptions');
+        output = localStorage.getItem('output');
 
         if (num != oldnumber) {
             olddata = newdata;

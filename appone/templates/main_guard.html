@@ -35,7 +35,7 @@
 			}
 		} else {
 			obj = {
-				'algorithm': 'change',
+				'algorithm': 'start',
 				'type': 'guard',
 				'model_name': model
 			}
@@ -75,11 +75,11 @@
 		b = a.pop();
 		console.log(b);
 		var agent = ['WD-WCASZ0627345', 'S2A58BGQ', '5VM45975', 'Z1D3XB0A', 'Z4YAZWRB',
-        'Z4YAZVXM', 'Z4YAZW4W', 'Z4YAZVV4', '537TT03OT', '6VY152TL',
-        'Z4YAZTEF', 'Z4YAZTKF'];
+			'Z4YAZVXM', 'Z4YAZW4W', 'Z4YAZVV4', '537TT03OT', '6VY152TL',
+			'Z4YAZTEF', 'Z4YAZTKF'];
 		var attack = ['normal.', 'nmap.', 'smurf.', 'neptune.', 'guess_password.', 'buffer_overflow.', 'portsweep.', 'land.',
-		'back.', 'loadmodule.', 'perl.', 'pod.', 'teardrop.', 'ipsweep', 'ftp_write', 'imap.',
-	'satan', 'phf.', 'multihop', 'warezmaster'];
+			'back.', 'loadmodule.', 'perl.', 'pod.', 'teardrop.', 'ipsweep', 'ftp_write', 'imap.',
+			'satan', 'phf.', 'multihop', 'warezmaster'];
 		var obj = JSON.parse(b);
 		var data = obj.data;
 		var type = obj.type;
@@ -99,62 +99,62 @@
 			localStorage.setItem('output', output);
 			localStorage.setItem('number_guard', i);//数据编号
 
-			if(datasource=="test")  {
+			if (datasource == "default") {
 				localStorage.setItem('current_user', 20);
-				for(k=0;k<12;k++)  {
-					if(output==agent[k]) {
+				for (k = 0; k < 12; k++) {
+					if (output == agent[k]) {
 						localStorage.setItem('current_user', k);//记录当前用户编号		
 					}
 				}
-				if(output=="Z4YAZWRB") {
+				if (output == "Z4YAZWRB") {
 					var _Z4YAZWRB = time;
 					localStorage.setItem('_Z4YAZWRB_parameter', _Z4YAZWRB);
 				}
-				else if(output=="537TT03OT") {
+				else if (output == "537TT03OT") {
 					var _537TT03OT = time;
 					localStorage.setItem('_537TT03OT_parameter', _537TT03OT);
 				}
-				else if(output=="5VM42727") {
+				else if (output == "5VM42727") {
 					var _5VM42727 = time;
 					localStorage.setItem('5VM42727_parameter', _5VM42727);
 				}
-				else if(output=="5VM452F4") {
+				else if (output == "5VM452F4") {
 					var _5VM452F4 = time;
 					localStorage.setItem('_5VM452F4_parameter', _5VM452F4);
 				}
-				else if(output=="5VMTSDK5") {
+				else if (output == "5VMTSDK5") {
 					var _5VMTSDK5 = time;
 					localStorage.setItem('_5VMTSDK5_parameter', _5VMTSDK5);
-				}    	            
-			}
-			if(datasource=="KDDcup")  {
-				for(m=0;m<20;m++)  {
-					if(output==attack[m]) {
-						localStorage.setItem('current_attack', m+1);//记录当前用户编号		
-					}
 				}
-				if(output=="normal.") {
+			}
+			if (datasource == "KDDcup") {
+				// for (m = 0; m < 20; m++) {
+				// 	if (output == attack[m]) {
+				// 		localStorage.setItem('current_attack', m + 1);//记录当前用户编号		
+				// 	}
+				// }
+				if (output == "normal.") {
 					var normal = time;
 					localStorage.setItem('normal_parameter', normal);
 				}
-				if(output=="smurf.") {
+				if (output == "smurf.") {
 					var smurf = time;
 					localStorage.setItem('smurf_parameter', smurf);
 				}
-				if(output=="ipsweep.") {
+				if (output == "ipsweep.") {
 					var ipsweep = time;
 					localStorage.setItem('ipsweep_parameter', ipsweep);
 				}
-				if(output=="neptune") {
+				if (output == "neptune.") {
 					var neptune = time;
 					localStorage.setItem('neptune_parameter', neptune);
 				}
-				if(output=="nmap") {
-					var nmap = time; 
+				if (output == "nmap.") {
+					var nmap = time;
 					localStorage.setItem('nmap_parameter', nmap);
-				}          	           
+				}
 			}
-			
+
 		}
 	}
 	function onkey(event) {

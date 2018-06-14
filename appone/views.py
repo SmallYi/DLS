@@ -20,33 +20,33 @@ def thresold(request):
     max_thresold = a[3]
     min_thresold = a[0]
     count_oo = db.select('''
-        SELECT * FROM (
-            SELECT appname, people_count/total as ratio FROM (
-                SELECT * FROM OO_20180314_R cross join (
-                    SELECT count(people_count) as total,act_date
-                        FROM OO_20180314_R group by act_date))
-                    order by ratio)
-                where rownum<=5''')
+                        SELECT * FROM (
+                            SELECT appname, people_count/total as ratio FROM (
+                                SELECT * FROM OO_20180314_R cross join (
+                                    SELECT count(people_count) as total,act_date
+                                        FROM OO_20180314_R group by act_date))
+                                    order by ratio)
+                                where rownum<=5''')
     count_pp = db.select('''
-        SELECT * FROM (
-            SELECT PEOPLENAME,count(*) FROM (
-                SELECT PEOPLENAME, APP_COUNT, ACT_DATE, APP_TOTAL FROM PP_20180314_R
-                    where app_count < app_total*0.1)  
-                group by PEOPLENAME order by count(*) desc)
-            where rownum<=5''')
+                        SELECT * FROM (
+                            SELECT PEOPLENAME,count(*) FROM (
+                                SELECT PEOPLENAME, APP_COUNT, ACT_DATE, APP_TOTAL FROM PP_20180314_R
+                                    where app_count < app_total*0.1)  
+                                group by PEOPLENAME order by count(*) desc)
+                            where rownum<=5''')
 
     ret_list = []
     ret_list.append(max_thresold)
     ret_list.append(min_thresold)
     ret_list.append(count_pp)
     ret_list.append(count_oo)
-    for k in range(5):
+    for k in agent:
         count = db.select(
             "SELECT DISTINCT COUNT(*) FROM %s WHERE FPITEMS_COUNT >= 10*(SELECT MINSUPPORT FROM FPGROWTH_PARAMETER WHERE FPMODELNAME = '%s')"
-            % ('PO_' + agent[k] + '_20180314_R', 'PO_' + agent[k] + '_20180314'))
+            % ('PO_' + k + '_20180314_R', 'PO_' + k + '_20180314'))
         relation_app = db.select(
             "SELECT DISTINCT COUNT(*) FROM %s WHERE FPITEMS_COUNT >= 0" 
-            % ('PO_' + agent[k] + '_20180314_R'))
+            % ('PO_' + k + '_20180314_R'))
         b = count[0][0]
         c = relation_app[0][0]
         d = b / c
@@ -75,14 +75,14 @@ def prediction(request):
     length = 0
     maxtomin = 0
     min_prediction = 0
-    for y in range(10):
+    for y in agent:
         normalization = []
         a = []
         b = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        length = db.select("SELECT COUNT(*) FROM %s" % ('LSTM_' + agent[y] + '_SINGLE'))
-        normalization = db.select("SELECT PREDICTION FROM %s" % ('LSTM_' + agent[y] + '_SINGLE'))
-        maxtomin = db.select("SELECT MAX(PREDICTION)-MIN(PREDICTION) FROM %s" % ('LSTM_' + agent[y] + '_SINGLE'))
-        min_prediction = db.select("SELECT MIN(PREDICTION) FROM %s" % ('LSTM_' + agent[y] + '_SINGLE'))
+        length = db.select("SELECT COUNT(*) FROM %s" % ('LSTM_' + y + '_SINGLE'))
+        normalization = db.select("SELECT PREDICTION FROM %s" % ('LSTM_' + y + '_SINGLE'))
+        maxtomin = db.select("SELECT MAX(PREDICTION)-MIN(PREDICTION) FROM %s" % ('LSTM_' + y + '_SINGLE'))
+        min_prediction = db.select("SELECT MIN(PREDICTION) FROM %s" % ('LSTM_' + y + '_SINGLE'))
         for i in range(length[0][0]):
             a.append((normalization[i][0] - min_prediction[0][0]) / maxtomin[0][0])
         for j in range(length[0][0]):
@@ -99,12 +99,12 @@ def prediction(request):
                     SELECT COUNT(*) from %s
                         WHERE ACT_TIME BETWEEN to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')
                             AND ABNORMAL=0''' %
-                                ('LSTM_' + agent[y] + '_SINGLE', history_time[x + 1], history_time[x])))
+                                ('LSTM_' + y + '_SINGLE', history_time[x + 1], history_time[x])))
             ret_list1.append(
                 db.select('''
                     SELECT COUNT(*) FROM %s 
                         WHERE ACT_TIME BETWEEN to_DATE('%s', 'YYYY-MM-DD') and to_DATE('%s', 'YYYY-MM-DD')''' %
-                            ('LSTM_' + agent[y] + '_SINGLE', history_time[x + 1], history_time[x])))
+                            ('LSTM_' + y + '_SINGLE', history_time[x + 1], history_time[x])))
 
     ret_dict = {'abnormalratio': ret_list1, 'lstm': ret_list2}
     # for y in range(1):
@@ -137,12 +137,14 @@ def recordnumber(request):
         'Z4YAZTEF', 'Z4YAZTKF'
     ]
     ret_list = []
-    for x in range(12):
-        for y in range(10):
+
+    for a in history_time:
+        for b in agent:
             ret_list.append(
                 db.select(
                     "SELECT COUNT(*) FROM %s WHERE AGENT_ID = '%s' " %
-                    ('DL_TMSAPP_C0A80006_' + history_time[y], agent[x])))
+                    ('DL_TMSAPP_C0A80006_' + a, b)))
+
     return JsonResponse(ret_list, safe=False)
 
 def guard_test(request):
@@ -163,9 +165,9 @@ def guard_test(request):
         'Z4YAZTEF', 'Z4YAZTKF'
     ]
     ret_list = []
-    for x in range(12):
+    for x in agent:
         for y in range(10):
-            record = db.select("SELECT COUNT(*) FROM %s WHERE agent_id='%s'" % ('DL_TMSAPP_C0A80006_' + history_time[y], agent[x]))
+            record = db.select("SELECT COUNT(*) FROM %s WHERE agent_id='%s'" % ('DL_TMSAPP_C0A80006_' + history_time[y], x))
             total = db.select("SELECT COUNT(*) FROM %s"% ('DL_TMSAPP_C0A80006_' + history_time[y]))
             a=record[0][0]
             b=total[0][0]
@@ -449,7 +451,7 @@ def galaxy(request):
 def lstm_guard(request):
     model = request.GET.get('model', None)
     if model == None:
-        return render(request, 'lstm_guard.html', {'model': 'test'})
+        return render(request, 'lstm_guard.html', {'model': 'KDDcup'})
     else:
         return render(request, 'lstm_guard.html', {'model': model})
 
@@ -457,7 +459,7 @@ def lstm_guard(request):
 def main_guard(request):
     model = request.GET.get('model', None)
     if model == None:
-        return render(request, 'main_guard.html', {'model': 'default'})
+        return render(request, 'main_guard.html', {'model': 'KDDcup'})
     else:
         return render(request, 'main_guard.html', {'model': model})
 
