@@ -22,7 +22,7 @@
 	var abnormal_count = 0, ratio = 0;//记录异常记录数目
 
 	function connect() {
-		var host = "ws://192.168.1.44:3368/ws";
+		var host = "ws://192.168.1.24:3368/ws";
 		socket = new WebSocket(host);
 		model = $("title").text();
 		// model = model.slice(2, -1);
@@ -100,58 +100,52 @@
 			localStorage.setItem('number_guard', i);//数据编号
 
 			if (datasource == "default") {
-				localStorage.setItem('current_user', 20);
-				for (k = 0; k < 12; k++) {
-					if (output == agent[k]) {
-						localStorage.setItem('current_user', k);//记录当前用户编号		
-					}
+				localStorage.setItem('current_user', agent.indexOf(output));
+				switch (number) {
+					case 0:
+						localStorage.setItem('planet0_output', output);
+						localStorage.setItem('planet0_time', time);
+						break;
+					case 1:
+						localStorage.setItem('planet1_output', output);
+						localStorage.setItem('planet1_time', time);
+						break;
+					case 2:
+						localStorage.setItem('planet2_output', output);
+						localStorage.setItem('planet2_time', time);
+						break;
+					case 3:
+						localStorage.setItem('planet3_output', output);
+						localStorage.setItem('planet3_time', time);
+						break;
+					case 4:
+						localStorage.setItem('planet4_output', output);
+						localStorage.setItem('planet4_time', time);
+						break;
 				}
-				if (output == "Z4YAZWRB") {
-					var _Z4YAZWRB = time;
-					localStorage.setItem('_Z4YAZWRB_parameter', _Z4YAZWRB);
-				}
-				else if (output == "537TT03OT") {
-					var _537TT03OT = time;
-					localStorage.setItem('_537TT03OT_parameter', _537TT03OT);
-				}
-				else if (output == "5VM42727") {
-					var _5VM42727 = time;
-					localStorage.setItem('5VM42727_parameter', _5VM42727);
-				}
-				else if (output == "5VM452F4") {
-					var _5VM452F4 = time;
-					localStorage.setItem('_5VM452F4_parameter', _5VM452F4);
-				}
-				else if (output == "5VMTSDK5") {
-					var _5VMTSDK5 = time;
-					localStorage.setItem('_5VMTSDK5_parameter', _5VMTSDK5);
-				}
-			}
-			if (datasource == "KDDcup") {
-				// for (m = 0; m < 20; m++) {
-				// 	if (output == attack[m]) {
-				// 		localStorage.setItem('current_attack', m + 1);//记录当前用户编号		
-				// 	}
-				// }
-				if (output == "normal.") {
-					var normal = time;
-					localStorage.setItem('normal_parameter', normal);
-				}
-				if (output == "smurf.") {
-					var smurf = time;
-					localStorage.setItem('smurf_parameter', smurf);
-				}
-				if (output == "ipsweep.") {
-					var ipsweep = time;
-					localStorage.setItem('ipsweep_parameter', ipsweep);
-				}
-				if (output == "neptune.") {
-					var neptune = time;
-					localStorage.setItem('neptune_parameter', neptune);
-				}
-				if (output == "nmap.") {
-					var nmap = time;
-					localStorage.setItem('nmap_parameter', nmap);
+			} else if (datasource == "KDDcup") {
+				localStorage.setItem('current_attack', attack.indexOf(output));//记录当前用户编号		
+				switch (number) {
+					case 0:
+						localStorage.setItem('planet0_output', output);
+						localStorage.setItem('planet0_time', time);
+						break;
+					case 1:
+						localStorage.setItem('planet1_output', output);
+						localStorage.setItem('planet1_time', time);
+						break;
+					case 2:
+						localStorage.setItem('planet2_output', output);
+						localStorage.setItem('planet2_time', time);
+						break;
+					case 3:
+						localStorage.setItem('planet3_output', output);
+						localStorage.setItem('planet3_time', time);
+						break;
+					case 4:
+						localStorage.setItem('planet4_output', output);
+						localStorage.setItem('planet4_time', time);
+						break;
 				}
 			}
 
@@ -175,29 +169,6 @@
 			$('#guard_list').append(ul_str);
 		});
 	}
-	//光束发射界面存储5个主要用户数据,后面放到connect()里面执行
-	// var _Z4YAZWRB = 0.1;
-	// var _537TT03OT = 0.2;
-	// var Z4YAZWRB = 0.3;
-	// var _5VM452F4 = 0.4;
-	// var _5VMTSDK5 = 0.5; 
-	// localStorage.setItem('_Z4YAZWRB_parameter', _Z4YAZWRB);
-	// localStorage.setItem('_537TT03OT_parameter', _537TT03OT);
-	// localStorage.setItem('Z4YAZWRB_parameter', Z4YAZWRB);
-	// localStorage.setItem('_5VM452F4_parameter', _5VM452F4);
-	// localStorage.setItem('_5VMTSDK5_parameter', _5VMTSDK5);
-
-	//光束发射界面存储5个主要攻击类型数据,后面放到connect()里面执行
-	// var ipsweep = 1;
-	// var smurf = 2;
-	// var neptune = 3;
-	// var nmap = 4;
-	// var normal = 5; 
-	// localStorage.setItem('ipsweep_parameter', ipsweep);
-	// localStorage.setItem('smurf_parameter', smurf);
-	// localStorage.setItem('neptune_parameter', neptune);
-	// localStorage.setItem('nmap_parameter', nmap);
-	// localStorage.setItem('normal_parameter', normal);
 </script>
 
 <body onload="connect();load_guard();" style="margin: 0; overflow: hidden; width: 100%; height: 100%;">

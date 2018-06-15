@@ -341,7 +341,6 @@
 		// 定义角度
 		var dian1_deg, dian2_deg, dian3_deg, huo_deg, mu_deg, tu_deg, tian_deg, hai_deg;
 		dian1_deg = warn1_deg = normal1_deg = dian3_deg = huo_deg = mu_deg = tu_deg = tian_deg = hai_deg = 0;
-		var model_number = [1, 2, 3, 4, 5];
 
 		// 公转
 		function gongzhuan() {
@@ -366,24 +365,8 @@
 			var hai_position_z = hai.position.z;
 
 			count++;
-			var op = localStorage.getItem('output');
-			var model;
-			if (op == "Z4YAZWRB" || op == "normal.") model = 1;
-			if (op == "537TT03OT" || op == "smurf.") model = 2;
-			if (op == "5VM42727" || op == "ipsweep.") model = 3;
-			if (op == "5VM452F4" || op == "neptune.") model = 4;
-			if (op == "5VMTSDK5" || op == "nmap.") model = 5;
-			//console.log(count);
-			// if (count % 500 == 0)
-			// 	var model = model_number[0];//模型编号，用于追光效果
-			// else if (count % 500 == 100)
-			// 	var model = model_number[1];//模型编号，用于追光效果
-			// else if (count % 500 == 200)
-			// 	var model = model_number[2];//模型编号，用于追光效果
-			// else if (count % 500 == 300)
-			// 	var model = model_number[3];//模型编号，用于追光效果
-			// else if (count % 500 == 400)
-			// 	var model = model_number[4];//模型编号，用于追光效果
+			var model = localStorage.getItem('number');
+			localStorage.setItem('number', -1);
 
 			// 火星
 			huo_deg = huo_deg + 0.01 >= PI2 ? 0 : huo_deg + 0.01;
@@ -391,7 +374,6 @@
 			huo_warn.position.set(70 * Math.sin(huo_deg) + 18, 0, 70 * Math.cos(huo_deg));
 			sprite_huo.position.set(70 * Math.sin(huo_deg) + 50, 0, 70 * Math.cos(huo_deg));
 			if ((count % 1000) % 2 == 0) {
-				//scene.remove(line_r2);
 				greenPoint_huo.intensity = 0;
 				greenPoint_huo.position.copy(huo_warn.position);
 			}
@@ -399,7 +381,7 @@
 				greenPoint_huo.intensity = 4;
 				greenPoint_huo.position.copy(huo_warn.position);
 			}
-			if (model == 1) {
+			if (model == 0) {
 				var material_r1 = new THREE.LineBasicMaterial({ color: 0x00ff00 });
 				var geometry_r1 = new THREE.Geometry();
 				geometry_r1.vertices.push(new THREE.Vector3(0, 0, 0));
@@ -424,7 +406,7 @@
 				greenPoint_mu.intensity = 4;
 				greenPoint_mu.position.copy(mu_warn.position);
 			}
-			if (model == 2) {
+			if (model == 1) {
 				var material_r1 = new THREE.LineBasicMaterial({ color: 0xff0066 });
 				var geometry_r1 = new THREE.Geometry();
 				geometry_r1.vertices.push(new THREE.Vector3(0, 0, 0));
@@ -449,7 +431,7 @@
 				greenPoint_tu.intensity = 4;
 				greenPoint_tu.position.copy(tu_warn.position);
 			}
-			if (model == 3) {
+			if (model == 2) {
 				var material_r1 = new THREE.LineBasicMaterial({ color: 0xffff33 });
 				var geometry_r1 = new THREE.Geometry();
 				geometry_r1.vertices.push(new THREE.Vector3(0, 0, 0));
@@ -475,7 +457,7 @@
 				greenPoint_tian.intensity = 4;
 				greenPoint_tian.position.copy(tian_warn.position);
 			}
-			if (model == 4) {
+			if (model == 3) {
 				var material_r1 = new THREE.LineBasicMaterial({ color: 0xcc66ff });
 				var geometry_r1 = new THREE.Geometry();
 				geometry_r1.vertices.push(new THREE.Vector3(0, 0, 0));
@@ -500,7 +482,7 @@
 				greenPoint_hai.intensity = 4;
 				greenPoint_hai.position.copy(hai_warn.position);
 			}
-			if (model == 5) {
+			if (model == 4) {
 				var material_r1 = new THREE.LineBasicMaterial({ color: 0x3399ff });
 				var geometry_r1 = new THREE.Geometry();
 				geometry_r1.vertices.push(new THREE.Vector3(0, 0, 0));
@@ -624,24 +606,28 @@
 					var datasource = localStorage.getItem('datasource');
 					if (datasource == "default") {
 
-					} else {
+					} else if(datasource == "KDDcup"){
 						if (currObj.name == "huo") {
-							window.location.href = ('/analyse_lstm_g/?chart=-1&model=KDDcup&output=normal.');
+							var output = localStorage.getItem('planet0_output');
+							window.location.href = ('/analyse_lstm_g/?chart=-1&model=KDDcup&output=' + output);
 						}
 						if (currObj.name == "mu") {
-							window.location.href = ('/analyse_lstm_g/?chart=-1&model=KDDcup&output=ipsweep.');
+							var output = localStorage.getItem('planet1_output');
+							window.location.href = ('/analyse_lstm_g/?chart=-1&model=KDDcup&output=' + output);
 						}
 						if (currObj.name == "tu") {
-							window.location.href = ('/analyse_lstm_g/?chart=-1&model=KDDcup&output=smurf.');
+							var output = localStorage.getItem('planet2_output');
+							window.location.href = ('/analyse_lstm_g/?chart=-1&model=KDDcup&output=' + output);
 						}
 						if (currObj.name == "tian") {
-							window.location.href = ('/analyse_lstm_g/?chart=-1&model=KDDcup&output=neptune.');
+							var output = localStorage.getItem('planet3_output');
+							window.location.href = ('/analyse_lstm_g/?chart=-1&model=KDDcup&output=' + output);
 						}
 						if (currObj.name == "hai") {
-							window.location.href = ('/analyse_lstm_g/?chart=-1&model=KDDcup&output=nmap.');
+							var output = localStorage.getItem('planet4_output');
+							window.location.href = ('/analyse_lstm_g/?chart=-1&model=KDDcup&output=' + output);
 						}
 					}
-
 				}
 			} else {
 				old_timestamp = new_timestamp;
@@ -650,11 +636,12 @@
 					var datasource = localStorage.getItem('datasource');
 					if (datasource == "KDDcup") {
 						if (currObj.name == "huo") {
-							var normal_parameter = localStorage.getItem('normal_parameter');//获取Z4YAZWRB_parameter
+							var name = localStorage.getItem('planet0_output');
+							var time = localStorage.getItem('planet0_time');
 							ctx_huo.clearRect(0, 0, 1024, 512);
-							if (normal_parameter) {
-								ctx_huo.fillText('normal', 0, 100);
-								ctx_huo.fillText('time：' + normal_parameter, 0, 200)
+							if (name) {
+								ctx_huo.fillText('class: ' + name, 0, 100);
+								ctx_huo.fillText('time：' + time, 0, 200)
 							} else {
 								ctx_huo.fillText('暂无数据！', 0, 100);
 							}
@@ -662,11 +649,11 @@
 							showInfo(sprite_huo);
 						}
 						if (currObj.name == "mu") {
-							var ipsweep_parameter = localStorage.getItem('ipsweep_parameter');//获取_537TT03OT_parameter
-							ctx_mu.clearRect(0, 0, 1024, 512);
-							if (ipsweep_parameter) {
-								ctx_mu.fillText('ipsweep', 0, 100);
-								ctx_mu.fillText('time：' + ipsweep_parameter, 0, 200)
+							var name = localStorage.getItem('planet1_output');
+							var time = localStorage.getItem('planet1_time');							ctx_mu.clearRect(0, 0, 1024, 512);
+							if (name) {
+								ctx_mu.fillText('class: ' + name, 0, 100);
+								ctx_mu.fillText('time：' + time, 0, 200)
 							} else {
 								ctx_mu.fillText('暂无数据！', 0, 100);
 							}
@@ -674,11 +661,11 @@
 							showInfo(sprite_mu);
 						}
 						if (currObj.name == "tu") {
-							var smurf_parameter = localStorage.getItem('smurf_parameter');//获取模型3异常记录比例
-							ctx_tu.clearRect(0, 0, 1024, 512);
-							if (smurf_parameter) {
-								ctx_tu.fillText('smurf', 0, 100);
-								ctx_tu.fillText('time：' + smurf_parameter, 0, 200)
+							var name = localStorage.getItem('planet2_output');
+							var time = localStorage.getItem('planet2_time');							ctx_tu.clearRect(0, 0, 1024, 512);
+							if (name) {
+								ctx_tu.fillText('class: ' + name, 0, 100);
+								ctx_tu.fillText('time：' + time, 0, 200)
 							} else {
 								ctx_tu.fillText('暂无数据！', 0, 100);
 							}
@@ -686,11 +673,11 @@
 							showInfo(sprite_tu);
 						}
 						if (currObj.name == "tian") {
-							var neptune_parameter = localStorage.getItem('neptune_parameter');
-							ctx_tian.clearRect(0, 0, 1024, 512);
-							if (neptune_parameter) {
-								ctx_tian.fillText('neptune', 0, 100);
-								ctx_tian.fillText('time：' + neptune_parameter, 0, 200)
+							var name = localStorage.getItem('planet3_output');
+							var time = localStorage.getItem('planet3_time');							ctx_tian.clearRect(0, 0, 1024, 512);
+							if (name) {
+								ctx_tian.fillText('class: ' + name, 0, 100);
+								ctx_tian.fillText('time：' + time, 0, 200)
 							} else {
 								ctx_tian.fillText('暂无数据！', 0, 100);
 							}
@@ -698,11 +685,11 @@
 							showInfo(sprite_tian);
 						}
 						if (currObj.name == "hai") {
-							var nmap_parameter = localStorage.getItem('nmap_parameter');
-							ctx_hai.clearRect(0, 0, 1024, 512);
-							if (nmap_parameter) {
-								ctx_hai.fillText('nmap', 0, 100);
-								ctx_hai.fillText('time：' + nmap_parameter, 0, 200)
+							var name = localStorage.getItem('planet4_output');
+							var time = localStorage.getItem('planet4_time');							ctx_hai.clearRect(0, 0, 1024, 512);
+							if (name) {
+								ctx_hai.fillText('class: ' + name, 0, 100);
+								ctx_hai.fillText('time：' + time, 0, 200)
 							} else {
 								ctx_hai.fillText('暂无数据！', 0, 100);
 							}
@@ -710,67 +697,8 @@
 							showInfo(sprite_hai);
 						}
 					}
-					else {
-						if (currObj.name == "huo") {
-							var _Z4YAZWRB_parameter = localStorage.getItem('_Z4YAZWRB_parameter');//获取Z4YAZWRB_parameter
-							ctx_huo.clearRect(0, 0, 1024, 512);
-							if (_Z4YAZWRB_parameter) {
-								ctx_huo.fillText('Z4YAZWRB', 0, 100);
-								ctx_huo.fillText('异常率：' + parseFloat(_Z4YAZWRB_parameter).toFixed(4).toString(), 0, 200)
-							} else {
-								ctx_huo.fillText('暂无数据！', 0, 100);
-							}
-							sprite_huo.material.map.needsUpdate = true;
-							showInfo(sprite_huo);
-						}
-						if (currObj.name == "mu") {
-							var _537TT03OT_parameter = localStorage.getItem('_537TT03OT_parameter');//获取_537TT03OT_parameter
-							ctx_mu.clearRect(0, 0, 1024, 512);
-							if (_537TT03OT_parameter) {
-								ctx_mu.fillText('537TT03OT', 0, 100);
-								ctx_mu.fillText('异常率：' + parseFloat(_537TT03OT_parameter).toFixed(4).toString(), 0, 200)
-							} else {
-								ctx_mu.fillText('暂无数据！', 0, 100);
-							}
-							sprite_mu.material.map.needsUpdate = true;
-							showInfo(sprite_mu);
-						}
-						if (currObj.name == "tu") {
-							var Z4YAZWRB_parameter = localStorage.getItem('Z4YAZWRB_parameter');//获取模型3异常记录比例
-							ctx_tu.clearRect(0, 0, 1024, 512);
-							if (Z4YAZWRB_parameter) {
-								ctx_tu.fillText('5VM42727', 0, 100);
-								ctx_tu.fillText('异常率：' + parseFloat(Z4YAZWRB_parameter).toFixed(4).toString(), 0, 200)
-							} else {
-								ctx_tu.fillText('暂无数据！', 0, 100);
-							}
-							sprite_tu.material.map.needsUpdate = true;
-							showInfo(sprite_tu);
-						}
-						if (currObj.name == "tian") {
-							var _5VM452F4_parameter = localStorage.getItem('_5VM452F4_parameter');
-							ctx_tian.clearRect(0, 0, 1024, 512);
-							if (_5VM452F4_parameter) {
-								ctx_tian.fillText('5VM452F4', 0, 100);
-								ctx_tian.fillText('异常率：' + parseFloat(_5VM452F4_parameter).toFixed(4).toString(), 0, 200)
-							} else {
-								ctx_tian.fillText('暂无数据！', 0, 100);
-							}
-							sprite_tian.material.map.needsUpdate = true;
-							showInfo(sprite_tian);
-						}
-						if (currObj.name == "hai") {
-							var _5VMTSDK5_parameter = localStorage.getItem('_5VMTSDK5_parameter');
-							ctx_hai.clearRect(0, 0, 1024, 512);
-							if (_5VMTSDK5_parameter) {
-								ctx_hai.fillText('5VMTSDK5', 0, 100);
-								ctx_hai.fillText('异常率：' + parseFloat(_5VMTSDK5_parameter).toFixed(4).toString(), 0, 200)
-							} else {
-								ctx_hai.fillText('暂无数据！', 0, 100);
-							}
-							sprite_hai.material.map.needsUpdate = true;
-							showInfo(sprite_hai);
-						}
+					else if(datasource == "default"){
+
 					}
 				}
 			}

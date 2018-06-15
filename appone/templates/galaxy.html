@@ -20,7 +20,7 @@
 	var low_threshold = 1, high_threshold = 9;//记录上下阈值，后期由传过来的数据决定
 	var abnormal_count = 0, ratio = 0;//记录异常记录数目
 	function connect() {
-		var host = "ws://222.20.76.225:3368/";
+		var host = "ws://192.168.1.24:3368/ws";
 		socket = new WebSocket(host);
 		try {
 			socket.onopen = function (msg) {	

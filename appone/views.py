@@ -714,7 +714,6 @@ def analyse_lstm_g(request):
     
     model = 'NN_' + model + '_S_G'
     model = model.upper()
-    print(model)
 
     db = oracle()
     try:
