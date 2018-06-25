@@ -2,7 +2,7 @@ import cx_Oracle
 
 class oracle(object):
     def __init__(self):
-        self.__conn = cx_Oracle.connect("system/123456@192.168.1.17/orcl")
+        self.__conn = cx_Oracle.connect("system/123456@192.168.1.31/orcl")
         self.__cursor = self.__conn.cursor()
     def __del__(self):
         self.__cursor.close()

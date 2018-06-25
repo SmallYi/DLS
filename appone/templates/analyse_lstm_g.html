@@ -6,9 +6,19 @@
 	{{output}}
 </button>
 {% endblock %} {% block body %}
+<div id="info_chart1" style="position: absolute; left: 20px; top: 120px; z-index: 1; height: 400px; width: 400px"></div>
+<!-- <div id="info_chart2" style="position: absolute; left: 20px; top: 500px; z-index: 1; height: 400px; width: 400px"></div> -->
 <div class="container-fluid">
 	<div class="row">
-		<div class="col-md-12">
+		<div class="col-md-3" style="height: 400px;">
+			<div class="col-sm-4">
+				<button class="btn btn-info" onclick="chart_toggle();">
+					显示/隐藏图表
+				</button>
+			</div>
+		</div>
+
+		<div class="col-md-9">
 			<div style="height: 750px;">
 				<table class="table table-condensed" id="result_table" style="color:azure; font-size: 100%;">
 					<thead id="result_table_head"></thead>
@@ -24,19 +34,117 @@
 {% endblock %} {% block script %}
 <script>
 	var num_data = 22;
+	var myChart1 = echarts.init(document.getElementById('info_chart1'));
+	option1 = {
+		title: {
+			text: "攻击类型",
+			left: 'center',
+			top: '5%',
+			textStyle: {
+				color: '#F0FFFF'
+			}
+		},
+		tooltip: {
+			trigger: 'item',
+			formatter: "{a} <br/>{b} : {c} ({d}%)"
+		},
+		series: [
+			{
+				name: '攻击类型',
+				type: 'pie',
+				radius: '55%',
+				center: ['50%', '50%'],
+				data: [],
+				itemStyle: {
+					emphasis: {
+						shadowBlur: 10,
+						shadowOffsetX: 0,
+						shadowColor: 'rgba(0, 0, 0, 0.5)'
+					}
+				}
+			}
+		]
+	};
+	myChart1.setOption(option1);
+
+	// var myChart2 = echarts.init(document.getElementById('info_chart2'));
+	// option2 = {
+	// 	title: {
+	// 		text: "No Data",
+	// 		left: 'center',
+	// 		top: '5%',
+	// 		textStyle: {
+	// 			color: '#F0FFFF'
+	// 		}
+	// 	},
+	// 	xAxis: {
+	// 		nameTextStyle: {
+	// 			color: '#F0FFFF'
+	// 		},
+	// 		axisLine: {
+	// 			lineStyle: {
+	// 				color: '#F0FFFF'
+	// 			}
+	// 		},
+	// 		axisTick: {
+	// 			lineStyle: {
+	// 				color: '#F0FFFF'
+	// 			}
+	// 		}
+	// 	},
+	// 	yAxis: {
+	// 		nameTextStyle: {
+	// 			color: '#F0FFFF'
+	// 		},
+	// 		axisLine: {
+	// 			lineStyle: {
+	// 				color: '#F0FFFF'
+	// 			}
+	// 		},
+	// 		axisTick: {
+	// 			lineStyle: {
+	// 				color: '#F0FFFF'
+	// 			}
+	// 		}
+	// 	},
+	// 	series: [{
+	// 		symbolSize: 4,
+	// 		data: [],
+	// 		type: 'scatter',
+	// 		itemStyle: {
+	// 			normal: {
+	// 				color: '#91c7ae'
+	// 			}
+	// 		}
+	// 	}]
+	// };
+	// myChart2.setOption(option2);
+
+	function chart_toggle() {
+		$('#info_chart1').animate({
+			width: 'toggle'
+		})
+		// $('#info_chart2').animate({
+		// 	width: 'toggle'
+		// })
+	}
+
 	$(document).ready(function () {
 		model = $("#bt_model").text();
 		model = model.slice(2, -1);
 		output = $("#bt_output").text();
 		output = output.slice(2, -1);
-		$.getJSON('/analyse_lstm_g/', { 
-			'model': model, 
+		$.getJSON('/analyse_lstm_g/', {
+			'model': model,
 			'output': output,
-			'chart': 0, 
-			'page': 1, 
+			'chart': 1,
+			'page': 1,
 			'size': num_data
 		}, function (ret) {
 			if (ret == null) return;
+			option1.title.text = model;
+			option1.series[0].data = ret.pie1_data;
+			myChart1.setOption(option1);
 			$('#result_table_head').empty();
 			$('#result_table_body').empty();
 			var thead_str = "<tr>";
@@ -62,11 +170,11 @@
 				currentPage: 1,
 				onPageChange: function (num, type) {
 					if (type == "change") {
-						$.getJSON("/analyse_lstm_g/", { 
-							'model': model, 
+						$.getJSON("/analyse_lstm_g/", {
+							'model': model,
 							'output': output,
-							'chart': 0, 
-							'page': num, 
+							'chart': 0,
+							'page': num,
 							'size': num_data
 						}, function (ret) {
 							if (ret == null) return;

@@ -740,6 +740,24 @@ def analyse_lstm_g(request):
 
     if chart == '0':
         return JsonResponse(ret_dict)
+
+    classification = []
+    ret_sql = db.select('''
+                            SELECT DISTINCT OUTPUT FROM %s
+                            ''' % model)
+    for r in ret_sql:
+        classification.append(r[0])
+    pie1_data = []
+    for c in classification:
+        ret_sql = db.select('''
+                                SELECT COUNT(*) FROM %s WHERE OUTPUT = '%s'
+                            ''' % (model, c))
+        pie1_data.append({'value': ret_sql[0][0], 'name': c})
+
+    ret_dict['pie1_data'] = pie1_data
+
+    if chart == '1':
+        return JsonResponse(ret_dict)
     
     return JsonResponse({})
 
