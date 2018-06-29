@@ -1,0 +1,98 @@
+{% extends 'base.html' %} {% block title %}特征提取{% endblock %} {% block icon_title %} {% endblock %} {% block head %}
+<button id="bt_model" class="btn btn-default navbar-btn" style="display: none;">
+	{{model}}
+</button>
+{%endblock %} {% block body %}
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-6">
+			<div style="height: 750px;">
+				<table class="table table-condensed" id="result_table1" style="color:azure; font-size: 100%;">
+					<thead id="result_table1_head"></thead>
+					<tbody id="result_table1_body"></tbody>
+				</table>
+			</div>
+			<nav aria-label="Page navigation" style="margin-left: auto; margin-right: auto; width:650px">
+				<ul class="pagination" id='Paginator'></ul>
+			</nav>
+		</div>
+
+		<div class="col-md-6">
+			<div style="height: 750px;">
+				<table class="table table-condensed" id="result_table2" style="color:azure; font-size: 100%;">
+					<thead id="result_table2_head"></thead>
+					<tbody id="result_table2_body"></tbody>
+				</table>
+			</div>
+		</div>
+		<div class="col-md-12">
+			<nav aria-label="Page navigation" style="margin-left: auto; margin-right: auto; width:1200px">
+				<ul class="pagination" id='Paginator'></ul>
+			</nav>
+		</div>
+	</div>
+</div>
+{% endblock %} {% block script %}
+<script>
+	var num_data = 22;
+
+	$(document).ready(function () {
+		model = $("#bt_model").text();
+		model = model.slice(2, -1);
+		$.getJSON('/feature_extract/', {
+			'model': model,
+			'chart': 1,
+			'page': 1,
+			'size': num_data
+		}, function (ret) {
+			if (ret == null) return;
+			$('#result_table_head').empty();
+			$('#result_table_body').empty();
+			var thead_str = "<tr>";
+			for (var i = 0; i < ret.head.length; i++) {
+				thead_str += ('<th>' + ret.head[i] + '</th>');
+			};
+			// thead_str += ('<th>Num</th>');
+			thead_str += "</tr>";
+			$('#result_table_head').append(thead_str);
+
+			for (var i = 0; i < ret.body.length; i++) {
+				var tbody_str = "<tr>";
+				for (var j = 0; j < ret.body[i].length - 1; j++) {
+					tbody_str += ('<td>' + ret.body[i][j] + '</td>');
+				};
+				tbody_str += "</tr>";
+				$('#result_table_body').append(tbody_str);
+			};
+			$('#Paginator').jqPaginator({
+				totalCounts: parseInt(ret.total),
+				pageSize: num_data,
+				visiblePages: 10,
+				currentPage: 1,
+				onPageChange: function (num, type) {
+					if (type == "change") {
+						$.getJSON("/feature_extract/", {
+							'model': model,
+							'chart': 0,
+							'page': num,
+							'size': num_data
+						}, function (ret) {
+							if (ret == null) return;
+							$('#result_table_body').empty();
+							var tbody_str = '<tr>';
+							for (var i = 0; i < ret.body.length; i++) {
+								var tbody_str = "<tr>";
+								for (var j = 0; j < ret.body[i].length - 1; j++) {
+									tbody_str += ('<td>' + ret.body[i][j] + '</td>');
+								};
+								tbody_str += "</tr>";
+								$('#result_table_body').append(tbody_str);
+							};
+						});
+					}
+				}
+			});
+			return;
+		})
+	});
+</script> {% endblock %}

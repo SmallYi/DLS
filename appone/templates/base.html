@@ -36,17 +36,22 @@
 			</a>
 			<a href="{% url 'lstm' %}">
 				<button class="btn btn-default navbar-btn">
-					无监督历史
+					无监督个体
 				</button>
 			</a>
 			<a href="{% url 'lstm_guard' %}">
 				<button class="btn btn-default navbar-btn">
-					有监督历史
+					有监督个体
 				</button>
 			</a>
 			<a href="{% url 'relation' %}">
 				<button class="btn btn-default navbar-btn">
-					关联分析历史
+					关联分析个体
+				</button>
+			</a>
+			<a href="{% url 'analyse_lstm_g_all' %}?chart=-1&model=default">
+				<button class="btn btn-default navbar-btn">
+					有监督整体
 				</button>
 			</a>
 			<a href="{% url 'add_model' %}">

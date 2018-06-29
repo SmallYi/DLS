@@ -57,7 +57,7 @@ def thresold(request):
 def prediction(request):
     # history_time = []
     # now = datetime.now()
-    # history_time.append(now)
+    # history_time.append(now.strftime('%Y-%m-%d'))
     # for x in range(1,11):
     #     history_time.append((now - timedelta(days = x)).strftime('%Y-%m-%d'))
     db = oracle()
@@ -122,7 +122,7 @@ def prediction(request):
 def recordnumber(request):
     # history_time = []
     # now = datetime.now()
-    # history_time.append(now)
+    # history_time.append(now.strftime('%Y-%m-%d'))
     # for x in range(1,11):
     #     history_time.append((now - timedelta(days = x)).strftime('%Y-%m-%d'))
 
@@ -150,7 +150,7 @@ def recordnumber(request):
 def guard_test(request):
     # history_time = []
     # now = datetime.now()
-    # history_time.append(now)
+    # history_time.append(now.strftime('%Y-%m-%d'))
     # for x in range(1,11):
     #     history_time.append((now - timedelta(days = x)).strftime('%Y-%m-%d'))
 
@@ -181,7 +181,7 @@ def guard_test(request):
 def guard_kdd(request):
     # history_time = []
     # now = datetime.now()
-    # history_time.append(now)
+    # history_time.append(now.strftime('%Y-%m-%d'))
     # for x in range(1,11):
     #     history_time.append((now - timedelta(days = x)).strftime('%Y-%m-%d'))
 
@@ -760,6 +760,106 @@ def analyse_lstm_g(request):
         return JsonResponse(ret_dict)
     
     return JsonResponse({})
+
+
+def analyse_lstm_g_all(request):
+    ret_dict = {}
+    model = request.GET.get('model', None)
+    chart = request.GET.get('chart', None)
+    if model == None or chart == None:
+        return JsonResponse({})
+
+    if chart == '-1':
+        return render(request, 'analyse_lstm_g_all.html', {'model': 'KDDCUP'})
+
+    page = request.GET.get('page', None)
+    size = request.GET.get('size', None)
+    if page == None or size == None:
+        return JsonResponse({})
+
+    try:
+        page = int(page)
+        size = int(size)
+    except:
+        return JsonResponse({})
+    
+    model = 'NN_' + model + '_S_G'
+    model = model.upper()
+
+    db = oracle()
+    try:
+        ret_dict['head'] = db.select('''
+                                    SELECT COLUMN_NAME FROM USER_TAB_COLUMNS WHERE TABLE_NAME='%s'
+                                    ''' % model)
+        ret_dict['body'] = db.select('''
+                                    SELECT * FROM
+                                    (
+                                        SELECT A.*, ROWNUM RN
+                                        FROM (SELECT * FROM %s) A
+                                        WHERE ROWNUM <= %d
+                                    )   WHERE RN >= %d
+                                    ''' %
+                                    (model, page * size,
+                                        page * size - size + 1))
+        ret_sql = db.select('''
+                                SELECT COUNT(*) FROM %s
+                                ''' % model)
+        ret_dict['total'] = ret_sql[0][0]
+    except cx_Oracle.DatabaseError as e:
+        print(e)
+        return JsonResponse({})
+
+    if chart == '0':
+        return JsonResponse(ret_dict)
+
+    history_time = []
+    # now = datetime.now()
+    now = datetime(2018, 6, 15)
+    history_time.append(now.strftime('%Y-%m-%d'))
+    for x in range(1,6):
+        history_time.append((now - timedelta(days = x)).strftime('%Y-%m-%d'))
+    history_time.reverse()
+    classification = []
+    count = []
+    line_data = []
+    ret_sql = db.select('''
+                            SELECT DISTINCT OUTPUT FROM %s
+                            ''' % model)
+    for r in ret_sql:
+        classification.append(r[0])
+    for c in classification:
+        ret_sql = db.select('''
+                            SELECT COUNT(*) FROM NN_KDDCUP_S_G WHERE OUTPUT = '%s' 
+                            ''' % c)
+        count.append(ret_sql[0][0])
+    for i in range(len(classification)):
+        line_data.append({
+            'name': classification[i],
+            'type': 'line',
+            'data': count[i]
+            })
+    line_data.sort(key = lambda e: e['data'], reverse = True)
+    while len(line_data) > 5:
+        line_data.pop()
+    for d in line_data:
+        d['data'] = []
+        for t in range(len(history_time) - 1):
+            ret_sql = db.select('''
+                                SELECT COUNT(*) FROM NN_KDDCUP_S_G 
+                                    WHERE OUTPUT = '%s' AND 
+                                        INSERT_TIME BETWEEN to_DATE('%s', 'YYYY-MM-DD') AND to_DATE('%s', 'YYYY-MM-DD')
+                                ''' % (d['name'], history_time[t], history_time[t + 1]))
+            d['data'].append(ret_sql[0][0])
+    ret_dict['line_data'] = line_data
+
+    if chart == '1':
+        return JsonResponse(ret_dict)
+    
+    return JsonResponse({})
+
+
+def feature_extract(request):
+    return render(request, 'feature_extract.html')
 
 
 def analyse_fp(request):
